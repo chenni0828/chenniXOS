@@ -1,0 +1,10 @@
+---
+title: 缓解措施
+description: Configures security mitigations
+actions:
+  - !cmd:
+    command: '"chenniXDesktop\2.安全与修复\安全\缓解措施\Disable All Mitigations.cmd" /silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    option: 'mitigations-disable'

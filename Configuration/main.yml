@@ -1,0 +1,128 @@
+---
+title: chenniX0S Root Playbook File
+description: Runs all of the chenniX Playbook files
+actions:
+  # Load Default User Hive so HKCU changes apply to new users
+  - !powerShell:
+    command: 'reg load HKU\AME_UserHive_Default C:\Users\Default\NTUSER.DAT'
+    oobe: false
+    wait: true
+
+  # Remove old chenniX folders on upgrade
+  - !writeStatus: { status: "清理旧版本文件" }
+  - !powerShell:
+    command: '.\STOPFOLDERPROC.ps1'
+    exeDir: true
+    onUpgrade: true
+    wait: true
+    runas: currentUserElevated
+  - !powerShell:
+    command: |
+      $windir = [Environment]::GetFolderPath('Windows')
+      Remove-Item -LiteralPath "$windir\chenniXDesktop" -Force -Recurse
+      Remove-Item -LiteralPath "$windir\chenniXModules" -Force -Recurse
+    wait: true
+    exeDir: true
+    oobe: false
+    onUpgrade: true
+
+  # Copy chenniX configuration folders to Windows directory
+  - !writeStatus: { status: "复制文件" }
+  - !powerShell:
+    command: |
+      $windir = [Environment]::GetFolderPath('Windows')
+      @(
+          'chenniXModules',
+          'chenniXDesktop'
+      ) | ForEach-Object {
+          if (!(Test-Path $_)) { exit 1 }
+          Copy-Item -Path $_ -Destination $windir -Force -Recurse
+          if (!$?) { exit 2 }
+      }
+      Copy-Item -Path 'Themes\*' -Destination """$windir\Resources\Themes""" -Force -Recurse
+    weight: 10
+    wait: true
+    exeDir: true
+    handleExitCodes: { "!0": halt }
+
+  # Prevent annoying notifications during deployment
+  - !cmd:
+    command: "DISABLENOTIFS.cmd"
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+  - !taskKill: { name: "explorer" }
+  - !taskKill: { name: "ShellExperienceHost" }
+  - !run: { exe: "explorer.exe", runas: "currentUser", wait: false }
+
+  # NGEN - .NET assemblies PowerShell optimization
+  - !writeStatus: { status: "优化 PowerShell" }
+  - !task: { path: 'tweaks\scripts\ngen.yml' }
+
+  # Configure PowerShell first so that other PowerShell scripts work
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell'
+    value: 'ExecutionPolicy'
+    data: 'Unrestricted'
+    type: REG_SZ
+
+  # Hide settings pages early so scripts won't overwrite it
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer', value: 'SettingsPageVisibility', data: 'hide:recovery;maps;maps-downloadmaps;privacy;privacy-speechtyping;privacy-speech;privacy-feedback;privacy-activityhistory;search-permissions;privacy-general;sync;mobile-devices;mobile-devices-addphone;workplace;backup', type: REG_SZ, builds: ['<22000']}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer', value: 'SettingsPageVisibility', data: 'hide:recovery;maps;maps-downloadmaps;privacy;privacy-feedback;privacy-activityhistory;search-permissions;privacy-general;sync;mobile-devices;mobile-devices-addphone;workplace;family-group;deviceusage;home', type: REG_SZ, builds: ['>=22000']}
+
+  # Disk Cleanup runs first so it can run in the background
+  - !writeStatus: { status: "清理磁盘" }
+  - !powerShell:
+    command: '.\CLEANUP.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  # Core tasks
+  - !task: { path: 'core\env-setup.yml' }
+  - !task: { path: 'core\software.yml' }
+  - !task: { path: 'core\services.yml' }
+  - !task: { path: 'core\components.yml' }
+  - !task: { path: 'core\appx.yml' }
+  - !task: { path: 'core\defaults.yml' }
+  - !task: { path: 'core\revert.yml' }
+
+  # Tweaks
+  - !task: { path: 'tweaks\networking.yml' }
+  - !task: { path: 'tweaks\performance.yml' }
+  - !task: { path: 'tweaks\privacy-all.yml' }
+  - !task: { path: 'tweaks\qol.yml' }
+  - !task: { path: 'tweaks\security.yml' }
+  - !task: { path: 'tweaks\debloat.yml' }
+  - !task: { path: 'tweaks\scripts.yml' }
+  - !task: { path: 'tweaks\misc.yml' }
+
+  # Apply Default User Hive
+  - !writeStatus: { status: "应用注册表配置..." }
+  - !powerShell:
+    command: '.\APPLYDUHIVE.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  # Fix incorrect registry paths
+  - !writeStatus: { status: "清理注册表路径" }
+  - !powerShell:
+    command: '.\SETPATHS.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  # Unload the hive
+  - !powerShell:
+    command: 'reg unload HKU\AME_UserHive_Default'
+    oobe: false
+    wait: true
+
+  # Set PowerShell execution policy to RemoteSigned
+  - !writeStatus: { status: "设置 PowerShell 执行策略" }
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell'
+    value: 'ExecutionPolicy'
+    data: 'RemoteSigned'
+    type: REG_SZ

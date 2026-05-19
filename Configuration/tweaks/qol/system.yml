@@ -1,0 +1,31 @@
+---
+title: System QoL
+description: System quality of life improvements
+actions:
+
+  # ============================================
+  # 崩溃控制（CrashControl）
+  # ============================================
+
+  # 禁用蓝屏后自动重启
+  # ⚠️ 禁用后蓝屏停留在错误页面，便于查看错误代码；默认会自动重启
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\CrashControl', value: 'AutoReboot', data: '0', type: REG_DWORD}
+
+  # 禁用崩溃转储文件生成
+  # ⚠️ 禁用后无法事后分析崩溃原因（无 .dmp 文件）；对普通用户可节省磁盘空间
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.CrashControl::CC_CrashDumpEnabled
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\CrashControl', value: 'CrashDumpEnabled', data: '0', type: REG_DWORD}
+
+  # 禁用将崩溃事件写入系统日志
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\CrashControl', value: 'LogEvent', data: '0', type: REG_DWORD}
+
+  # 蓝屏时显示详细参数（BugCheck 参数和驱动信息）
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\CrashControl', value: 'DisplayParameters', data: '1', type: REG_DWORD}
+
+  # 禁用存储遥测设备转储
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\StorageTelemetry', value: 'DeviceDumpEnabled', data: '0', type: REG_DWORD}
+
+  # 禁用 Windows 平台二进制表（WPBT）执行
+  # 说明: WPBT 允许 OEM 固件在启动时执行程序，可能被用于遥测或恢复工具
+  # 参考: https://learn.microsoft.com/en-us/windows-hardware/drivers/bringup/secure-boot-and-windows-deployment
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'DisableWpbtExecution', data: '1', type: REG_DWORD}

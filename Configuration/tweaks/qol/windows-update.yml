@@ -1,0 +1,26 @@
+---
+title: Windows Update 优化
+description: Windows Update 配置
+actions:
+  # 禁止自动重启 - 仅在禁用自动更新时生效
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AUPowerManagement', value: 'AUPowerManagement', data: '0', type: REG_DWORD, option: 'auto-updates-disable'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU', value: 'NoAutoRebootWithLoggedOnUsers', data: '1', type: REG_DWORD, option: 'auto-updates-disable'}
+  # 禁用传递优化
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization', value: 'DODownloadMode', data: '0', type: REG_DWORD}
+  # 禁止功能更新 - 仅在禁用自动更新时生效
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate', value: 'TargetReleaseVersion', data: '1', type: REG_DWORD, option: 'auto-updates-disable'}
+  # 限制 Insider
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\ManagePreviewBuilds', value: 'ManagePreviewBuildsPolicyValue', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds', value: 'AllowBuildPreview', data: '0', type: REG_DWORD}
+  # 禁用MSRT遥测
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\MRT', value: 'DontReportInfectionInformation', data: '1', type: REG_DWORD}
+  # 禁用更新催促通知(无条件生效)
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU', value: 'NoAUAsDefaultShutdownOption', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\UX\Settings', value: 'HideMCTLink', data: '1', type: REG_DWORD}
+  # 禁用自动更新脚本 - 仅在禁用自动更新时执行
+  - !cmd:
+    command: '"chenniXDesktop\1.系统配置\配置\自动更新\Disable Automatic Updates (default).cmd" /silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    option: 'auto-updates-disable'

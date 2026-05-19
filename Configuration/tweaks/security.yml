@@ -1,0 +1,45 @@
+---
+title: Security Tweaks
+description: Security enhancements
+actions:
+  - !writeStatus: {status: '运行安全增强'}
+
+  # ============================================
+  # 网络安全
+  # ============================================
+
+  # 限制匿名SAM访问（RestrictAnonymousSam=1）
+  # 说明: 阻止匿名用户通过SAM枚举本地账户信息
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.LanmanServer::RestrictAnonymousSam
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Lsa', value: 'RestrictAnonymousSam', data: '1', type: REG_DWORD}
+
+  # ============================================
+  # UAC与安全桌面
+  # ============================================
+
+  # 禁用安全桌面上的UAC提示（PromptOnSecureDesktop=0）
+  # ⚠️ 降低UAC安全性：恶意软件可能在UAC提示时模拟点击；对游戏/全屏应用可避免弹窗被遮挡
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.SecUI::PromptOnSecureDesktop
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'PromptOnSecureDesktop', data: '0', type: REG_DWORD}
+
+  # ============================================
+  # 远程协助
+  # ============================================
+
+  # 禁止远程协助完全控制本机
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance', value: 'fAllowFullControl', data: '0', type: REG_DWORD}
+
+  # 禁止远程协助提供帮助（阻止入站连接）
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance', value: 'fAllowToGetHelp', data: '0', type: REG_DWORD}
+
+  # 防火墙禁用远程协助规则
+  - !run: {exe: 'netsh', args: 'advfirewall firewall set rule group="Remote Assistance" new enable=no'}
+
+  # ============================================
+  # BitLocker
+  # ============================================
+
+  # 阻止BitLocker设备加密
+  # ⚠️ 新设备将无法自动启用BitLocker；已有加密不受影响
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.BitLocker::PreventDeviceEncryption
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\BitLocker', value: 'PreventDeviceEncryption', data: '1', type: REG_DWORD}

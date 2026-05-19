@@ -1,0 +1,32 @@
+---
+title: Startup/Shutdown Tweaks
+description: Improve startup and shutdown speed
+actions:
+
+  # ============================================
+  # 关机超时优化
+  # ============================================
+
+  # 挂起应用超时设为2秒（默认5秒）
+  # 说明: 关机时等待无响应应用的时间
+  # ⚠️ 过短可能导致未保存数据丢失；2000ms 为社区常用值
+  # 参考: https://www.sevenforums.com/tutorials/717-shut-down-speed-up.html
+  - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'HungAppTimeout', data: '2000', type: REG_SZ}
+
+  # 等待应用关闭超时设为2秒（默认5秒）
+  # ⚠️ 同上，可能导致应用未正常退出
+  - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'WaitToKillAppTimeOut', data: '2000', type: REG_SZ}
+
+  # 等待服务关闭超时设为2秒（默认5秒/ReviOS为1.5秒）
+  # ⚠️ 过短可能导致服务未正常保存状态（如数据库服务）
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control', value: 'WaitToKillServiceTimeout', data: '2000', type: REG_SZ}
+
+  # ============================================
+  # 启动速度优化
+  # ============================================
+
+  # 禁用启动延迟（默认约10秒延迟以等待硬件初始化）
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Serialize', value: 'StartupDelayInMSec', data: '0', type: REG_DWORD}
+
+  # 禁用等待空闲状态（跳过启动时的空闲等待）
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Serialize', value: 'WaitforIdleState', data: '0', type: REG_DWORD}

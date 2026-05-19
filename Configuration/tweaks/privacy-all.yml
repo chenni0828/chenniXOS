@@ -1,0 +1,234 @@
+---
+title: Privacy Optimization (All-in-One)
+description: One-click privacy optimization - disables all tracking, telemetry, data collection, and privacy-invasive services
+actions:
+  - !writeStatus: {status: '应用隐私优化'}
+
+  # Disable PowerShell Core telemetry
+  # https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_telemetry
+  - !cmd: {command: 'setx POWERSHELL_TELEMETRY_OPTOUT 1'}
+  - !cmd: {command: 'setx DOTNET_CLI_TELEMETRY_OPTOUT 1'}
+
+  # ============================================
+  # 服务禁用
+  # ============================================
+
+  # 程序兼容性助手服务 - 禁用
+  # ⚠️ 禁用后旧程序兼容性问题不会自动检测和报告
+  - !service: {name: 'PcaSvc', operation: change, startup: 4}
+
+  # 统一遥测客户端（Connected User Experiences and Telemetry）- 禁用
+  # 说明: Windows 核心遥测数据收集服务
+  - !service: {name: 'DiagTrack', operation: change, startup: 4}
+
+  # 诊断中心标准收集器服务 - 禁用
+  # 说明: 收集ETL追踪数据用于诊断
+  - !service: {name: 'diagnosticshub.standardcollector.service', operation: change, startup: 4}
+
+  # Windows 错误报告服务 - 禁用
+  - !service: {name: 'WerSvc', operation: change, startup: 4}
+
+  # 错误报告控制面板支持 - 禁用
+  - !service: {name: 'wercplsupport', operation: change, startup: 4}
+
+  # Intel 遥测服务 - 禁用
+  - !service: {name: 'Telemetry', operation: change, startup: 4}
+
+  # 诊断服务主机 - 禁用
+  - !service: {name: 'diagsvc', operation: change, startup: 4}
+
+  # DMWAPPUSHSERVICE（WAP推送消息路由）- 禁用
+  # 说明: 用于设备管理和推送消息，可能发送遥测数据
+  - !service: {name: 'dmwappushservice', operation: change, startup: 4}
+
+  # ============================================
+  # App permissions
+  # ============================================
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics', value: 'Value', data: 'Deny', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location', value: 'Value', data: 'Deny', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation', value: 'Value', data: 'Deny', type: REG_SZ}
+
+  # Windows Media Player
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\WMDRM', value: 'DisableOnline', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\MediaPlayer\Preferences', value: 'AcceptedPrivacyStatement', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\MediaPlayer\Preferences', value: 'UsageTracking', data: '0', type: REG_DWORD}
+
+  # Activity feed
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'EnableActivityFeed', data: '0', type: REG_DWORD}
+
+  # App launch tracking
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'Start_TrackProgs', data: '0', type: REG_DWORD}
+
+  # Device monitoring
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\DeviceHealthAttestationService', value: 'EnableDeviceHealthAttestationService', data: '0', type: REG_DWORD}
+
+  # Experimentation
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation', value: 'Value', data: '0', type: REG_DWORD}
+
+  # Lockscreen camera
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization', value: 'NoLockScreenCamera', data: '1', type: REG_DWORD}
+
+  # Online speech recognition
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy', value: 'HasAccepted', data: '0', type: REG_DWORD}
+
+  # 程序兼容性助手（AppCompat）- 全量禁用
+  # ⚠️ 禁用后：旧程序兼容性问题不再检测/报告/修复；活动历史记录中的兼容性数据不再上传
+  # 说明: AITEnable=应用兼容性遥测, AllowTelemetry=兼容性遥测, DisableEngine=兼容性修复引擎,
+  #       DisableInventory=兼容性清单, DisablePCA=程序兼容性助手, DisableUAR=用户活动报告
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.AppCompat
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat', value: 'AITEnable', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat', value: 'AllowTelemetry', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat', value: 'DisableEngine', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat', value: 'DisableInventory', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat', value: 'DisablePCA', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat', value: 'DisableUAR', data: '1', type: REG_DWORD}
+
+  # Performance tracking
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WDI\{9c5a40da-b965-4fc3-8781-88dd50a6299d}', value: 'ScenarioExecutionEnabled', data: '0', type: REG_DWORD}
+
+  # Privacy experience (OOBE)
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'DisablePrivacyExperience', data: '1', type: REG_DWORD}
+
+  # Recall/Snap
+  - !powerShell:
+    command: '& """$([Environment]::GetFolderPath(''Windows''))\chenniXDesktop\1.系统配置\配置\AI功能\Recall\Disable Recall Support (default).cmd""" /silent'
+    runas: currentUserElevated
+    wait: true
+    exeDir: true
+
+  # RSOP logging
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'RSoPLogging', data: '0', type: REG_DWORD}
+
+  # Speech auto updates
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Speech', value: 'AllowSpeechModelUpdate', data: '0', type: REG_DWORD}
+
+  # Tailored experiences
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Privacy', value: 'TailoredExperiencesWithDiagnosticDataEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableTailoredExperiencesWithDiagnosticData', data: '1', type: REG_DWORD}
+
+  # User tracking
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer', value: 'NoInstrumentation', data: '1', type: REG_DWORD}
+
+  # Web language list access
+  - !registryValue: {path: 'HKCU\Control Panel\International\User Profile', value: 'HttpAcceptLanguageOptOut', data: '1', type: REG_DWORD}
+
+  # Windows Error Reporting (9 values)
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'Disabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\PCHealth\ErrorReporting', value: 'DoReport', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'Disabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'DontShowUI', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\PCHealth\ErrorReporting', value: 'ShowUI', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'LoggingDisabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'DontSendAdditionalData', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing', value: 'DisableWerReporting', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceInstall\Settings', value: 'DisableSendGenericDriverNotFoundToWER', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceInstall\Settings', value: 'DisableSendRequestAdditionalSoftwareToWER', data: '1', type: REG_DWORD}
+
+  # 禁止微软账户连接（仅在禁用设置同步时生效）
+  # ⚠️ 禁用后无法登录微软账户，无法使用OneDrive/Store等云服务
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'NoConnectedUser', data: '1', type: REG_DWORD, option: 'disable-setting-sync'}
+
+  # 禁止用户活动上传和发布（阻止活动历史记录同步到云端）
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'UploadUserActivities', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'PublishUserActivities', data: '0', type: REG_DWORD}
+
+  # Disable Windows Copilot & AI data analysis
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot', value: 'TurnOffWindowsCopilot', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'DisableAIDataAnalysis', data: '1', type: REG_DWORD}
+
+  # Search settings (12 operations)
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'BingSearchEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings', value: 'IsAADCloudSearchEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings', value: 'IsDeviceSearchHistoryEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings', value: 'IsMSACloudSearchEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings', value: 'SafeSearchMode', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'ConnectedSearchUseWeb', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'DisableWebSearch', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'AllowSearchToUseLocation', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'EnableDynamicContentInWSB', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer', value: 'DisableSearchBoxSuggestions', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'SearchboxTaskbarMode', data: '1', type: REG_DWORD}
+
+  # ============================================
+  # Advertising
+  # ============================================
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo', value: 'Enabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\AdvertisingInfo', value: 'DisabledByGroupPolicy', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowSyncProviderNotifications', data: '0', type: REG_DWORD}
+
+  # ============================================
+  # Apps telemetry
+  # ============================================
+  - !registryValue: {path: 'HKCU\Software\NVIDIA Corporation\NVControlPanel2\Client', value: 'OptInOrOutPreference', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Policies\Microsoft\office\16.0\common', value: 'sendcustomerdata', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Policies\Microsoft\office\common\clienttelemetry', value: 'sendtelemetry', data: '3', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Policies\Microsoft\office\16.0\common', value: 'qmenable', data: '0', type: REG_DWORD}
+
+  # ============================================
+  # Cloud
+  # ============================================
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableSettingSyncUserOverride', data: '1', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableSyncOnPaidNetwork', data: '1', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableWindowsSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization', value: 'Enabled', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\BrowserSettings', value: 'Enabled', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials', value: 'Enabled', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility', value: 'Enabled', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows', value: 'Enabled', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync', value: 'SyncPolicy', data: '5', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement', value: 'ScoobeSystemSettingEnabled', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Messaging', value: 'AllowMessageSync', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !scheduledTask: {path: '\Microsoft\Windows\SettingSync\BackgroundUploadTask', operation: disable, option: 'disable-setting-sync'}
+  - !scheduledTask: {path: '\Microsoft\Windows\SettingSync\BackupTask', operation: disable, option: 'disable-setting-sync'}
+  - !scheduledTask: {path: '\Microsoft\Windows\SettingSync\NetworkStateChangeTask', operation: disable, option: 'disable-setting-sync'}
+
+  # ============================================
+  # Telemetry (6 items)
+  # ============================================
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform', value: 'NoGenTicket', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\AppV\CEIP', value: 'CEIPEnable', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\SQMClient\Windows', value: 'CEIPEnable', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Diagnostics\Performance', value: 'DisableDiagnosticTracing', data: '1', type: REG_DWORD}
+  # Input telemetry
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\InputPersonalization', value: 'RestrictImplicitInkCollection', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\InputPersonalization', value: 'RestrictImplicitTextCollection', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore', value: 'HarvestContacts', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Personalization\Settings', value: 'AcceptedPrivacyPolicy', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Personalization\Settings', value: 'AcceptedPrivacyPolicy', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\TabletPC', value: 'PreventHandwritingDataSharing', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports', value: 'PreventHandwritingErrorReports', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Input\Settings', value: 'InsightsEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Input\TIPC', value: 'Enabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\TIPC', value: 'Enabled', data: '0', type: REG_DWORD}
+  # Disallow data collection
+  # 停止DiagTrack服务（立即停止，配合上方startup:4持久禁用）
+  - !service: {name: 'DiagTrack', operation: stop}
+
+  # AllowTelemetry=0 - 完全禁用诊断数据收集（最严格模式）
+  # 说明: 三处同时设置确保HKCU/HKLM/Wow6432Node全部覆盖
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.DataCollection::AllowTelemetry
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack', value: 'ShowedToastAtLevel', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowTelemetry', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'AllowTelemetry', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'AllowTelemetry', data: '0', type: REG_DWORD}
+  # MaxTelemetryAllowed=0 - 限制最大遥测级别为0（安全级别）
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'MaxTelemetryAllowed', data: '0', type: REG_DWORD}
+
+  # 禁用事件记录（EventTranscript）- 阻止DiagTrack记录事件
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack\EventTranscriptKey', value: 'EnableEventTranscript', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack\EventTranscriptKey', value: 'MiniTraceSlotEnabled', data: '0', type: REG_DWORD}
+
+  # 禁止在遥测中发送设备名称
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowDeviceNameInTelemetry', data: '0', type: REG_DWORD}
+
+  # 禁用DiagTrack自动日志记录器（WMI Autologger）
+  # 说明: 从底层阻止遥测数据管道的日志收集
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\Diagtrack-Listener', value: 'Start', data: '0', type: REG_DWORD}
+
+  # 删除DiagTrack现有ETL日志文件
+  # ⚠️ 不可逆操作，删除后无法恢复历史遥测日志
+  - !run: {exe: 'cmd.exe', args: '/c "del /q "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\DiagTrack*" "%ProgramData%\Microsoft\Diagnosis\ETLLogs\ShutdownLogger\DiagTrack*" 2>nul"'}
+
+  # Visual Studio遥测退出
+  - !registryValue: {path: 'HKCU\Software\Microsoft\VisualStudio\Telemetry', value: 'TurnOffOptIn', data: '1', type: REG_DWORD}

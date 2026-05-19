@@ -1,0 +1,24 @@
+---
+title: Cleanup Files
+description: Cleans up Windows specific files and configures MeasureSleep
+actions:
+  - !powerShell:
+    command: |
+      if ([Environment]::Is64BitOperatingSystem -and !$env:PROCESSOR_ARCHITECTURE.Contains('ARM')) {
+          Remove-Item -Path "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.安全与修复\安全\缓解措施\容错堆" -Force -Recurse -ErrorAction SilentlyContinue
+      }
+    wait: true
+    runas: currentUserElevated
+  # MeasureSleep以管理员运行
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers', value: 'C:\Windows\chenniXDesktop\1.系统配置\配置\定时器分辨率\! MeasureSleep.exe', data: '~ RUNASADMIN', type: REG_SZ}
+  # 添加音乐和视频到快速访问 Home
+  - !powerShell:
+    command: |
+      $shell = New-Object -ComObject Shell.Application
+      $home = $shell.Namespace('shell:::{679F7CB7-030D-4B6B-8A42-30C2398D3BD8}')
+      $music = $shell.Namespace('shell:::{1D2680C7-031E-4FE0-84F0-0B6F73C3E5C8}')
+      $videos = $shell.Namespace('shell:::{7A0A5F03-1B0E-4B4A-8B12-5C8F6C3F3B7D}')
+      if ($home -and $music) { $home.Self.InvokeVerb('pintohome') }
+      if ($home -and $videos) { $videos.Self.InvokeVerb('pintohome') }
+    wait: true
+    runas: currentUserElevated

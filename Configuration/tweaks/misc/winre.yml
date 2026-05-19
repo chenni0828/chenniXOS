@@ -1,0 +1,5 @@
+---
+title: WinRE
+description: Enables Windows Recovery Environment
+actions:
+  - !run: {exe: 'reagentc.exe', args: '/enable'}

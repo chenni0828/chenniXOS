@@ -1,0 +1,9 @@
+---
+title: File Associations
+description: Sets file associations based on browser option
+actions:
+  - !cmd:
+    command: 'FILEASSOC.cmd'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated

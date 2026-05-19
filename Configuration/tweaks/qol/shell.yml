@@ -1,0 +1,28 @@
+---
+title: Shell Tweaks
+description: Windows shell improvements
+actions:
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'MultiTaskingAltTabFilter', data: '3', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AutoplayHandlers', value: 'DisableAutoplay', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'DisallowShaking', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'NoLowDiskSpaceChecks', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'StartMenuIcons', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'TaskbarAnimations', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowTaskViewButton', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'Start_TrackDocs', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer', value: 'NoRecentDocsHistory', data: '1', type: REG_DWORD}
+  # 禁用菜单弹出延迟
+  - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'MenuShowDelay', data: '0', type: REG_SZ}
+  # 禁用网络位置向导
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkDiscovery', value: 'DisableNetworkDiscovery', data: '1', type: REG_DWORD}
+  # 恢复旧版右键菜单
+  - !registryKey: {path: 'HKCU\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c3b50bf5b7}\InprocServer32', operation: add}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c3b50bf5b7}\InprocServer32', value: '', data: '', type: REG_SZ}
+  # 禁用附近共享
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Shell', value: 'DisableNearbySharing', data: '1', type: REG_DWORD}
+  # 开始菜单无推荐
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'Start_RecommendedListDisplayStyle', data: '0', type: REG_DWORD}
+  # 显示更多固定项
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'Start_MaximumFrequentApps', data: '0', type: REG_DWORD}
+  # 自动运行配置
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'DisableStartupDelay', data: '1', type: REG_DWORD}

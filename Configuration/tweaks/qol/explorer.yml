@@ -1,0 +1,62 @@
+---
+title: Explorer Tweaks
+description: File Explorer customizations
+actions:
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager', value: 'EnthusiastMode', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'AutoCheckSelect', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'LaunchTo', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'HideFileExt', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'Hidden', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowFrequent', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowRecent', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'UseCompactMode', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'MultipleInvokePromptMinimum', data: '100', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowCloudFilesInQuickAccess', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'NoResolveSearch', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'NoResolveTrack', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'EnableLUAPrivacyMode', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem', value: 'LongPathsEnabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'Max Cached Icons', data: '4096', type: REG_SZ}
+  - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'MouseHoverTime', data: '20', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'NoInternetOpenWith', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates', value: 'ShortcutNameTemplate', data: '"%s.lnk"', type: REG_SZ}
+  # 经典搜索模式
+  - !registryValue: {path: 'HKLM\SOFTWARE\Classes\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs', value: '', data: '{64bc32b5-4eec-4de7-972d-bd8bd0324537}', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Classes\WOW6432Node\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs', value: '', data: '{64bc32b5-4eec-4de7-972d-bd8bd0324537}', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\SOFTWARE\WOW6432Node\Classes\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs', value: '', data: '{64bc32b5-4eec-4de7-972d-bd8bd0324537}', type: REG_SZ}
+  # 禁用图库(Win11)
+  - !registryValue: {path: 'HKCU\SOFTWARE\Classes\CLSID\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}', value: 'System.IsPinnedToNameSpaceTree', data: '0', type: REG_DWORD, builds: ['>=22000']}
+  - !powerShell:
+    command: |
+      $sendTo = [Environment]::GetFolderPath('SendTo')
+      @('Compressed (zipped) Folder.zfsndk', 'Documents.mydocs', 'Mail.MAPIMail', 'Fax.FaxN', 'Bluetooth') | ForEach-Object {
+          Remove-Item -Path "$sendTo\$_" -Force -ErrorAction SilentlyContinue
+      }
+    wait: true
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{f874310f-33de-4d69-a8b4-6766c3a25b2b}', value: 'RemovableDrivesInSidebar', operation: delete}
+  - !registryKey: {path: 'HKCR\*\PropertySheetHandlers\{596AB062-BB77-46E4-B898-E8D7F1B4B727}', operation: delete}
+  - !registryKey: {path: 'HKCR\Directory\PropertySheetHandlers\{596AB062-BB77-46E4-B898-E8D7F1B4B727}', operation: delete}
+  - !registryKey: {path: 'HKCR\Drive\PropertySheetHandlers\{596AB062-BB77-46E4-B898-E8D7F1B4B727}', operation: delete}
+  - !registryValue: {path: 'HKCR\regfile\Shell\RunAs', value: '', data: 'Merge As TrustedInstaller', type: REG_SZ}
+  - !registryValue: {path: 'HKCR\regfile\Shell\RunAs', value: 'HasLUAShield', data: '', type: REG_SZ}
+  - !registryValue: {path: 'HKCR\.bat\ShellNew', value: 'NullFile', data: '', type: REG_SZ}
+  - !registryValue: {path: 'HKCR\.ps1\ShellNew', value: 'NullFile', data: '', type: REG_SZ}
+  - !registryValue: {path: 'HKCR\.reg\ShellNew', value: 'NullFile', data: '', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{7AD84985-8A4C-4c8e-95BF-32B9C4C6F2B4}', data: '', type: REG_SZ}
+  - !registryKey: {path: 'HKCR\Folder\shellex\ContextMenuHandlers\Library Location', operation: delete}
+  - !registryKey: {path: 'HKCR\.bmp\ShellNew', operation: delete}
+  - !registryKey: {path: 'HKCR\.rtf\ShellNew', operation: delete}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{1d27f844-5717-4aea-9a17-7fd1f8e1ff5e}', data: '', type: REG_SZ}
+  - !registryKey: {path: 'HKCR\*\shellex\ContextMenuHandlers\ModernSharing', operation: delete}
+  - !registryKey: {path: 'HKCR\AllFilesystemObjects\shellex\ContextMenuHandlers\ModernSharing', operation: delete}
+  # 移除"提取"右键菜单
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{D3FA0FA5-1AE4-4622-8F36-9FD0B242B5BF}', data: '', type: REG_SZ}
+  # 移除"打印"右键菜单
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{E36171AC-4E5D-4B40-B30C-6FE1D0C4953A}', data: '', type: REG_SZ}
+  # 移除"兼容性疑难解答"右键菜单(补充WOW6432Node)
+  - !registryValue: {path: 'HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{1d27f844-5717-4aea-9a17-7fd1f8e1ff5e}', data: '', type: REG_SZ}
+  # 电源计划文件关联(.pow)
+  - !registryValue: {path: 'HKCR\powerscheme\DefaultIcon', value: '', data: '%windir%\System32\powercpl.dll,1', type: REG_SZ}
+  - !registryValue: {path: 'HKCR\powerscheme\Shell\open\command', value: '', data: 'powercfg /import "%1"', type: REG_SZ}
+  - !registryValue: {path: 'HKCR\.pow', value: '', data: 'powerscheme', type: REG_SZ}
+  - !registryValue: {path: 'HKCR\.pow', value: 'FriendlyTypeName', data: 'Power Scheme', type: REG_SZ}

@@ -1,0 +1,14 @@
+---
+title: QoL Tweaks Root
+description: Runs all QoL tweaks
+actions:
+  - !task: {path: 'tweaks\qol\general.yml'}
+  - !task: {path: 'tweaks\qol\appearance.yml'}
+  - !task: {path: 'tweaks\qol\ease-of-access.yml'}
+  - !task: {path: 'tweaks\qol\explorer.yml'}
+  - !task: {path: 'tweaks\qol\shell.yml'}
+  - !task: {path: 'tweaks\qol\taskbar.yml'}
+  - !task: {path: 'tweaks\qol\startup-shutdown.yml'}
+  - !task: {path: 'tweaks\qol\system.yml'}
+  - !task: {path: 'tweaks\qol\visual-effects.yml'}
+  - !task: {path: 'tweaks\qol\windows-update.yml'}

@@ -1,0 +1,7 @@
+---
+title: Performance Counters
+description: Rebuilds performance counters
+actions:
+  - !run: {exe: 'lodctr.exe', args: '/r'}
+  - !run: {exe: 'lodctr.exe', args: '/r'}
+  - !run: {exe: 'winmgmt.exe', args: '/resyncperf'}

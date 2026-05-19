@@ -1,0 +1,20 @@
+---
+title: Devices
+description: Disables network adapter bindings and devices
+actions:
+  - !powerShell:
+    command: |
+      $adapters = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' }
+      foreach ($adapter in $adapters) {
+          Disable-NetAdapterBinding -Name $adapter.Name -ComponentID ms_msclient -ErrorAction SilentlyContinue
+          Disable-NetAdapterBinding -Name $adapter.Name -ComponentID ms_server -ErrorAction SilentlyContinue
+          Disable-NetAdapterBinding -Name $adapter.Name -ComponentID ms_lldp -ErrorAction SilentlyContinue
+          Disable-NetAdapterBinding -Name $adapter.Name -ComponentID ms_lltdio -ErrorAction SilentlyContinue
+          Disable-NetAdapterBinding -Name $adapter.Name -ComponentID ms_rspndr -ErrorAction SilentlyContinue
+      }
+    runas: currentUserElevated
+    wait: true
+  - !powerShell:
+    command: '.\DISABLEPNP.ps1'
+    wait: true
+    exeDir: true

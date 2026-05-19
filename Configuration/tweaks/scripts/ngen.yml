@@ -1,0 +1,9 @@
+---
+title: NGEN
+description: .NET NGEN optimization for PowerShell
+actions:
+  - !powerShell:
+    command: '.\NGEN.ps1'
+    wait: true
+    exeDir: true
+    weight: 20

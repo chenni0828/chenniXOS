@@ -1,0 +1,65 @@
+---
+title: Appearance
+description: Theme and visual appearance settings
+actions:
+  - !writeStatus: {status: '应用外观设置'}
+
+  - !powerShell:
+    command: |
+      .\chenniXModules\initPowerShell.ps1
+      Set-ThemeMRU
+    wait: true
+    onUpgrade: true
+    oobe: true
+    exeDir: true
+    runas: currentUserElevated
+
+  - !powerShell:
+    command: |
+      .\chenniXModules\initPowerShell.ps1
+      Set-Theme -Path """$([Environment]::GetFolderPath('Windows'))\Resources\Themes\chenniX-dark.theme"""
+      Set-ThemeMRU
+    wait: true
+    onUpgrade: false
+    exeDir: true
+    runas: currentUserElevated
+
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization'
+    value: 'LockScreenOverlaysDisabled'
+    data: '1'
+    type: REG_DWORD
+    onUpgrade: false
+  - !registryValue:
+    path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager'
+    value: 'RotatingLockScreenEnabled'
+    data: '0'
+    type: REG_DWORD
+    onUpgrade: false
+  - !powerShell:
+    command: |
+      foreach ($userKey in (Get-ChildItem "HKLM:SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\Creative").PsPath) {
+          Set-ItemProperty -Path $userKey -Name 'RotatingLockScreenEnabled' -Type DWORD -Value 0 -Force
+      }
+    exeDir: true
+    wait: true
+    onUpgrade: false
+  - !powerShell:
+    command: |
+      .\chenniXModules\initPowerShell.ps1
+      Set-LockscreenImage
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    onUpgrade: false
+
+  - !registryValue:
+    path: 'HKU\AME_UserHive_Default\Software\Policies\Microsoft\Windows\Personalization'
+    value: 'ThemeFile'
+    data: '%windir%\Resources\Themes\chenniX-dark.theme'
+    type: REG_SZ
+    onUpgrade: true
+
+  - !registryValue: {path: 'HKCU\Control Panel\Colors', value: 'InfoWindow', data: '246 253 255', type: REG_SZ}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes', value: 'ThemeChangesMousePointers', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes', value: 'ThemeChangesDesktopIcons', data: '0', type: REG_DWORD}

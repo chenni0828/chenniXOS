@@ -1,0 +1,13 @@
+---
+title: EFI Drive Letter
+description: Removes EFI partition drive letter
+actions:
+  - !powerShell:
+    command: |
+      $efi = Get-Partition | Where-Object { $_.Type -eq 'System' -and $_.DriveLetter }
+      if ($efi) {
+          $vol = "$($efi.DriveLetter):"
+          mountvol $vol /d
+      }
+    wait: true
+    runas: currentUserElevated

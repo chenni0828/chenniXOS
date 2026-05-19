@@ -1,0 +1,8 @@
+---
+title: Backup
+description: Backs up services and drivers
+actions:
+  - !powerShell:
+    command: '.\BACKUP.ps1 -FilePath """$([Environment]::GetFolderPath(''Windows''))\chenniXModules\Other\chenniXServices.reg"""'
+    wait: true
+    exeDir: true

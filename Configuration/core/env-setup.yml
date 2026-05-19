@@ -1,0 +1,31 @@
+---
+title: Environment Setup
+description: Sets up the initial environment
+actions:
+  - !writeStatus: {status: '设置环境'}
+  - !powerShell:
+    wait: true
+    command: |
+      function Add-ToPath ([array]$Paths) {
+            $machine = [System.EnvironmentVariableTarget]::Machine
+            $separator = [IO.Path]::PathSeparator
+            $Paths | ForEach-Object {
+                  if (!(Test-Path $_ -PathType Container)) {
+                        Write-Error """Path '$_' doesn't exist as a container."""
+                  }
+            }
+            $newPath = @()
+            $newPath += [Environment]::GetEnvironmentVariable('PATH', $machine) -split $separator
+            if ($newPath.Count -eq 0) { Write-Warning 'The PATH variable is currently empty.' }
+            $newPath += $Paths
+            $newPath = $newPath | Where-Object { $_ } | Select-Object -Unique
+            [Environment]::SetEnvironmentVariable('PATH', """$($newPath -join $separator)""", $machine)
+      }
+      $modulesPath = """$([Environment]::GetFolderPath('Windows'))\chenniXModules"""
+      Add-ToPath """$modulesPath""", """$modulesPath\Tools""", """$modulesPath\Scripts"""
+
+  - !run: {exe: 'DISM.exe', args: '/Online /Remove-Capability /CapabilityName:"App.StepsRecorder~~~~0.0.1.0" /NoRestart', weight: 30, onUpgrade: false}
+  - !run: {exe: 'DISM.exe', args: '/Online /Enable-Feature /FeatureName:"DirectPlay" /All /NoRestart', weight: 30}
+
+  - !writeStatus: {status: '清理组件存储'}
+  - !run: {exe: 'DISM.exe', args: '/Online /Cleanup-Image /StartComponentCleanup', weight: 50}

@@ -1,0 +1,8 @@
+---
+title: Profile Picture
+description: Sets default profile picture
+actions:
+  - !powerShell:
+    command: '.\PFP.ps1'
+    wait: true
+    exeDir: true
