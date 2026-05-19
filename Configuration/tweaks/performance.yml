@@ -1,0 +1,106 @@
+---
+title: Performance Tweaks
+description: Performance optimizations
+actions:
+  - !writeStatus: {status: '运行性能优化'}
+
+  # ============================================
+  # 多媒体与调度
+  # ============================================
+
+  # 系统响应度设为10（默认20）
+  # 说明: 值越小，非多媒体任务获得更多CPU时间；10为游戏优化推荐值
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.Multimedia::SystemResponsiveness
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', data: '10', type: REG_DWORD}
+
+  # 禁用自动文件夹类型发现
+  # 说明: 修复含大量媒体文件的文件夹加载缓慢问题
+  # 参考: https://www.windowslatest.com/2024/03/04/windows-11-can-open-big-folders-in-file-explorer-faster-if-you-turn-off-folder-discovery/
+  - !powerShell:
+    command: '& """$([Environment]::GetFolderPath(''Windows''))\chenniXDesktop\1.系统配置\界面\文件资源管理器\自动文件夹发现\Disable Automatic Folder Discovery (default).cmd""" /silent'
+    runas: currentUserElevated
+    wait: true
+    exeDir: true
+
+  # ============================================
+  # 后台与维护
+  # ============================================
+
+  # 禁用计划维护唤醒（阻止系统从睡眠中唤醒执行维护）
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Task Scheduler\Maintenance', value: 'WakeUp', data: '0', type: REG_DWORD}
+
+  # 全局禁用后台应用
+  # ⚠️ 部分UWP应用可能无法在后台接收通知/更新
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications', value: 'GlobalUserDisabled', data: '1', type: REG_DWORD}
+
+  # 禁用搜索的后台应用全局开关
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'BackgroundAppGlobalToggle', data: '0', type: REG_DWORD}
+
+  # ============================================
+  # 容错堆（Fault Tolerant Heap）
+  # ============================================
+
+  # 禁用容错堆（FTH）- 调用Sysprep特殊化先重置FTH状态
+  # 说明: FTH会在应用崩溃时自动应用缓解措施，但可能导致性能问题
+  # ⚠️ 仅影响AMD64架构
+  - !run: {exe: 'rundll32.exe', args: 'fthsvc.dll,FthSysprepSpecialize', weight: 5, cpuArch: 'X64'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\FTH', value: 'Enabled', data: '0', type: REG_DWORD, cpuArch: 'X64'}
+
+  # ============================================
+  # 诊断日志与电源效率
+  # ============================================
+
+  # 禁用睡眠研究/内核处理器电源/用户模式电源服务的诊断日志
+  - !run: {exe: 'wevtutil.exe', args: 'set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:false'}
+  - !run: {exe: 'wevtutil.exe', args: 'set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:false'}
+  - !run: {exe: 'wevtutil.exe', args: 'set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:false'}
+
+  # 禁用电源效率诊断计划任务
+  - !scheduledTask: {path: '\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem', operation: disable}
+
+  # 搜索索引尊重电源模式（低功耗时减少索引活动）
+  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows Search\Gather\Windows\SystemIndex', value: 'RespectPowerModes', data: '1', type: REG_DWORD}
+
+  # ============================================
+  # 文件系统
+  # ============================================
+
+  # 禁用最后访问时间戳更新（减少磁盘写入，提升性能）
+  # 说明: 等同于 fsutil behavior set disablelastaccess 1
+  - !run: {exe: 'fsutil.exe', args: 'behavior set disablelastaccess 1'}
+
+  # 禁用8.3短文件名（减少磁盘写入和目录枚举开销）
+  - !run: {exe: 'fsutil.exe', args: '8dot3name set 1'}
+
+  # ============================================
+  # 服务宿主分组（SvcHostSplitDisable）
+  # ============================================
+
+  # 批量设置所有服务的 SvcHostSplitDisable=1
+  # 说明: 将共享svchost进程的服务拆分为独立进程，提高可靠性和安全性
+  # ⚠️ 会增加内存占用（每个服务独立进程）；跳过所有Xbox相关服务以避免Xbox登录问题
+  - !powerShell:
+    command: |
+      $skip = @('XblAuthManager','XblGameSave','XblNetApiHost','XblNetApiProxy','XboxGip','XboxGipSvc','XboxIdnet','XboxLive','XboxNetApiSvc')
+      Get-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\*' | Where-Object { $_.GetValue('Start') -ne $null -and $skip -notcontains $_.PSChildName } | ForEach-Object {
+          New-ItemProperty -Path $_.PSPath -Name 'SvcHostSplitDisable' -Value 1 -PropertyType DWord -Force
+      }
+    wait: true
+    runas: currentUserElevated
+
+  # ============================================
+  # Win32优先级分离（Win32PrioritySeparation）
+  # ============================================
+
+  # 值26(0x1A): 前台短时量程+中优先级
+  # 说明: 给前台应用更多CPU时间，适合游戏/桌面场景
+  # 参考: https://learn.microsoft.com/en-us/windows/win32/procthread/scheduling-priorities
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', data: '26', type: REG_DWORD, option: 'win32-priority-26'}
+
+  # 值38(0x26): 前台长时量程+中优先级
+  # 说明: 前台应用获得更长时间片，适合工作站/渲染场景
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', data: '38', type: REG_DWORD, option: 'win32-priority-38'}
+
+  # 值2: 前台短时量程+高优先级
+  # 说明: Windows服务器默认值，前台应用最高优先级但时间片短
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', data: '2', type: REG_DWORD, option: 'win32-priority-2'}

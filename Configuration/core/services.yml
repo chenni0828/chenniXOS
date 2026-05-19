@@ -1,0 +1,53 @@
+---
+title: Services and Drivers
+description: Configures services and drivers to reduce background system resource utilization
+onUpgrade: false
+actions:
+  - !powerShell:
+    command: |
+      .\BACKUP.ps1 -FilePath """$([Environment]::GetFolderPath('Windows'))\chenniXModules\Other\winServices.reg"""
+    wait: true
+    exeDir: true
+
+  - !writeStatus: {status: '禁用文件共享'}
+  - !powerShell:
+    command: '.\chenniXModules\Scripts\ScriptWrappers\DisableFileSharing.ps1 -Silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  - !writeStatus: {status: '配置搜索索引'}
+  - !cmd:
+    command: '"chenniXDesktop\1.系统配置\配置\搜索索引\Minimal Search Indexing (default).cmd" /silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  - !writeStatus: {status: '配置服务'}
+  - !service: {name: 'OneSyncSvc', operation: change, startup: 4, option: 'disable-setting-sync'}
+  - !service: {name: 'TrkWks', operation: change, startup: 4}
+  - !service: {name: 'UCPD', operation: change, startup: 4}
+  - !powerShell:
+    command: |
+      $key = 'HKLM\SYSTEM\CurrentControlSet\Control\Class\{71a27cdd-812a-11d0-bec7-08002be2092f}'
+      $val = (Get-ItemProperty -Path "Registry::$key" -Name 'LowerFilters' -ErrorAction SilentlyContinue).LowerFilters
+      if ($val) {
+        $val = $val | Where-Object { $_ -ne 'rdyboost' }
+        Set-ItemProperty -Path "Registry::$key" -Name 'LowerFilters' -Value $val -Type MultiString
+      }
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    option: 'disable-sysmain'
+  - !service: {name: 'rdyboost', operation: change, startup: 4, option: 'disable-sysmain'}
+  - !registryKey: {path: 'HKCR\Drive\shellex\PropertySheetHandlers\{55B3A0BD-4D28-42fe-8CFB-FA3EDFF969B8}', operation: delete, option: 'disable-sysmain'}
+  - !service: {name: 'SysMain', operation: change, startup: 4, option: 'disable-sysmain'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\chenniXOS\服务\SuperFetch', value: 'state', data: '0', type: REG_DWORD, option: 'disable-sysmain'}
+
+  - !writeStatus: {status: '禁用位置服务'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location', value: 'Value', data: '0', type: REG_SZ}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location', value: 'Value', data: '0', type: REG_SZ}
+
+  - !writeStatus: {status: '配置驱动'}
+  - !service: {name: 'GpuEnergyDrv', operation: change, startup: 4}
+  - !service: {name: 'NetBT', operation: change, startup: 4}

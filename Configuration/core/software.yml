@@ -1,0 +1,21 @@
+---
+title: Software Installation
+description: Installs base utilities and optional software
+actions:
+  - !writeStatus: {status: '安装基础工具（联网）', option: 'software-online'}
+  - !powerShell:
+    command: '.\SOFTWARE.ps1'
+    exeDir: true
+    wait: true
+    weight: 150
+    runas: currentUserElevated
+    option: 'software-online'
+
+  - !writeStatus: {status: '安装基础工具（本地）', option: 'software-local'}
+  - !powerShell:
+    command: '.\SOFTWARE.ps1 -Local'
+    exeDir: true
+    wait: true
+    weight: 150
+    runas: currentUserElevated
+    option: 'software-local'

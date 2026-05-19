@@ -1,0 +1,8 @@
+---
+title: Client CBS
+description: Modifies Client.CBS component
+actions:
+  - !powerShell:
+    command: '.\CLIENTCBS.ps1'
+    wait: true
+    exeDir: true

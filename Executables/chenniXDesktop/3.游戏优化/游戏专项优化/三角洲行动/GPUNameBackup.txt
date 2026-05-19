@@ -1,0 +1,6 @@
+{
+    "InstancePath":  "PCI\\VEN_1002\u0026DEV_73DF\u0026SUBSYS_67301EAE\u0026REV_E5\\6\u002638E5097D\u00260\u002600000009",
+    "ValueName":  "DeviceDesc",
+    "Original":  "AMD Radeon RX 560",
+    "GPUName":  "AMD Radeon RX 560"
+}

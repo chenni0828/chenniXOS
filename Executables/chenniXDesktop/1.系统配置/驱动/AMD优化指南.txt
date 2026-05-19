@@ -1,0 +1,23 @@
+# AMD GPU 驱动优化指南
+
+## 使用 RadeonSoftwareSlimmer
+
+1. 下载 RadeonSoftwareSlimmer，文件名为 `.RadeonSoftwareSlimmer_XXX_net48.zip`
+2. 打开应用，切换到 **Pre-Install** 选项卡
+3. 点击 **Browse** 选择你的驱动安装文件，然后双击 **Next** 确认
+4. 解压完成后，在 **Packages** 选项卡中取消勾选所有项，仅保留：
+   - AMD Display Driver
+   - AMD Settings（Radeon Software 必需）
+
+   以下组件可能为显示器音频所需：
+   - AMD Audio CoProcessor Bus Driver
+   - AMD Audio filter driver
+   - AMD HDMI Audio driver
+   - AMD High-Definition Audio Controller
+   - AMD Streaming Audio Filter Driver
+
+5. 在 **Scheduled Tasks** 选项卡中取消勾选所有项
+6. 在 **Display Driver Components** 选项卡中取消勾选所有项，仅保留：
+   - High Definition Audio Bus
+
+7. 点击 **Modify Installer**，然后点击 **Run Installer**，按正常流程完成驱动安装。

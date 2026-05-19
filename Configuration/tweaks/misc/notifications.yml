@@ -1,0 +1,9 @@
+---
+title: Notifications
+description: Re-enables notifications after deployment
+actions:
+  - !cmd:
+    command: 'ENABLENOTIFS.cmd'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated

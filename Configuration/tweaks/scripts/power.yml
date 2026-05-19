@@ -1,0 +1,18 @@
+---
+title: Power Configuration
+description: Configures power settings
+actions:
+  - !cmd:
+    command: '"chenniXDesktop\1.系统配置\配置\省电\Disable Power-saving.cmd" /silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    option: 'disable-power-saving'
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power', value: 'HiberbootEnabled', data: '0', type: REG_DWORD, option: 'disable-power-saving'}
+  - !cmd:
+    command: '"chenniXDesktop\1.系统配置\配置\休眠\Disable Hibernation (default).cmd" /silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    option: 'disable-hibernation'
+  - !run: {exe: 'powercfg.exe', args: '/setactive "381b4222-f694-4f3a-b7cc-48f93f8f13e6"'}

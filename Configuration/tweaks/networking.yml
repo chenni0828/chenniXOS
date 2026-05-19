@@ -1,0 +1,14 @@
+---
+title: Networking Tweaks
+description: Network optimization and security
+actions:
+  - !writeStatus: {status: '运行网络优化'}
+  - !powerShell:
+    command: '& """$([Environment]::GetFolderPath(''Windows''))\chenniXDesktop\2.安全与修复\故障排除\网络\Reset Network to Atlas Default.cmd""" /silent'
+    runas: currentUserElevated
+    wait: true
+    exeDir: true
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters', value: 'RestrictNullSessAccess', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Lsa', value: 'RestrictAnonymous', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters', value: 'DisableBandwidthThrottling', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient', value: 'EnableMulticast', data: '0', type: REG_DWORD}

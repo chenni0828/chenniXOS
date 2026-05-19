@@ -1,0 +1,13 @@
+---
+title: Scripts
+description: Advanced script operations
+actions:
+  - !writeStatus: {status: '运行高级脚本'}
+  - !task: {path: 'tweaks\scripts\backup.yml'}
+  - !task: {path: 'tweaks\scripts\clientcbs.yml'}
+  - !task: {path: 'tweaks\scripts\core-isolation.yml'}
+  - !task: {path: 'tweaks\scripts\devices.yml'}
+  - !task: {path: 'tweaks\scripts\file-associations.yml'}
+  - !task: {path: 'tweaks\scripts\mitigations.yml'}
+  - !task: {path: 'tweaks\scripts\pfp.yml'}
+  - !task: {path: 'tweaks\scripts\power.yml'}

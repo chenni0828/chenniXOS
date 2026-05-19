@@ -1,0 +1,16 @@
+---
+title: Defaults
+description: Apply default chenniX settings
+actions:
+  - !writeStatus: {status: '应用 chenniX 默认设置'}
+  - !cmd:
+    command: 'reg import .\DEFAULT.reg'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+  - !powerShell:
+    command: '.\DEFAULT.ps1'
+    exeDir: true
+    onUpgrade: true
+    wait: true
+    runas: currentUserElevated

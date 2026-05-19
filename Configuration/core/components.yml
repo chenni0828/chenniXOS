@@ -1,0 +1,52 @@
+---
+title: Components
+description: Removes certain Windows components
+onUpgrade: false
+actions:
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', value: 'SecurityHealth', operation: delete}
+
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy'
+    value: 'VerifiedAndReputablePolicyState'
+    data: '0'
+    type: REG_DWORD
+
+  - !writeStatus: {status: '移除 Microsoft Edge', option: 'uninstall-edge'}
+  - !powerShell:
+    command: '& """.\chenniXModules\Scripts\ScriptWrappers\RemoveEdge.ps1""" -UninstallEdge -RemoveEdgeData -KeepAppX -NonInteractive'
+    runas: currentUserElevated
+    option: 'uninstall-edge'
+    wait: true
+    exeDir: true
+  - !appx: {name: 'Microsoft.MicrosoftEdge_8wekyb3d8bbwe', type: family, option: 'uninstall-edge'}
+  - !registryKey: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe', operation: add, option: 'uninstall-edge'}
+  - !registryKey: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.MicrosoftEdge_8wekyb3d8bbwe', operation: add, option: 'uninstall-edge'}
+
+  - !writeStatus: {status: '移除 OneDrive', option: 'uninstall-onedrive'}
+  - !run: {exeDir: true, exe: 'ONED.cmd', option: 'uninstall-onedrive'}
+
+  - !writeStatus: {status: '移除组件'}
+  - !registryKey:
+    path: 'HKLM\OfflineSys\ControlSet001\Services\WdBoot'
+    operation: delete
+    option: 'defender-disable'
+    iso: only
+  - !powerShell:
+    command: >-
+      & """$([Environment]::GetFolderPath('Windows'))\chenniXModules\Scripts\packageInstall.ps1"""
+      -InstallPackages @('*Z-chenniX-NoDefender-Package*',
+        '*Z-chenniX-NoTelemetry-Package*'
+      )
+      -NoInteraction
+    option: 'defender-disable'
+    wait: true
+    exeDir: true
+  - !powerShell:
+    command: >-
+      & """$([Environment]::GetFolderPath('Windows'))\chenniXModules\Scripts\packageInstall.ps1"""
+      -InstallPackages @('*Z-chenniX-NoTelemetry-Package*')
+      -UninstallPackages @('*Z-chenniX-NoDefender-Package*')
+      -NoInteraction
+    option: 'defender-enable'
+    wait: true
+    exeDir: true
