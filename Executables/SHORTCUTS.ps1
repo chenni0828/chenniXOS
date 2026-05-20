@@ -24,4 +24,4 @@ Copy-Item $defaultShortcut -Destination "$([Environment]::GetFolderPath('CommonS
 
 Write-Title "Creating services restore shortcut..."
 $desktop = "$windir\chenniXDesktop"
-New-Shortcut -Source "$desktop\2.安全与修复\故障排除\Set services to defaults.cmd" -Destination "$desktop\1.系统配置\高级配置\服务\Set services to defaults.lnk"
+New-Shortcut -Source "$desktop\3.安全与修复\故障排除\Set services to defaults.cmd" -Destination "$desktop\2.系统配置\高级配置\服务\Set services to defaults.lnk"

@@ -4,7 +4,7 @@ param (
     [switch]$Silent
 )
 
-$fileSharingConfigPath = "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\1.系统配置\配置\文件共享"
+$fileSharingConfigPath = "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.系统配置\配置\文件共享"
 
 # Disable network items
 Disable-NetAdapterBinding -Name "*" -ComponentID ms_msclient, ms_server, ms_lltdio, ms_rspndr | Out-Null

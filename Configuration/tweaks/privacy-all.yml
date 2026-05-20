@@ -91,7 +91,7 @@ actions:
 
   # Recall/Snap
   - !powerShell:
-    command: '& """$([Environment]::GetFolderPath(''Windows''))\chenniXDesktop\1.系统配置\配置\AI功能\Recall\Disable Recall Support (default).cmd""" /silent'
+    command: '& """$([Environment]::GetFolderPath(''Windows''))\chenniXDesktop\2.系统配置\配置\AI功能\Recall\Disable Recall Support (default).cmd""" /silent'
     runas: currentUserElevated
     wait: true
     exeDir: true

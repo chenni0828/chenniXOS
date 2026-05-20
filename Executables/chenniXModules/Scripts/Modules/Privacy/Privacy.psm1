@@ -54,7 +54,7 @@ function Disable-OnlineSpeechRecognition {
 
 # Disables Recall Snapshots (24H2+)
 function Disable-RecallSnapshots {
-    Start-Process -FilePath "cmd" -ArgumentList "/c `"`"$windir\chenniXDesktop\1.系统配置\配置\AI功能\Recall\Disable Recall Support (default).cmd`" /silent`"" -NoNewWindow -Wait
+    Start-Process -FilePath "cmd" -ArgumentList "/c `"`"$windir\chenniXDesktop\2.系统配置\配置\AI功能\Recall\Disable Recall Support (default).cmd`" /silent`"" -NoNewWindow -Wait
 }
 
 # Prevents using Diagnostic Data for Tailored Experiences

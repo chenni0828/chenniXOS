@@ -41,7 +41,8 @@
 | 移除 OneDrive | 可选 | 同上 |
 | 移除截图工具 | 可选 | 同上 |
 | 禁用休眠 | 可选 | 释放休眠文件占用的磁盘空间 |
-| 关闭节能 | 可选 | 追求性能可关闭 |
+| 电源限制 | 可选 | 禁用 Power Throttling，追求性能可关闭 |
+| 超级低延迟 | 可选 | 深度低延迟优化，详见下方说明 |
 | 软件安装来源 | 本地 | 本地使用内置安装包，在线从 GitHub 拉取最新版 |
 | 鼠标加速 | 禁用 | 禁用可获得 1:1 原始输入，FPS 玩家首选 |
 
@@ -111,6 +112,25 @@
 - 三角洲行动优化
 - 可选：禁用鼠标加速（1:1 原始输入）
 
+### 超级低延迟（可选）
+
+勾选后自动执行全部深度低延迟优化，牺牲部分安全性/节能换取最低延迟，仅推荐竞技游戏玩家。建议同时选择「禁用缓解措施」。
+
+| 优化项 | 操作 | 说明 |
+|--------|------|------|
+| MPO 禁用 | `OverlayTestMode=5` | 禁用多平面叠加，解决 NVIDIA/AMD 微卡顿、闪烁、黑屏。集显用户需谨慎 |
+| GPU TDR 延长 | `TdrDelay=12` | 超时检测延迟 12 秒，防止高负载游戏 TDR 崩溃 |
+| MSI 模式 | 为 PCI 设备启用 | Message Signaled Interrupts，中断延迟更低 |
+| HPET 移除 | bcdedit + 禁用设备 | 移除已知延迟源，回退到 TSC；禁用 HPET 设备（ACPI\\PNP0103） |
+| Nagle 禁用 | `TcpAckFrequency=1, TCPNoDelay=1` | 禁用 TCP Nagle 算法，网络响应更快 |
+| 禁用页面合并 | `DisablePageCombining=1` | 减少内存合并操作延迟 |
+| 禁用定时器聚合 | `GlobalTimerCoalescing=0, CoalescingTimerInterval=0` | 消除定时器聚合延迟 |
+| 多媒体调度优化 | `NoLazyMode=1` | 禁用懒模式，调度更积极 |
+| 网络节流最大化 | `NetworkThrottlingIndex=0xFFFFFFFF` | 前台多媒体进程网络不限速 |
+| 定时器分辨率 | `TimerResolution=10` | 注册表层静态默认值，与 SetTimerResolution.exe 互补 |
+| VBS/HVCI 禁用 | 关闭虚拟化安全 | 与核心隔离选项幂等共存 |
+| DMA 重映射禁用 | 关闭 SecureBoot 场景 | 减少 IOMMU 开销；⚠️ Thunderbolt/USB4 设备可直读内存 |
+
 ## 安装后可切换
 
 桌面 chenniX 文件夹里的所有设置都可以随时切换，不需要重装：
@@ -118,13 +138,14 @@
 - Defender 开关
 - 缓解措施开关
 - 自动更新开关
-- 休眠 / 节能开关
+- 休眠 / 电源限制开关
 - 核心隔离开关
 - Edge 安装 / 卸载
 - 鼠标加速开关
 - 终端右键菜单
 - 文件共享开关
 - 通知开关
+- 超级低延迟开关（MPO / TDR / MSI / HPET / Nagle 等）
 - ……更多
 
 ## 致谢

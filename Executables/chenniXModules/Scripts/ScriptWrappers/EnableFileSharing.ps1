@@ -1,6 +1,6 @@
 ﻿#Requires -RunAsAdministrator
 
-$networkDiscoveryConfigPath = "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\1.系统配置\高级配置\服务\网络发现"
+$networkDiscoveryConfigPath = "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.系统配置\高级配置\服务\网络发现"
 
 # Enable network items
 Enable-NetAdapterBinding -Name "*" -ComponentID ms_msclient, ms_server, ms_lltdio, ms_rspndr | Out-Null
@@ -38,12 +38,12 @@ if ($LASTEXITCODE -eq 1) {
 
 choice /c:yn /n /m "Would you like to add the 网络导航窗格 to the Explorer sidebar? [Y/N] "
 if ($LASTEXITCODE -eq 1) {
-    Start-Process -FilePath "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\1.系统配置\配置\文件共享\网络导航窗格\User Network Navigation Pane choice.cmd" -WindowStyle Hidden
+    Start-Process -FilePath "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.系统配置\配置\文件共享\网络导航窗格\User Network Navigation Pane choice.cmd" -WindowStyle Hidden
 }
 
 choice /c:yn /n /m "Would you like to restore the 'Give access to' context menu in Explorer? [Y/N] "
 if ($LASTEXITCODE -eq 1) {
-    Start-Process -FilePath "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\1.系统配置\配置\文件共享\授予访问菜单\Enable Give Access To Menu.cmd" -WindowStyle Hidden
+    Start-Process -FilePath "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.系统配置\配置\文件共享\授予访问菜单\Enable Give Access To Menu.cmd" -WindowStyle Hidden
 }
 
 Write-Host "`nCompleted! " -ForegroundColor Green -NoNewLine

@@ -66,12 +66,12 @@ function Disable-EaseOfAccessSounds {
 
 # Function to remove 'Extract' from context menu
 function Remove-ExtractFromContextMenu {
-    & "$windir\chenniXDesktop\1.系统配置\界面\右键菜单\解压\Remove Extract (default).cmd" /justcontext
+    & "$windir\chenniXDesktop\2.系统配置\界面\右键菜单\解压\Remove Extract (default).cmd" /justcontext
 }
 
 # Function to remove printing from context menus
 function Remove-PrintingFromContextMenus {
-   & "$windir\chenniXDesktop\1.系统配置\高级配置\服务\打印\Disable Printing.cmd" /justcontext
+   & "$windir\chenniXDesktop\2.系统配置\高级配置\服务\打印\Disable Printing.cmd" /justcontext
 }
 # Function to show more details by default on file transfers
 function Show-MoreDetailsOnTransfers {
@@ -79,7 +79,7 @@ function Show-MoreDetailsOnTransfers {
 }
 # Function to debloat Send-To context menu
 function Set-SendToContextMenu {
-    & "$windir\chenniXDesktop\1.系统配置\界面\右键菜单\发送到\Debloat Send To Context Menu.cmd" -Disable @('Documents', 'Mail Recipient', 'Fax recipient', 'Bluetooth')
+    & "$windir\chenniXDesktop\2.系统配置\界面\右键菜单\发送到\Debloat Send To Context Menu.cmd" -Disable @('Documents', 'Mail Recipient', 'Fax recipient', 'Bluetooth')
 }
 
 # Function to disable use of check boxes to select items
@@ -89,7 +89,7 @@ function Disable-UseCheckBoxesToSelectItems {
 
 # Function to hide Gallery in File Explorer
 function Hide-GalleryInFileExplorer {
-    & "$windir\chenniXDesktop\1.系统配置\界面\文件资源管理器\图库\Disable Gallery (default).cmd" /justcontext
+    & "$windir\chenniXDesktop\2.系统配置\界面\文件资源管理器\图库\Disable Gallery (default).cmd" /justcontext
 }
 
 # Function to disable searching for invalid shortcuts
@@ -100,7 +100,7 @@ function Disable-SearchingForInvalidShortcuts {
 
 # Function to disable network navigation pane in Explorer
 function Disable-NetworkNavigationPaneInExplorer {
-    & "$windir\chenniXDesktop\1.系统配置\配置\文件共享\网络导航窗格\Disable Network Navigation Pane (default).cmd" /justcontext
+    & "$windir\chenniXDesktop\2.系统配置\配置\文件共享\网络导航窗格\Disable Network Navigation Pane (default).cmd" /justcontext
 }
 
 # Function to not show Office files in Quick Access
@@ -198,7 +198,7 @@ function Disable-StartMenuRecommendations {
 
 # Function to restore old context menu in Windows 11
 function Restore-OldContextMenu {
-    & "$windir\chenniXDesktop\1.系统配置\界面\右键菜单\Windows 11\Old Context Menu (default).cmd" /justcontext
+    & "$windir\chenniXDesktop\2.系统配置\界面\右键菜单\Windows 11\Old Context Menu (default).cmd" /justcontext
 }
 
 # Function to set unpinned control center items
@@ -291,7 +291,7 @@ function Set-TaskbarAlignLeft {
 function Add-NetworkSharingShortcut {
     & "$windir\chenniXModules\initPowerShell.ps1"
     New-Shortcut -Source 'control.exe' `
-        -Destination "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\1.系统配置\配置\文件共享\Sharing Settings.lnk" `
+        -Destination "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.系统配置\配置\文件共享\Sharing Settings.lnk" `
         -Arguments '/name Microsoft.NetworkAndSharingCenter /page Advanced'
 }
 
@@ -366,7 +366,7 @@ function Set-WindowsInkWorkspace {
 
 # Function to disable automatic Store app archiving
 function Disable-AutomaticStoreAppArchiving {
-    & "$windir\chenniXDesktop\1.系统配置\配置\应用存档\Disable Store App Archiving (default).cmd" /justcontext
+    & "$windir\chenniXDesktop\2.系统配置\配置\应用存档\Disable Store App Archiving (default).cmd" /justcontext
 }
 
 # Function to disable dynamic lighting

@@ -42,6 +42,10 @@ actions:
   - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\ReconcileFeatures', operation: disable}
   - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReporting', operation: disable}
   - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReceiver', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Active Directory Rights Management Services Client\AD RMS Rights Policy Template Management (Automated)', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Active Directory Rights Management Services Client\AD RMS Rights Policy Template Management (Manual)', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\User Profile Service\HiveUploadTask', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Work Folders\Work Folders Logon Synchronization', operation: disable}
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Family options', value: 'UILockdown', data: '1', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Device performance and health', value: 'UILockdown', data: '1', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Account protection', value: 'UILockdown', data: '1', type: REG_DWORD}

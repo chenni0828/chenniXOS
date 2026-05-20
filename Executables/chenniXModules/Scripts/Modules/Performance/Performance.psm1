@@ -6,7 +6,7 @@ function Optimize-NTFS {
 
 # Disables Automatic Folder Discovery to improve File Explorer performance
 function Disable-AutoFolderDiscovery {
-    & "$windir\chenniXDesktop\1.系统配置\界面\文件资源管理器\自动文件夹发现\Disable Automatic Folder Discovery (default).cmd" /justcontext
+    & "$windir\chenniXDesktop\2.系统配置\界面\文件资源管理器\自动文件夹发现\Disable Automatic Folder Discovery (default).cmd" /justcontext
 }
 
 # Disables background apps to reduce resource usage

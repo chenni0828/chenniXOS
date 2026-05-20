@@ -1,5 +1,5 @@
 ---
-title: chenniX0S Root Playbook File
+title: chenniXOS Root Playbook File
 description: Runs all of the chenniX Playbook files
 actions:
   # Load Default User Hive so HKCU changes apply to new users

@@ -18,7 +18,7 @@ actions:
 
   - !writeStatus: {status: '配置搜索索引'}
   - !cmd:
-    command: '"chenniXDesktop\1.系统配置\配置\搜索索引\Minimal Search Indexing (default).cmd" /silent'
+    command: '"chenniXDesktop\2.系统配置\配置\搜索索引\Minimal Search Indexing (default).cmd" /silent'
     exeDir: true
     wait: true
     runas: currentUserElevated

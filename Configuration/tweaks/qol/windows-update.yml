@@ -19,7 +19,7 @@ actions:
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\UX\Settings', value: 'HideMCTLink', data: '1', type: REG_DWORD}
   # 禁用自动更新脚本 - 仅在禁用自动更新时执行
   - !cmd:
-    command: '"chenniXDesktop\1.系统配置\配置\自动更新\Disable Automatic Updates (default).cmd" /silent'
+    command: '"chenniXDesktop\2.系统配置\配置\自动更新\Disable Automatic Updates (default).cmd" /silent'
     exeDir: true
     wait: true
     runas: currentUserElevated

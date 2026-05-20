@@ -5,12 +5,12 @@ actions:
   - !powerShell:
     command: |
       if ([Environment]::Is64BitOperatingSystem -and !$env:PROCESSOR_ARCHITECTURE.Contains('ARM')) {
-          Remove-Item -Path "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.安全与修复\安全\缓解措施\容错堆" -Force -Recurse -ErrorAction SilentlyContinue
+          Remove-Item -Path "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\3.安全与修复\安全\缓解措施\容错堆" -Force -Recurse -ErrorAction SilentlyContinue
       }
     wait: true
     runas: currentUserElevated
   # MeasureSleep以管理员运行
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers', value: 'C:\Windows\chenniXDesktop\1.系统配置\配置\定时器分辨率\! MeasureSleep.exe', data: '~ RUNASADMIN', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers', value: 'C:\Windows\chenniXDesktop\2.系统配置\配置\定时器分辨率\! MeasureSleep.exe', data: '~ RUNASADMIN', type: REG_SZ}
   # 添加音乐和视频到快速访问 Home
   - !powerShell:
     command: |
