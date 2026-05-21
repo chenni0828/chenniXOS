@@ -1,6 +1,7 @@
 ---
 title: Notifications
 description: Re-enables notifications after deployment
+onUpgrade: false
 actions:
   - !cmd:
     command: 'ENABLENOTIFS.cmd'

@@ -1,6 +1,6 @@
 ﻿@echo off
 set "title=call :title"
-set "服务Path=%windir%\chenniXDesktop\6.高级配置\服务"
+set "服务Path=%windir%\chenniXDesktop\2.系统配置\高级配置\服务"
 if not exist "%服务Path%" (
 	echo 服务 in Atlas folder not found, can't continue.
 	if "%*"=="" pause
@@ -22,7 +22,7 @@ if %errorlevel% neq 1 exit /b
 
 :main
 %title% "Enabling 服务 in the Atlas folder... This might take a while."
-for /f "usebackq tokens=*" %%a in (`dir /b /s "%windir%\chenniXDesktop\6.高级配置\服务" ^| find "(default)"`) do (
+for /f "usebackq tokens=*" %%a in (`dir /b /s "%windir%\chenniXDesktop\2.系统配置\高级配置\服务" ^| find "(default)"`) do (
 	call :run "%%a"
 	start /min /high /wait cmd /c "%%a" /silent
 )

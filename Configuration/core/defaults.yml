@@ -1,6 +1,7 @@
 ---
 title: Defaults
 description: Apply default chenniX settings
+onUpgrade: true
 actions:
   - !writeStatus: {status: '应用 chenniX 默认设置'}
   - !cmd:

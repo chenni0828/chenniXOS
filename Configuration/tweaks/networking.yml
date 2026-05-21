@@ -1,6 +1,7 @@
 ---
 title: Networking Tweaks
 description: Network optimization and security
+onUpgrade: true
 actions:
   - !writeStatus: {status: '运行网络优化'}
   - !powerShell:
@@ -12,3 +13,13 @@ actions:
   - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Lsa', value: 'RestrictAnonymous', data: '1', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters', value: 'DisableBandwidthThrottling', data: '1', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient', value: 'EnableMulticast', data: '0', type: REG_DWORD}
+
+  # 禁用 LLMNR（链路本地多播名称解析）
+  # LLMNR 可被利用进行中间人攻击（NBTNS 欺骗），公认应禁用
+  # 参考: https://www.blackhillsinfosec.com/how-to-disable-llmnr-why-you-want-to
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient', value: 'EnableMulticastResolver', data: '0', type: REG_DWORD}
+
+  # 禁用 SMBv1 服务端
+  # SMBv1 有重大安全漏洞（WannaCry），Microsoft 强烈推荐禁用
+  # 参考: https://community.spiceworks.com/t/what-is-smbv1-and-why-you-should-disable-it/933441
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters', value: 'SMB1', data: '0', type: REG_DWORD}

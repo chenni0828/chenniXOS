@@ -1,6 +1,7 @@
 ---
 title: EFI Drive Letter
 description: Removes EFI partition drive letter
+onUpgrade: false
 actions:
   - !powerShell:
     command: |

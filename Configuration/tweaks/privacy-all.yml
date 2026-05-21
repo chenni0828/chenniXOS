@@ -1,6 +1,7 @@
 ---
 title: Privacy Optimization (All-in-One)
 description: One-click privacy optimization - disables all tracking, telemetry, data collection, and privacy-invasive services
+onUpgrade: true
 actions:
   - !writeStatus: {status: '应用隐私优化'}
 

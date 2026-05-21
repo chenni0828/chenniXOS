@@ -1,6 +1,7 @@
 ---
 title: QoL Tweaks Root
 description: Runs all QoL tweaks
+onUpgrade: true
 actions:
   - !task: {path: 'tweaks\qol\general.yml'}
   - !task: {path: 'tweaks\qol\appearance.yml'}

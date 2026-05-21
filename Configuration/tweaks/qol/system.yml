@@ -1,6 +1,7 @@
 ---
 title: System QoL
 description: System quality of life improvements
+onUpgrade: true
 actions:
 
   # ============================================

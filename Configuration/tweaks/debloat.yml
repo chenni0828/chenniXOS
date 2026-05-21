@@ -1,6 +1,7 @@
 ---
 title: Debloat Tweaks
 description: Debloating Windows
+onUpgrade: true
 actions:
   - !writeStatus: {status: '运行精简优化'}
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager', value: 'ContentDeliveryAllowed', data: '0', type: REG_DWORD}

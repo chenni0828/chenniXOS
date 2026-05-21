@@ -1,6 +1,7 @@
 ---
 title: Environment Setup
 description: Sets up the initial environment
+onUpgrade: true
 actions:
   - !writeStatus: {status: '设置环境'}
   - !powerShell:

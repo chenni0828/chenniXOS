@@ -1,7 +1,7 @@
 ---
 title: Components
 description: Removes certain Windows components
-onUpgrade: false
+onUpgrade: true
 actions:
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', value: 'SecurityHealth', operation: delete}
 
@@ -56,5 +56,5 @@ actions:
     wait: true
     runas: currentUserElevated
   - !cmd:
-    command: 'bcdedit /set {current} description "chenniXOS v0.2"'
+    command: 'bcdedit /set {current} description "chenniXOS v0.2.1"'
     wait: true

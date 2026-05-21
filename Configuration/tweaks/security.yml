@@ -1,6 +1,7 @@
 ---
 title: Security Tweaks
 description: Security enhancements
+onUpgrade: true
 actions:
   - !writeStatus: {status: '运行安全增强'}
 

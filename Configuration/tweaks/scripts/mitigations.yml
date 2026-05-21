@@ -1,6 +1,7 @@
 ---
 title: 缓解措施
 description: Configures security mitigations
+onUpgrade: true
 actions:
   - !cmd:
     command: '"chenniXDesktop\3.安全与修复\安全\缓解措施\Disable All Mitigations.cmd" /silent'

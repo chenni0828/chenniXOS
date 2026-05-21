@@ -1,6 +1,7 @@
 ---
 title: Performance Tweaks
 description: Performance optimizations
+onUpgrade: true
 actions:
   - !writeStatus: {status: '运行性能优化'}
 
@@ -17,7 +18,7 @@ actions:
   # 说明: 修复含大量媒体文件的文件夹加载缓慢问题
   # 参考: https://www.windowslatest.com/2024/03/04/windows-11-can-open-big-folders-in-file-explorer-faster-if-you-turn-off-folder-discovery/
   - !powerShell:
-    command: '& """$([Environment]::GetFolderPath(''Windows''))\chenniXDesktop\1.系统配置\界面\文件资源管理器\自动文件夹发现\Disable Automatic Folder Discovery (default).cmd""" /silent'
+    command: '& """$([Environment]::GetFolderPath(''Windows''))\chenniXDesktop\2.系统配置\界面\文件资源管理器\自动文件夹发现\Disable Automatic Folder Discovery (default).cmd""" /silent'
     runas: currentUserElevated
     wait: true
     exeDir: true
@@ -138,6 +139,12 @@ actions:
   # 勾选后自动执行全部低延迟优化项
   # ⚠️ 牺牲安全性/节能换取最低延迟
   # ============================================
+
+  # --- 0. MMCSS 后台 CPU 份额降为 0 ---
+  # SystemResponsiveness 默认 20%（为后台任务预留 CPU 时间），设为 0 可最大化前台游戏 CPU 占用
+  # ⚠️ 可能影响后台音频/视频流畅度
+  # 参考: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.Multimedia::SystemResponsiveness
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
 
   # --- 1. MPO 禁用 ---
   # 禁用 Multi-Plane Overlay，解决 NVIDIA/AMD 显卡微卡顿、闪烁、黑屏

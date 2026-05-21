@@ -1,6 +1,7 @@
 ---
 title: Shell Tweaks
 description: Windows shell improvements
+onUpgrade: true
 actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'MultiTaskingAltTabFilter', data: '3', type: REG_DWORD}
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AutoplayHandlers', value: 'DisableAutoplay', data: '1', type: REG_DWORD}
@@ -26,3 +27,20 @@ actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'Start_MaximumFrequentApps', data: '0', type: REG_DWORD}
   # 自动运行配置
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'DisableStartupDelay', data: '1', type: REG_DWORD}
+
+  # 禁用 Snap 布局建议（超级低延迟）
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'EnableSnapAssistFlyout', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'EnableSnapBar', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+
+  # 禁用边缘滑动（台式机默认禁用，笔记本不禁用；超级低延迟下都禁用）
+  - !powerShell:
+    command: |
+      $chassis = (Get-CimInstance -ClassName Win32_SystemEnclosure -EA 0).ChassisTypes
+      $isDesktop = $false
+      if ($chassis) { foreach ($t in $chassis) { if (($t -ge 3 -and $t -le 7) -or $t -eq 13) { $isDesktop = $true; break } } }
+      if ($isDesktop) {
+        New-ItemProperty -Path 'HKLM\SOFTWARE\Policies\Microsoft\Windows\EdgeUI' -Name 'AllowEdgeSwipe' -Value 0 -PropertyType DWord -Force -EA 0 | Out-Null
+      }
+    wait: true
+    runas: currentUserElevated
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\EdgeUI', value: 'AllowEdgeSwipe', data: '0', type: REG_DWORD, option: 'ultralow-latency'}

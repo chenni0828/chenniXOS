@@ -1,6 +1,7 @@
 ---
 title: File Associations
 description: Sets file associations based on browser option
+onUpgrade: true
 actions:
   - !cmd:
     command: 'FILEASSOC.cmd'

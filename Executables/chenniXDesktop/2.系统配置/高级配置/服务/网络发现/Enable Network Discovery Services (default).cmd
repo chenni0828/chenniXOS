@@ -24,7 +24,7 @@ if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd
 
 :main
 :: Enable Lanman工作站(SMB) as a dependency
-call "%windir%\chenniXDesktop\6.高级配置\服务\Lanman工作站(SMB)\Enable Lanman Workstation (default).cmd" /silent
+call "%windir%\chenniXDesktop\2.系统配置\高级配置\服务\Lanman工作站(SMB)\Enable Lanman Workstation (default).cmd" /silent
 :: Enable EventLog as a dependency
 call setSvc.cmd eventlog 2
 

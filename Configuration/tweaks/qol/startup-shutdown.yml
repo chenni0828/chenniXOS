@@ -1,6 +1,7 @@
 ---
 title: Startup/Shutdown Tweaks
 description: Improve startup and shutdown speed
+onUpgrade: true
 actions:
 
   # ============================================
@@ -30,3 +31,7 @@ actions:
 
   # 禁用等待空闲状态（跳过启动时的空闲等待）
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Serialize', value: 'WaitforIdleState', data: '0', type: REG_DWORD}
+
+  # 启用详细状态消息（启动/关机/登录/注销时显示正在执行的操作）
+  # 参考: https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/enable-verbose-startup-shutdown-logon-logoff-status-messages
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'VerboseStatus', data: '1', type: REG_DWORD}

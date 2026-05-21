@@ -1,6 +1,7 @@
 ---
 title: NGEN
 description: .NET NGEN optimization for PowerShell
+onUpgrade: true
 actions:
   - !powerShell:
     command: '.\NGEN.ps1'

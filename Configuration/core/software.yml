@@ -1,6 +1,7 @@
 ---
 title: Software Installation
 description: Installs base utilities and optional software
+onUpgrade: false
 actions:
   - !writeStatus: {status: '安装基础工具（联网）', option: 'software-online'}
   - !powerShell:

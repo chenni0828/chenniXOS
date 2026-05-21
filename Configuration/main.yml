@@ -1,6 +1,7 @@
 ---
 title: chenniXOS Root Playbook File
 description: Runs all of the chenniX Playbook files
+onUpgrade: true
 actions:
   # Load Default User Hive so HKCU changes apply to new users
   - !powerShell:
