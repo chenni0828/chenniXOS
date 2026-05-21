@@ -50,3 +50,11 @@ actions:
     option: 'defender-enable'
     wait: true
     exeDir: true
+
+  - !cmd:
+    command: 'label C: chenniX'
+    wait: true
+    runas: currentUserElevated
+  - !cmd:
+    command: 'bcdedit /set {current} description "chenniXOS v0.2"'
+    wait: true

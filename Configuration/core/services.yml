@@ -51,3 +51,29 @@ actions:
   - !writeStatus: {status: '配置驱动'}
   - !service: {name: 'GpuEnergyDrv', operation: change, startup: 4}
   - !service: {name: 'NetBT', operation: change, startup: 4}
+  - !service: {name: 'RetailDemo', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'MapsBroker', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'CSC', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'WdiServiceHost', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'WdiSystemHost', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'troubleshootingsvc', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'wercplsupport', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'dps', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'GraphicsPerfSvc', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'Ndu', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'dusmsvc', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'DSSvc', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'wisvc', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'dam', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'MSDTC', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'midisrv', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'TermService', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'UmRdpService', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'SessionEnv', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'bttflt', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'gencounter', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'hyperkbd', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'hypervideo', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'vmgid', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'vpci', operation: change, startup: 4, option: 'ultralow-latency'}
+  - !service: {name: 'vid', operation: change, startup: 4, option: 'ultralow-latency'}

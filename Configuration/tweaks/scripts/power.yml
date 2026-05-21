@@ -25,14 +25,6 @@ actions:
     exeDir: true
     runas: currentUserElevated
 
-  - !run: {exe: 'powercfg.exe', args: '/setacvalueindex "381b4222-f694-4f3a-b7cc-48f93f8f13e6" 0012ee47-9041-4b5d-9b77-535fba8b1442 d3d55efd-c1ff-424e-9dc3-441be7833010 0'}
-  - !run: {exe: 'powercfg.exe', args: '/setacvalueindex "381b4222-f694-4f3a-b7cc-48f93f8f13e6" 0012ee47-9041-4b5d-9b77-535fba8b1442 d639518a-e56d-4345-8af2-b9f32fb26109 0'}
-  - !run: {exe: 'powercfg.exe', args: '/setacvalueindex "381b4222-f694-4f3a-b7cc-48f93f8f13e6" 0012ee47-9041-4b5d-9b77-535fba8b1442 fc7372b6-ab2d-43ee-8797-15e9841f2cca 0'}
-  - !run: {exe: 'powercfg.exe', args: '/setacvalueindex "381b4222-f694-4f3a-b7cc-48f93f8f13e6" 2a737441-1930-4402-8d77-b2bebba308a3 0853a681-27c8-4100-a2fd-82013e970683 0'}
-  - !run: {exe: 'powercfg.exe', args: '/setacvalueindex "381b4222-f694-4f3a-b7cc-48f93f8f13e6" 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0'}
-  - !run: {exe: 'powercfg.exe', args: '/setacvalueindex "381b4222-f694-4f3a-b7cc-48f93f8f13e6" 2a737441-1930-4402-8d77-b2bebba308a3 d4e98f31-5ffe-4ce1-be31-1b38b384c009 0'}
-  - !run: {exe: 'powercfg.exe', args: '/setactive "381b4222-f694-4f3a-b7cc-48f93f8f13e6"'}
-
   - !powerShell:
     command: |
       $windir = [Environment]::GetFolderPath('Windows')
@@ -50,6 +42,7 @@ actions:
     wait: true
     exeDir: true
     runas: currentUserElevated
+    option: 'disable-power-saving'
 
   - !powerShell:
     command: |
@@ -68,13 +61,16 @@ actions:
     wait: true
     exeDir: true
     runas: currentUserElevated
+    option: 'disable-power-saving'
 
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power', value: 'HiberbootEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power', value: 'HiberbootEnabled', data: '0', type: REG_DWORD, option: 'disable-hibernation'}
 
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Storage', value: 'StorageD3InModernStandby', data: '0', type: REG_DWORD}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters\Device', value: 'IdlePowerMode', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Storage', value: 'StorageD3InModernStandby', data: '0', type: REG_DWORD, option: 'disable-power-saving'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters\Device', value: 'IdlePowerMode', data: '0', type: REG_DWORD, option: 'disable-power-saving'}
 
   - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling', value: 'PowerThrottlingOff', data: '1', type: REG_DWORD, option: 'disable-power-saving'}
+
+  - !run: {exe: 'powercfg.exe', args: '/setactive "11111111-1111-1111-1111-111111111111"', option: 'disable-power-saving'}
 
   - !cmd:
     command: '"chenniXDesktop\2.系统配置\配置\休眠\Disable Hibernation (default).cmd" /silent'
@@ -82,3 +78,26 @@ actions:
     wait: true
     runas: currentUserElevated
     option: 'disable-hibernation'
+
+  - !powerShell:
+    command: |
+      $chassis = (Get-CimInstance -ClassName Win32_SystemEnclosure).ChassisTypes
+      $isDesktop = $false
+      if ($chassis) {
+        foreach ($type in $chassis) {
+          if (($type -ge 3 -and $type -le 7) -or $type -eq 13) { $isDesktop = $true; break }
+        }
+      }
+      if ($isDesktop) {
+        $services = @('Cmbatt', 'acpiex', 'acpipagr', 'acpipmi', 'acpitime', 'bam')
+        foreach ($svc in $services) {
+          $s = Get-Service -Name $svc -ErrorAction SilentlyContinue
+          if ($s) {
+            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\$svc" -Name 'Start' -Value 4 -Type DWord -Force -ErrorAction SilentlyContinue
+          }
+        }
+        New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name 'NoMobilityCenter' -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue
+      }
+    wait: true
+    runas: currentUserElevated
+    option: 'disable-power-saving'

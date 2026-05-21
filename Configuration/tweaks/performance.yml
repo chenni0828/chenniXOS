@@ -106,6 +106,34 @@ actions:
   - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', data: '2', type: REG_DWORD, option: 'win32-priority-2'}
 
   # ============================================
+  # 无条件优化项（从超级低延迟移出的隐私/体验/优化项）
+  # 这些项不激进，不勾选超级低延迟也应执行
+  # ============================================
+
+  # --- 输入隐私 ---
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\InputPersonalization', value: 'RestrictImplicitInkCollection', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\InputPersonalization', value: 'RestrictImplicitTextCollection', data: '1', type: REG_DWORD}
+
+  # --- Cortana/云搜索禁用 ---
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'AllowCortana', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'AllowCloudSearch', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'CortanaConsent', data: '0', type: REG_DWORD}
+
+  # --- 视觉/桌面体验优化 ---
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'DesktopLivePreviewHoverTime', data: '250', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ThumbnailLivePreviewHoverTime', data: '250', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Clipboard', value: 'CloudClipboardAutomaticUpload', data: '0', type: REG_DWORD}
+
+  # --- 网络隐私 ---
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\BFE\Parameters\Policy\Options', value: 'CollectNetEvents', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Dhcp\Parameters', value: 'PdcActivationDisabled', data: '1', type: REG_DWORD}
+
+  # --- 内核优化 ---
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'CopyFileBufferedSynchronousIo', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\EventSystem', value: 'ParallelFiringTimeoutEnabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager', value: 'ComServerShutdownDelayMs', data: '1000', type: REG_DWORD}
+
+  # ============================================
   # 超级低延迟（ultralow-latency）
   # 勾选后自动执行全部低延迟优化项
   # ⚠️ 牺牲安全性/节能换取最低延迟
@@ -146,7 +174,6 @@ actions:
   # --- 4. HPET 移除 ---
   # 删除高精度事件定时器（HPET）的平台时钟和平台节拍
   # HPET 是已知延迟源，移除后系统回退到 TSC/invariant TSC
-  # 同时禁用 HPET 设备（ACPI\PNP0103）
   - !cmd:
     command: 'bcdedit /deletevalue useplatformclock'
     wait: true
@@ -158,15 +185,6 @@ actions:
   - !cmd:
     command: 'bcdedit /set disabledynamictick yes'
     wait: true
-    option: 'ultralow-latency'
-  - !powerShell:
-    command: |
-      $hpet = Get-PnpDevice -InstanceId 'ACPI\PNP0103\2&DABA3FF&0' -ErrorAction Ignore
-      if ($hpet -and $hpet.Status -ne 'Error') {
-        $hpet | Disable-PnpDevice -Confirm:$false -ErrorAction Ignore
-      }
-    wait: true
-    runas: currentUserElevated
     option: 'ultralow-latency'
 
   # --- 5. Nagle 算法禁用 ---
@@ -209,3 +227,56 @@ actions:
   # 减少 IOMMU 开销，降低设备访问内存延迟
   # ⚠️ 禁用后 Thunderbolt/USB4 外部设备可直读内存
   - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SecureBoot', value: 'Enabled', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+
+  # --- 11. WINEVT 通道全量禁用 ---
+  - !powerShell:
+    command: |
+      Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels' -ErrorAction SilentlyContinue | ForEach-Object {
+        if ($_.GetValue('Enabled') -eq 1) {
+          Set-ItemProperty -Path $_.PSPath -Name 'Enabled' -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue
+        }
+      }
+    wait: true
+    runas: currentUserElevated
+    option: 'ultralow-latency'
+
+  # --- 12. 内核/调度高级注册表 ---
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'BackgroundLoadKnownDlls', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'BootExecuteNoPnpSync', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'TaskhostTimeout', data: '2000', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows', value: 'DesktopHeapLogging', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows', value: 'TimerCoalescing', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'DelayedDesktopSwitchTimeout', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'RunLogonScriptSync', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'RunStartupScriptSync', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power', value: 'SleepStudyDisabled', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Lsa', value: 'TokenLeakDetectDelaySecs', data: '30', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Audio', value: 'AudioHealthMonitorLimit', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\BrokerInfrastructure\Parameters', value: 'DefaultTriggerCoalescingTime', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\BrokerInfrastructure\Parameters', value: 'DisableTriggerCoalescing', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\SCMConfig', value: 'EnableSvchostMitigationPolicy', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\SCMConfig', value: 'EnableSvchostMitigationsPolicy', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+
+  # --- 13. 输入优化 HKLM 层 ---
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input', value: 'IsInputAppPreloadEnabled', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input', value: 'BluebirdDTWMultiplier', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input', value: 'DisableExpressiveInputShellHotkey', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input', value: 'DynamicAutocorrectionAllowed', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+
+  # --- 14. 搜索/Cortana 禁用补充 ---
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'DisableSearchBoxSuggestions', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'CanCortanaBeEnabled', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'HistoryViewEnabled', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'DeviceHistoryEnabled', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'IsDynamicSearchBoxEnabled', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+
+  # --- 15. 视觉效果/桌面优化 ---
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Dwm', value: 'DisableProjectedShadows', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Dwm', value: 'MousewheelAnimationDurationMs', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'DisableLogonBackgroundImage', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\XAML', value: 'DisableGlobalAnimations', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+
+  # --- 16. 网络优化补充 ---
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters', value: 'EnableNetbios', data: '0', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\WinHttp', value: 'DisableWpad', data: '1', type: REG_DWORD, option: 'ultralow-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient', value: 'MaxNegativeCacheTtl', data: '5', type: REG_DWORD, option: 'ultralow-latency'}

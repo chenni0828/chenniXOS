@@ -183,6 +183,16 @@ actions:
   - !scheduledTask: {path: '\Microsoft\Windows\SettingSync\BackupTask', operation: disable, option: 'disable-setting-sync'}
   - !scheduledTask: {path: '\Microsoft\Windows\SettingSync\NetworkStateChangeTask', operation: disable, option: 'disable-setting-sync'}
 
+  # 设置同步 HKLM Policies 补全
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableApplicationSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableAppSyncSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableDesktopThemeSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableStartLayoutSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableWebBrowserSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisableCredentialsSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'DisablePersonalizationSettingSync', data: '2', type: REG_DWORD, option: 'disable-setting-sync'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync', value: 'AllowCrossDeviceClipboard', data: '0', type: REG_DWORD, option: 'disable-setting-sync'}
+
   # ============================================
   # Telemetry (6 items)
   # ============================================
@@ -232,3 +242,26 @@ actions:
 
   # Visual Studio遥测退出
   - !registryValue: {path: 'HKCU\Software\Microsoft\VisualStudio\Telemetry', value: 'TurnOffOptIn', data: '1', type: REG_DWORD}
+
+  # ============================================
+  # Copilot/AI 禁用补充（无条件）
+  # ============================================
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot', value: 'TurnOffWindowsCopilot', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'DisableAIDataAnalysis', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'IsUserEligible', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'AutoOpenCopilotLargeScreens', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowCopilotButton', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'AllowRecallEnablement', data: '0', type: REG_DWORD}
+
+  # ============================================
+  # 隐私/遥测 HKLM 层补全（无条件）
+  # ============================================
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowDesktopAnalyticsProcessing', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'MicrosoftEdgeDataOptIn', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowWUfBCloudProcessing', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowUpdateComplianceProcessing', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowCommercialDataPipeline', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'DisableOneSettingsDownloads', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\FindMyDevice', value: 'AllowFindMyDevice', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\TextInput', value: 'AllowLinguisticDataCollection', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\InputPersonalization', value: 'AllowInputPersonalization', data: '0', type: REG_DWORD}

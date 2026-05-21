@@ -24,3 +24,11 @@ actions:
     wait: true
     runas: currentUserElevated
     option: 'auto-updates-disable'
+
+  # WU 精细配置
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate', value: 'ExcludeWUDriversInQualityUpdate', data: '1', type: REG_DWORD, option: 'auto-updates-disable'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate', value: 'SearchOrderConfig', data: '0', type: REG_DWORD, option: 'auto-updates-disable'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate', value: 'DeferFeatureUpdates', data: '1', type: REG_DWORD, option: 'auto-updates-disable'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate', value: 'DeferQualityUpdates', data: '1', type: REG_DWORD, option: 'auto-updates-disable'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\UX\Settings', value: 'FlightSettingsMaxPauseDays', data: '8191', type: REG_DWORD, option: 'auto-updates-disable'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\UX\Settings', value: 'AllowExperimentation', data: '0', type: REG_DWORD, option: 'auto-updates-disable'}

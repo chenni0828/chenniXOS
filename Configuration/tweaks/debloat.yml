@@ -51,3 +51,89 @@ actions:
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Account protection', value: 'UILockdown', data: '1', type: REG_DWORD}
 
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableWindowsConsumerFeatures', data: '1', type: REG_DWORD}
+
+  # ============================================
+  # 计划任务禁用 - auto-updates-disable
+  # ============================================
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Report policies', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Schedule Maintenance Work', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Schedule Scan', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Schedule Scan Static Task', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Schedule Work', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\UIEOrchestrator', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\UpdateModelTask', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Start Oobe Expedite Work', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan_OobeAppReady', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\UUS Failover Task', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WaaSMedic\PerformRemediation', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\AC Power Download', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\AC Power Install', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Backup Scan', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Battery Saver Deferred Install', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Driver Install', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Maintenance Install', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\MusUx_LogonUpdateResults', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\MusUx_UpdateInterval', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Policy Install', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Reboot', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Reboot_AC', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Reboot_Battery', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Refresh Settings', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Resume On Boot', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\Schedule Retry Scan', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsUpdate\Scheduled Start', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsUpdate\AUScheduledInstall', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsUpdate\AUSessionConnect', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsUpdate\Automatic App Update', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsUpdate\sih', operation: disable, option: 'auto-updates-disable'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsUpdate\sihboot', operation: disable, option: 'auto-updates-disable'}
+
+  # ============================================
+  # 计划任务禁用 - ultralow-latency
+  # ============================================
+  - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\MareBackup', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Diagnosis\RecommendedTroubleshootingScanner', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Diagnosis\Scheduled', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\FileHistory\File History (maintenance mode)', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Registry\RegIdleBackup', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Feedback\Siuf\DmClient', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Data Integrity Scan\Data Integrity Check And Scan', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Data Integrity Scan\Data Integrity Scan', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Data Integrity Scan\Data Integrity Scan for Crash Recovery', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\DiskFootprint\Diagnostics', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\MemoryDiagnostic\ProcessMemoryDiagnosticEvents', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\MemoryDiagnostic\RunFullMemoryDiagnostic', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WDI\ResolutionHost', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\RetailDemo\CleanupOfflineContent', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\RemoteAssistance\RemoteAssistanceTask', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Maps\MapsToastTask', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\ProgramDataUpdater', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser Exp', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\AccountHealth\RecoverabilityToastTask', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Diagnosis\UnexpectedCodepath', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Hotpatch\Monitoring', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Maintenance\WinSAT', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\MemoryDiagnostic\AutomaticOfflineMemoryDiagnostic', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\PerformanceTrace\RequestTrace', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Shell\FamilySafetyMonitor', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Shell\FamilySafetyRefreshTask', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\UsageAndQualityInsights\UsageAndQualityInsights-MaintenanceTask', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsAI\Recall\PolicyConfiguration', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\WindowsAI\Settings\InitialConfiguration', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Sustainability\PowerGridForecastTask', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Sustainability\SustainabilityTelemetry', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\CloudRestore\Backup', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\CloudRestore\Restore', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\InstallService\RestoreDevice', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\InstallService\ScanForUpdates', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\InstallService\ScanForUpdatesAsUser', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\InstallService\SmartRetry', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\InstallService\WakeUpAndContinueUpdates', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\InstallService\WakeUpAndScanForUpdates', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Windows Error Reporting\QueueReporting', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerCeipAssistant', operation: disable, option: 'ultralow-latency'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerRoleCollector', operation: disable, option: 'ultralow-latency'}
