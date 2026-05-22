@@ -1,7 +1,6 @@
 ---
 title: Scripts
 description: Advanced script operations
-onUpgrade: true
 actions:
   - !writeStatus: {status: '运行高级脚本'}
   - !task: {path: 'tweaks\scripts\backup.yml'}

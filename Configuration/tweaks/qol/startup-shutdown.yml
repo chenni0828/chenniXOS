@@ -1,7 +1,6 @@
 ---
 title: Startup/Shutdown Tweaks
 description: Improve startup and shutdown speed
-onUpgrade: true
 actions:
 
   # ============================================

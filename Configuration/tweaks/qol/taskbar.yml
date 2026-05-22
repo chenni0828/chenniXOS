@@ -1,7 +1,6 @@
 ---
 title: Taskbar Tweaks
 description: Taskbar customizations
-onUpgrade: true
 actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'DontUsePowerShellOnWinX', data: '1', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CloudContent', value: 'DisableCloudOptimizedContent', data: '1', type: REG_DWORD}

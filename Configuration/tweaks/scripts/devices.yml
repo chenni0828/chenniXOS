@@ -1,7 +1,6 @@
 ---
 title: Devices
 description: Disables network adapter bindings and devices
-onUpgrade: true
 actions:
   - !powerShell:
     command: |

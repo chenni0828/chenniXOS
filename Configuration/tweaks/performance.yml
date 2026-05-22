@@ -1,7 +1,6 @@
 ---
 title: Performance Tweaks
 description: Performance optimizations
-onUpgrade: true
 actions:
   - !writeStatus: {status: '运行性能优化'}
 
@@ -44,7 +43,7 @@ actions:
   # 禁用容错堆（FTH）- 调用Sysprep特殊化先重置FTH状态
   # 说明: FTH会在应用崩溃时自动应用缓解措施，但可能导致性能问题
   # ⚠️ 仅影响AMD64架构
-  - !run: {exe: 'rundll32.exe', args: 'fthsvc.dll,FthSysprepSpecialize', weight: 5, cpuArch: 'X64'}
+  - !run: {exe: 'rundll32.exe', args: 'fthsvc.dll,FthSysprepSpecialize', weight: 3, cpuArch: 'X64'}
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\FTH', value: 'Enabled', data: '0', type: REG_DWORD, cpuArch: 'X64'}
 
   # ============================================

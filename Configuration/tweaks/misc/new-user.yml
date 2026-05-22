@@ -1,6 +1,5 @@
 ---
 title: New User Script
 description: Configures script for new user creation
-onUpgrade: true
 actions:
   - !registryValue: {path: 'HKU\AME_UserHive_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce', value: 'RunScript', data: 'powershell -ExecutionPolicy Bypass -NoProfile -File """$([Environment]::GetFolderPath(''Windows''))\chenniXModules\Scripts\newUsers.ps1"""', type: REG_SZ}

@@ -1,7 +1,6 @@
 ---
 title: Windows Update 优化
 description: Windows Update 配置
-onUpgrade: true
 actions:
   # 禁止自动重启 - 仅在禁用自动更新时生效
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AUPowerManagement', value: 'AUPowerManagement', data: '0', type: REG_DWORD, option: 'auto-updates-disable'}

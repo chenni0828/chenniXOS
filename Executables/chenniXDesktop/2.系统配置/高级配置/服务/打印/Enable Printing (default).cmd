@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 :: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=打印"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
@@ -68,8 +68,8 @@ for /f "tokens=6 delims=[.] " %%a in ('ver') do (
 
 :main
 echo Enabling 服务...
-call setSvc.cmd Spooler 2
-call setSvc.cmd PrintWorkFlowUserSvc 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" Spooler 2
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" PrintWorkFlowUserSvc 3
 
 call "%windir%\chenniXModules\Scripts\settingsPages.cmd" /unhide printers
 

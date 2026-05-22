@@ -1,7 +1,6 @@
 ---
 title: General QoL
 description: General quality of life improvements
-onUpgrade: true
 actions:
   - !writeStatus: {status: '运行易用性优化'}
   - !run: {exe: 'bcdedit.exe', args: '/timeout 10'}

@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 :: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=网络Discovery"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
@@ -25,10 +25,10 @@ if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd
 :: Unpin '网络' from Explorer sidebar
 call "%windir%\chenniXDesktop\3.配置\文件共享\网络 Navigation Pane\Disable 网络 Navigation Pane (default).cmd" > nul
 
-call setSvc.cmd fdPHost 4
-call setSvc.cmd FDResPub 4
-call setSvc.cmd lmhosts 4
-call setSvc.cmd SSDPSRV 4
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" fdPHost 4
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" FDResPub 4
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" lmhosts 4
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" SSDPSRV 4
 if "%~1"=="/silent" exit /b
 
 echo Finished, please reboot your device for changes to apply.

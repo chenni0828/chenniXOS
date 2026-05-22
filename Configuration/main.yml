@@ -1,7 +1,6 @@
 ---
 title: chenniXOS Root Playbook File
 description: Runs all of the chenniX Playbook files
-onUpgrade: true
 actions:
   # Load Default User Hive so HKCU changes apply to new users
   - !powerShell:
@@ -41,7 +40,7 @@ actions:
           if (!$?) { exit 2 }
       }
       Copy-Item -Path 'Themes\*' -Destination """$windir\Resources\Themes""" -Force -Recurse
-    weight: 10
+    weight: 5
     wait: true
     exeDir: true
     handleExitCodes: { "!0": halt }

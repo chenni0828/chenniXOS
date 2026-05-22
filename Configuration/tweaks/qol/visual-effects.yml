@@ -1,7 +1,6 @@
 ---
 title: Visual Effects
 description: Custom visual effects configuration
-onUpgrade: true
 actions:
   - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'FontSmoothing', data: '2', type: REG_SZ}
   - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'UserPreferencesMask', data: '9012038010000000', type: REG_BINARY}

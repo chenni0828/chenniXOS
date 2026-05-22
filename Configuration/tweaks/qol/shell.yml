@@ -1,7 +1,6 @@
 ---
 title: Shell Tweaks
 description: Windows shell improvements
-onUpgrade: true
 actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'MultiTaskingAltTabFilter', data: '3', type: REG_DWORD}
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AutoplayHandlers', value: 'DisableAutoplay', data: '1', type: REG_DWORD}

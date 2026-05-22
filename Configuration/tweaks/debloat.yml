@@ -1,7 +1,6 @@
 ---
 title: Debloat Tweaks
 description: Debloating Windows
-onUpgrade: true
 actions:
   - !writeStatus: {status: '运行精简优化'}
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager', value: 'ContentDeliveryAllowed', data: '0', type: REG_DWORD}
@@ -30,7 +29,7 @@ actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy', value: '08', data: '0', type: REG_DWORD}
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy', value: '256', data: '0', type: REG_DWORD}
   - !scheduledTask: {operation: enable, path: '\Microsoft\Windows\DiskCleanup\SilentCleanup'}
-  - !run: {exe: 'DISM.exe', args: '/Online /Set-ReservedStorageState /State:Disabled', weight: 30}
+  - !run: {exe: 'DISM.exe', args: '/Online /Set-ReservedStorageState /State:Disabled', weight: 15}
   - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\PcaPatchDbTask', operation: disable}
   - !scheduledTask: {path: '\Microsoft\Windows\AppxDeploymentClient\UCPD velocity', operation: disable, ignoreErrors: true}
   - !scheduledTask: {path: '\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector', operation: disable}

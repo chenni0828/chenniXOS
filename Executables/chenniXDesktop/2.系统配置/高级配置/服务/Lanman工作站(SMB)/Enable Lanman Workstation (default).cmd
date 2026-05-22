@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 :: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=LanmanWorkstation"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
@@ -24,13 +24,13 @@ if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd
 
 
 :main
-call setSvc.cmd KSecPkg 0
-call setSvc.cmd LanmanServer 2
-call setSvc.cmd LanmanWorkstation 2
-call setSvc.cmd mrxsmb 3
-call setSvc.cmd mrxsmb20 3
-call setSvc.cmd rdbss 1
-call setSvc.cmd srv2 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" KSecPkg 0
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" LanmanServer 2
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" LanmanWorkstation 2
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" mrxsmb 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" mrxsmb20 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" rdbss 1
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" srv2 3
 
 DISM /Online /Enable-Feature /FeatureName:"SmbDirect" /NoRestart
 

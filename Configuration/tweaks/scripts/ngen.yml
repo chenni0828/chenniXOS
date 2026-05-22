@@ -1,10 +1,9 @@
 ---
 title: NGEN
 description: .NET NGEN optimization for PowerShell
-onUpgrade: true
 actions:
   - !powerShell:
     command: '.\NGEN.ps1'
     wait: true
     exeDir: true
-    weight: 20
+    weight: 10

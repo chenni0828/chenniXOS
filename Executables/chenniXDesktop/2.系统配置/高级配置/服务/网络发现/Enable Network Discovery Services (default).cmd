@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 :: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=网络Discovery"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
@@ -26,16 +26,16 @@ if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd
 :: Enable Lanman工作站(SMB) as a dependency
 call "%windir%\chenniXDesktop\2.系统配置\高级配置\服务\Lanman工作站(SMB)\Enable Lanman Workstation (default).cmd" /silent
 :: Enable EventLog as a dependency
-call setSvc.cmd eventlog 2
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" eventlog 2
 
-call setSvc.cmd fdPHost 3
-call setSvc.cmd FDResPub 3
-call setSvc.cmd lmhosts 3
-call setSvc.cmd netman 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" fdPHost 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" FDResPub 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" lmhosts 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" netman 3
 for /f "tokens=6 delims=[.] " %%a in ('ver') do (
-    if %%a LSS 22000 (call setSvc.cmd NlaSvc 2) else (call setSvc.cmd NlaSvc 3)
+    if %%a LSS 22000 (call "%windir%\chenniXModules\Scripts\setSvc.cmd" NlaSvc 2) else (call "%windir%\chenniXModules\Scripts\setSvc.cmd" NlaSvc 3)
 )
-call setSvc.cmd SSDPSRV 3
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" SSDPSRV 3
 
 if "%~1" == "/silent" exit /b
 

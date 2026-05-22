@@ -84,8 +84,6 @@ function Set-ThemeMRU {
         Stop-ThemeProcesses
         Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes" -Name "ThemeMRU" -Value "$((@(
             "chenniX-dark.theme",
-            "chenniX-light.theme",
-            "chenniX-solid.theme",
             "dark.theme",
             "aero.theme"
         ) | ForEach-Object { "$windir\resources\Themes\$_" }) -join ';');" -Type String -Force

@@ -1,7 +1,6 @@
 ---
 title: Explorer Tweaks
 description: File Explorer customizations
-onUpgrade: true
 actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager', value: 'EnthusiastMode', data: '1', type: REG_DWORD}
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'AutoCheckSelect', data: '0', type: REG_DWORD}

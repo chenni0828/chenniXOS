@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 :: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=NVidiaDisplayContainer"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
@@ -33,7 +33,7 @@ reg query "HKLM\SYSTEM\CurrentControlSet\服务\NVDisplay.ContainerLocalSystem" 
     exit /b
 )
 
-call setSvc.cmd NVDisplay.ContainerLocalSystem 2
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" NVDisplay.ContainerLocalSystem 2
 sc start NVDisplay.ContainerLocalSystem > nul 2>&1
 
 if "%~1"=="/silent" exit /b

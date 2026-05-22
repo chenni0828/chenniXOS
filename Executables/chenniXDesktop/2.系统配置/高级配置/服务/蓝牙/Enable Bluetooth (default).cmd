@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 :: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=蓝牙"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
@@ -41,14 +41,14 @@ for %%a in (
 	"Microsoft_蓝牙_AvrcpTransport"
 	"RFCOMM"
 ) do (
-	call setSvc.cmd %%~a 3
+	call "%windir%\chenniXModules\Scripts\setSvc.cmd" %%~a 3
 )
 
 :: Seems to not exist sometimes
-call setSvc.cmd BthPan 3 > nul 2>&1
+call "%windir%\chenniXModules\Scripts\setSvc.cmd" BthPan 3 > nul 2>&1
 
 :: Enable 蓝牙 devices
-call toggleDev.cmd -Silent -Enable '*蓝牙*'
+call "%windir%\chenniXModules\Scripts\toggleDev.cmd" -Silent -Enable '*蓝牙*'
 
 :: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-connectivity
 reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Connectivity\Allow蓝牙" /v "value" /t REG_DWORD /d "2" /f > nul

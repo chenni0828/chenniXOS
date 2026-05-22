@@ -1,7 +1,6 @@
 ---
 title: Core Isolation
 description: Disables core isolation (VBS)
-onUpgrade: true
 actions:
   - !powerShell:
     command: '& """.\chenniXModules\Scripts\ScriptWrappers\ConfigVBS.ps1""" -DisableAllVBS'

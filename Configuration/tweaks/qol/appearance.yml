@@ -1,7 +1,6 @@
 ---
 title: Appearance
 description: Theme and visual appearance settings
-onUpgrade: true
 actions:
   - !writeStatus: {status: '应用外观设置'}
 

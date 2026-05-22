@@ -1,7 +1,6 @@
 ---
 title: Client CBS
 description: Modifies Client.CBS component
-onUpgrade: true
 actions:
   - !powerShell:
     command: '.\CLIENTCBS.ps1'

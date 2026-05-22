@@ -1,7 +1,6 @@
 ---
 title: Networking Tweaks
 description: Network optimization and security
-onUpgrade: true
 actions:
   - !writeStatus: {status: '运行网络优化'}
   - !powerShell:

@@ -1,7 +1,6 @@
 ---
 title: Miscellaneous
 description: Miscellaneous tweaks
-onUpgrade: true
 actions:
   - !writeStatus: {status: '运行杂项优化'}
   - !task: {path: 'tweaks\misc\time.yml'}

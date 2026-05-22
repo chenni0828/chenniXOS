@@ -1,7 +1,6 @@
 ---
 title: Environment Setup
 description: Sets up the initial environment
-onUpgrade: true
 actions:
   - !writeStatus: {status: '设置环境'}
   - !powerShell:
@@ -25,8 +24,8 @@ actions:
       $modulesPath = """$([Environment]::GetFolderPath('Windows'))\chenniXModules"""
       Add-ToPath """$modulesPath""", """$modulesPath\Tools""", """$modulesPath\Scripts"""
 
-  - !run: {exe: 'DISM.exe', args: '/Online /Remove-Capability /CapabilityName:"App.StepsRecorder~~~~0.0.1.0" /NoRestart', weight: 30, onUpgrade: false}
-  - !run: {exe: 'DISM.exe', args: '/Online /Enable-Feature /FeatureName:"DirectPlay" /All /NoRestart', weight: 30}
+  - !run: {exe: 'DISM.exe', args: '/Online /Remove-Capability /CapabilityName:"App.StepsRecorder~~~~0.0.1.0" /NoRestart', weight: 15, onUpgrade: false}
+  - !run: {exe: 'DISM.exe', args: '/Online /Enable-Feature /FeatureName:"DirectPlay" /All /NoRestart', weight: 15}
 
   - !writeStatus: {status: '清理组件存储'}
-  - !run: {exe: 'DISM.exe', args: '/Online /Cleanup-Image /StartComponentCleanup', weight: 50}
+  - !run: {exe: 'DISM.exe', args: '/Online /Cleanup-Image /StartComponentCleanup', weight: 25}

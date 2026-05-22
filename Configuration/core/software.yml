@@ -8,7 +8,7 @@ actions:
     command: '.\SOFTWARE.ps1'
     exeDir: true
     wait: true
-    weight: 150
+    weight: 60
     runas: currentUserElevated
     option: 'software-online'
 
@@ -17,6 +17,6 @@ actions:
     command: '.\SOFTWARE.ps1 -Local'
     exeDir: true
     wait: true
-    weight: 150
+    weight: 60
     runas: currentUserElevated
     option: 'software-local'

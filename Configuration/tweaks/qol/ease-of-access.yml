@@ -1,7 +1,6 @@
 ---
 title: Ease of Access
 description: Disable annoying accessibility features and shortcuts
-onUpgrade: true
 actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Ease of Access', value: 'selfscan', data: '0', type: REG_DWORD}
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Ease of Access', value: 'selfvoice', data: '0', type: REG_DWORD}

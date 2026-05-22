@@ -1,6 +1,5 @@
 ---
 title: WinRE
 description: Enables Windows Recovery Environment
-onUpgrade: true
 actions:
   - !run: {exe: 'reagentc.exe', args: '/enable'}

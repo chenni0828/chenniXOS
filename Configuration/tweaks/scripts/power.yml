@@ -1,7 +1,6 @@
 ---
 title: Power Configuration
 description: Configures power settings
-onUpgrade: true
 actions:
   - !writeStatus: {status: '配置电源计划'}
 
