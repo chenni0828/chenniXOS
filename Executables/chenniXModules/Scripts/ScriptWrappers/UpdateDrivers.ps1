@@ -120,7 +120,7 @@ Install-PSWindowsUpdateModule
 Enable-MicrosoftUpdate
 Update-Drivers
 
-if (-not $PSCmdlet.MyInvocation.BoundParameters.ContainsKey('Silent')) {
+if (-not $Silent) {
     Write-Host "Press any key to exit..."
     $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 }

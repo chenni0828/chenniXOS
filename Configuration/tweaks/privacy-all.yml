@@ -261,7 +261,7 @@ actions:
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowWUfBCloudProcessing', data: '0', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowUpdateComplianceProcessing', data: '0', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowCommercialDataPipeline', data: '0', type: REG_DWORD}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'DisableOneSettingsDownloads', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'DisableOneSettingsDownloads', data: '1', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\FindMyDevice', value: 'AllowFindMyDevice', data: '0', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\TextInput', value: 'AllowLinguisticDataCollection', data: '0', type: REG_DWORD}
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\InputPersonalization', value: 'AllowInputPersonalization', data: '0', type: REG_DWORD}

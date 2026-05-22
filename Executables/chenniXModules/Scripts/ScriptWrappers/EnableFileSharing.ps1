@@ -1,4 +1,4 @@
-﻿#Requires -RunAsAdministrator
+#Requires -RunAsAdministrator
 
 $networkDiscoveryConfigPath = "$([Environment]::GetFolderPath('Windows'))\chenniXDesktop\2.系统配置\高级配置\服务\网络发现"
 
@@ -9,13 +9,14 @@ Enable-NetAdapterBinding -Name "*" -ComponentID ms_msclient, ms_server, ms_lltdi
 Start-Process -FilePath "$networkDiscoveryConfigPath\Enable Network Discovery Services (default).cmd" -ArgumentList "/silent" -WindowStyle Hidden
 
 # Keep NetBIOS over TCP/IP disabled (SMB over port 445 does not need it)
+# Keep NetBIOS over TCP/IP name resolution disabled (SMB over 445 doesn't need it)
 # NetbiosOptions: 0=Use DHCP setting, 1=Enable, 2=Disable
 $interfaces = Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters\Interfaces" -Recurse | Where-Object { $_.GetValue("NetbiosOptions") -ne $null }
 foreach ($interface in $interfaces) {
     Set-ItemProperty -Path $interface.PSPath -Name "NetbiosOptions" -Value 2 | Out-Null
 }
 
-# Enable NetBIOS service
+# Enable NetBIOS service (required for kernel SMB driver compatibility)
 sc.exe config NetBT start=system | Out-Null
 
 choice /c:yn /n /m "Would you like to change your network profile to 'Private'? [Y/N] "
@@ -26,8 +27,8 @@ if ($LASTEXITCODE -eq 1) {
     # Disable network discovery firewall rules
     Get-NetFirewallRule | Where-Object {
         # File and Printer Sharing, Network Discovery
-        ($_.Group -eq "@FirewallAPI.dll,-28502" -or $_.Group -eq "@FirewallAPI.dll,-32752") -or
-        ($_.DisplayGroup -eq "File and Printer Sharing" -or $_.DisplayGroup -eq "Network Discovery") -and
+        (($_.Group -eq "@FirewallAPI.dll,-28502" -or $_.Group -eq "@FirewallAPI.dll,-32752") -or
+         ($_.DisplayGroup -eq "File and Printer Sharing" -or $_.DisplayGroup -eq "Network Discovery")) -and
         $_.Profile -like "*Private*"
     } | Enable-NetFirewallRule
 

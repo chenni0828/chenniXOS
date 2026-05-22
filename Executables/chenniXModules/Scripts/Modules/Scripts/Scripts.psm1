@@ -1,4 +1,4 @@
-﻿# ==============================
+# ==============================
 # PowerShell Module for Executing System Scripts
 # ==============================
 
@@ -6,7 +6,7 @@
 $windir = $([Environment]::GetFolderPath('Windows'))
 function Backup-chenniXServices {
 $filePath = "$([Environment]::GetFolderPath('Windows'))\chenniXModules\Other\chenniXServices.reg"
-if (Test-Path $FilePath) { exit }
+if (Test-Path $FilePath) { return }
 
 $content = [System.Collections.Generic.List[string]]::new()
 $content.Add("Windows Registry Editor Version 5.00")
@@ -128,7 +128,7 @@ function Disable-Devices {
     	"AMD SMBus",
     	"Base System Device",
     	"Composite Bus Enumerator",
-    	"Direct memory access controller"
+    	"Direct memory access controller",
     	"High precision event timer",
     	"Intel Management Engine",
     	"Intel SMBus",
@@ -169,7 +169,7 @@ function Set-FileAssociations {
 
 # Disable Mitigations
 function Disable-Mitigations {
-    Start-Process -FilePath "chenniXDesktop\3.安全与修复\安全\缓解措施\Disable All Mitigations.cmd" -ArgumentList "/silent" -NoNewWindow -Wait
+    Start-Process -FilePath "$windir\chenniXDesktop\3.安全与修复\安全\缓解措施\Disable All Mitigations.cmd" -ArgumentList "/silent" -NoNewWindow -Wait
 }
 
 # Runs NGEN on PowerShell Libraries
@@ -216,7 +216,7 @@ function Set-PowerSettings {
     )
 
     if ($DisableHibernation) {
-        Start-Process -FilePath "chenniXDesktop\2.系统配置\配置\休眠\Disable Hibernation (default).cmd" -ArgumentList "/silent" -NoNewWindow -Wait
+        Start-Process -FilePath "$windir\chenniXDesktop\2.系统配置\配置\休眠\Disable Hibernation (default).cmd" -ArgumentList "/silent" -NoNewWindow -Wait
     }
 
     Start-Process -FilePath "powercfg.exe" -ArgumentList "/setactive `"381b4222-f694-4f3a-b7cc-48f93f8f13e6`"" -NoNewWindow -Wait

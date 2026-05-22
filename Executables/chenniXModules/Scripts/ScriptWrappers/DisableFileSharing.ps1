@@ -1,4 +1,4 @@
-﻿#Requires -RunAsAdministrator
+#Requires -RunAsAdministrator
 
 param (
     [switch]$Silent
@@ -25,8 +25,8 @@ Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Public
 # Disable network discovery firewall rules
 Get-NetFirewallRule | Where-Object {
     # File and Printer Sharing, Network Discovery
-    ($_.Group -eq "@FirewallAPI.dll,-28502" -or $_.Group -eq "@FirewallAPI.dll,-32752") -or
-    ($_.DisplayGroup -eq "File and Printer Sharing" -or $_.DisplayGroup -eq "Network Discovery") -and
+    (($_.Group -eq "@FirewallAPI.dll,-28502" -or $_.Group -eq "@FirewallAPI.dll,-32752") -or
+     ($_.DisplayGroup -eq "File and Printer Sharing" -or $_.DisplayGroup -eq "Network Discovery")) -and
     $_.Profile -like "*Private*"
 } | Disable-NetFirewallRule
 
