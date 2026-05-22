@@ -206,7 +206,7 @@ chenniXOS 是一个 Windows 11 优化 Playbook，专注于游戏性能、隐私�
 
 ## 致谢
 
-- [AtlasOS](https://ameliorated.io/) — Playbook 框架和基础优化思路
+- [AtlasOS](https://atlasos.net/) — Playbook 框架和基础优化思路
 - [ShadowWhisperer](https://github.com/ShadowWhisperer) — Remove-MS-Edge 工具
 
 ## 免责声明
