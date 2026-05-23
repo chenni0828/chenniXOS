@@ -10,7 +10,7 @@ actions:
           powercfg /duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 11111111-1111-1111-1111-111111111111 > $null
       }
       powercfg /setactive 11111111-1111-1111-1111-111111111111
-      powercfg /changename scheme_current "chenniX Power Scheme" "Power scheme optimized for optimal latency and performance."
+      powercfg /changename 11111111-1111-1111-1111-111111111111 "chenniX Power Scheme" "Power scheme optimized for optimal latency and performance."
       powercfg /setacvalueindex scheme_current 0012ee47-9041-4b5d-9b77-535fba8b1442 d3d55efd-c1ff-424e-9dc3-441be7833010 0
       powercfg /setacvalueindex scheme_current 0012ee47-9041-4b5d-9b77-535fba8b1442 d639518a-e56d-4345-8af2-b9f32fb26109 0
       powercfg /setacvalueindex scheme_current 0012ee47-9041-4b5d-9b77-535fba8b1442 fc7372b6-ab2d-43ee-8797-15e9841f2cca 0
@@ -56,7 +56,7 @@ actions:
               if ($null -eq (Get-ItemProperty -Path $keyPath -Name $oldValue -EA 0)) {
                   Rename-ItemProperty -Path $keyPath -Name $value -NewName $oldValue -Force
               }
-              Set-ItemProperty -Path $KeyPath -Name $value -Value 0 -Type DWORD -Force
+              Set-ItemProperty -Path $keyPath -Name $value -Value 0 -Type DWORD -Force
           }
       }
       Get-CimInstance -ClassName MSPower_DeviceEnable -Namespace root/WMI | Set-CimInstance -Property @{ Enable = $false }

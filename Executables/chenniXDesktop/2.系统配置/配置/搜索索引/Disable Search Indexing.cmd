@@ -1,4 +1,4 @@
-ï»¿@echo off
+@echo off
 set "settingName=Indexing"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -16,15 +16,15 @@ if not exist "%indexConfPath%" (
 )
 set "indexConf=call %indexConfPath%"
 
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 echo.
-echo Disabling æœç´¢ç´¢å¼•...
+echo Disabling ËÑË÷Ë÷Òý...
 %indexConf% /stop
 
 echo.
-echo æœç´¢ç´¢å¼• has been disabled.
+echo ËÑË÷Ë÷Òý has been disabled.
 echo Press any key to exit...
 pause > nul
 exit /b

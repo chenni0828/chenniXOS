@@ -40,7 +40,7 @@ Set-LockscreenImage
 & "$chenniXDesktop\2.系统配置\界面\文件资源管理器\自动文件夹发现\Disable Automatic Folder Discovery (default).cmd" /silent
 
 # Apply visual effects
-& "$chenniXDesktop\2.系统配置\界面\视觉效果(动画)\Atlas Visual Effects (default).cmd" /silent
+& "$chenniXDesktop\2.系统配置\界面\视觉效果(动画)\chenniX Visual Effects (default).cmd" /silent
 
 # Set taskbar pins 
 $valueName = "Browser"

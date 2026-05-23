@@ -1,6 +1,6 @@
 @echo off
-:: Change to match the setting name (e.g., ç¡çœ , Indexing, etc.)
-set "settingName=ç½‘ç»œDiscovery"
+:: Change to match the setting name (e.g., Ë¯Ãß, Indexing, etc.)
+set "settingName=NetworkDiscovery"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -17,14 +17,14 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
 :main
-:: Enable Lanmanå·¥ä½œç«™(SMB) as a dependency
-call "%windir%\chenniXDesktop\2.ç³»ç»Ÿé…ç½®\é«˜çº§é…ç½®\æœåŠ¡\Lanmanå·¥ä½œç«™(SMB)\Enable Lanman Workstation (default).cmd" /silent
+:: Enable Lanman¹¤×÷Õ¾(SMB) as a dependency
+call "%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\¸ß¼¶ÅäÖÃ\·şÎñ\Lanman¹¤×÷Õ¾(SMB)\Enable Lanman Workstation (default).cmd" /silent
 :: Enable EventLog as a dependency
 call "%windir%\chenniXModules\Scripts\setSvc.cmd" eventlog 2
 

@@ -1,4 +1,4 @@
-锘緻echo off
+@echo off
 set "settingName=AutomaticUpdates"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t REG_DWORD /d 2 /f > nul
 :: Breaks 'Receive updates for other Microsoft products'
@@ -25,7 +25,7 @@ if "%~1" == "/justcontext" exit /b
 if "%~1"=="/silent" exit /b
 
 echo.
-echo 鑷姩鏇存柊 have been disabled.
+echo 自动更新 have been disabled.
 echo Press any key to exit...
 pause > nul
 exit /b

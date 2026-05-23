@@ -1,4 +1,4 @@
-ï»¿@echo off
+@echo off
 set "settingName=CpuIdle"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -28,8 +28,8 @@ if "%~1" neq "/silent" (
     cls
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 powercfg /setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-2158492d58ad 1
 powercfg /setactive scheme_current
@@ -51,7 +51,7 @@ mode con: cols=46 lines=13
 
 echo.
 echo %ESC%[32m         Hyper Threading/SMT Detected
-echo   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€%ESC%[0m
+echo   ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤%ESC%[0m
 echo   You %ESC%[1mshould not disable idle states %ESC%[0mwhen
 echo   this feature is enabled as it makes the
 echo   overall CPU performance much worse.

@@ -1,5 +1,5 @@
-ï»¿@echo off
-:: Change to match the setting name (e.g., ç¡çœ , Indexing, etc.)
+@echo off
+:: Change to match the setting name (e.g., Ë¯Ãß, Indexing, etc.)
 set "settingName=NVidiaDisplayContainerContextMenu"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=1"
@@ -17,14 +17,14 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
 :: check if the service exists
-reg query "HKLM\SYSTEM\CurrentControlSet\æœåŠ¡\NVDisplay.ContainerLocalSystem" > nul 2>&1 || (
-    echo The NVIDIAæ˜¾ç¤ºå®¹å™¨ LS service does not exist, you cannot continue.
+reg query "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" > nul 2>&1 || (
+    echo The NVIDIA Display Container LS service does not exist, you cannot continue.
 	echo You may not have NVIDIA drivers installed.
 	echo]
     pause
@@ -39,11 +39,11 @@ reg add "HKCR\DesktopBackground\Shell\NVIDIAContainer" /v "MUIVerb" /t REG_SZ /d
 reg add "HKCR\DesktopBackground\Shell\NVIDIAContainer" /v "Position" /t REG_SZ /d "Bottom" /f > nul
 reg add "HKCR\DesktopBackground\Shell\NVIDIAContainer" /v "SubCommands" /t REG_SZ /d "" /f > nul
 reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer001" /v "HasLUAShield" /t REG_SZ /d "" /f > nul
-reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer001" /v "MUIVerb" /t REG_SZ /d "Enable NVIDIAæ˜¾ç¤ºå®¹å™¨ LS" /f > nul
-reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer001\command" /ve /t REG_SZ /d "\"%windir%\chenniXDesktop\2.ç³»ç»Ÿé…ç½®\é«˜çº§é…ç½®\æœåŠ¡\NVIDIAæ˜¾ç¤ºå®¹å™¨\Enable NVIDIAæ˜¾ç¤ºå®¹å™¨ LS (default).cmd"" /f > nul
+reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer001" /v "MUIVerb" /t REG_SZ /d "Enable NVIDIA Display Container LS" /f > nul
+reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer001\command" /ve /t REG_SZ /d "\"%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\¸ß¼¶ÅäÖÃ\·þÎñ\NVIDIAÏÔÊ¾ÈÝÆ÷\Enable NVIDIA Display Container LS (default).cmd"" /f > nul
 reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer002" /v "HasLUAShield" /t REG_SZ /d "" /f > nul
-reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer002" /v "MUIVerb" /t REG_SZ /d "Disable NVIDIAæ˜¾ç¤ºå®¹å™¨ LS" /f > nul
-reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer002\command" /ve /t REG_SZ /d "\"%windir%\chenniXDesktop\2.ç³»ç»Ÿé…ç½®\é«˜çº§é…ç½®\æœåŠ¡\NVIDIAæ˜¾ç¤ºå®¹å™¨\Disable NVIDIAæ˜¾ç¤ºå®¹å™¨ LS.cmd"" /f > nul
+reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer002" /v "MUIVerb" /t REG_SZ /d "Disable NVIDIA Display Container LS" /f > nul
+reg add "HKCR\DesktopBackground\shell\NVIDIAContainer\shell\NVIDIAContainer002\command" /ve /t REG_SZ /d "\"%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\¸ß¼¶ÅäÖÃ\·þÎñ\NVIDIAÏÔÊ¾ÈÝÆ÷\Disable NVIDIA Display Container LS.cmd"" /f > nul
 
 taskkill /f /im explorer.exe > nul 2>&1
 start explorer.exe

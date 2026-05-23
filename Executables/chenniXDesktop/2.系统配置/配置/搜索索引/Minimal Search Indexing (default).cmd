@@ -1,4 +1,4 @@
-ï»¿@echo off
+@echo off
 set "settingName=Indexing"
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -16,14 +16,14 @@ if not exist "%indexConfPath%" (
 )
 set "indexConf=call %indexConfPath%"
 
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 echo.
-echo Configuring minimal æœç´¢ç´¢å¼•...
+echo Configuring minimal ËÑË÷Ë÷Òı...
 %indexConf% /stop
 %indexConf% /cleanpolicies
-%indexConf% /include "%programdata%\Microsoft\Windows\å¼€å§‹èœå•\Programs"
+%indexConf% /include "%programdata%\Microsoft\Windows\¿ªÊ¼²Ëµ¥\Programs"
 %indexConf% /include "%windir%\chenniXDesktop"
 %indexConf% /exclude "%systemdrive%\Users"
 
@@ -35,7 +35,7 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows Search" /v SetupCompletedSuccessfully /
 if "%~1"=="/silent" exit /b
 
 echo.
-echo Minimal æœç´¢ç´¢å¼• has been configured.
+echo Minimal ËÑË÷Ë÷Òı has been configured.
 echo Press any key to exit...
 pause
 exit /b

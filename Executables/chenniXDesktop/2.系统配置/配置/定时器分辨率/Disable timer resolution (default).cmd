@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 
 set "___args="%~f0" %*"
 fltmc > nul 2>&1 || (
@@ -15,7 +15,7 @@ if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd
 
 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "GlobalTimerResolutionRequests" /f > nul 2>&1
 taskkill /f /im SetTimerResolution.exe > nul 2>&1
-schtasks /delete /tn "Force 定时器分辨率" /f > nul 2>&1
+schtasks /delete /tn "Force Timer Resolution" /f > nul 2>&1
 if "%~1"=="/silent" exit /b
 
 echo Finished, changes have been applied.

@@ -16,8 +16,8 @@ actions:
   # 禁用网络位置向导
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkDiscovery', value: 'DisableNetworkDiscovery', data: '1', type: REG_DWORD}
   # 恢复旧版右键菜单
-  - !registryKey: {path: 'HKCU\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c3b50bf5b7}\InprocServer32', operation: add}
-  - !registryValue: {path: 'HKCU\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c3b50bf5b7}\InprocServer32', value: '', data: '', type: REG_SZ}
+  - !registryKey: {path: 'HKCU\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32', operation: add, option: 'old-context-menu'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32', value: '', data: '', type: REG_SZ, option: 'old-context-menu'}
   # 禁用附近共享
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Shell', value: 'DisableNearbySharing', data: '1', type: REG_DWORD}
   # 开始菜单无推荐

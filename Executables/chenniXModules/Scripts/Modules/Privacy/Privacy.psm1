@@ -1,4 +1,5 @@
-﻿# Disables Advertising ID for privacy
+$windir = [Environment]::GetFolderPath('Windows')
+# Disables Advertising ID for privacy
 function Disable-AdvertisingID {
     reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f
     reg add "HKLM\Software\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f

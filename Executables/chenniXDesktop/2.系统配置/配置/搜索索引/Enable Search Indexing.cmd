@@ -1,4 +1,4 @@
-ï»¿@echo off
+@echo off
 set "settingName=Indexing"
 set "stateValue=2"
 set "scriptPath=%~f0"
@@ -16,14 +16,14 @@ if not exist "%indexConfPath%" (
 )
 set "indexConf=call %indexConfPath%"
 
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 echo.
-echo Enabling full æœç´¢ç´¢å¼•...
+echo Enabling full ËÑË÷Ë÷Òý...
 %indexConf% /stop
 %indexConf% /cleanpolicies
-%indexConf% /include "%programdata%\Microsoft\Windows\å¼€å§‹èœå•\Programs"
+%indexConf% /include "%programdata%\Microsoft\Windows\¿ªÊ¼²Ëµ¥\Programs"
 %indexConf% /include "%windir%\chenniXDesktop"
 %indexConf% /include "%systemdrive%\Users"
 
@@ -44,13 +44,13 @@ set regCmd=^>nul reg add "HKLM\Software\Microsoft\Windows Search\Gather\Windows\
 if "%~1"=="/silent" (%regCmd% "0" /f & exit /b)
 
 echo.
-:: Respect Power Settings when æœç´¢ç´¢å¼• to prevent performance loss during gaming or battery drain
+:: Respect Power Settings when ËÑË÷Ë÷Òý to prevent performance loss during gaming or battery drain
 choice /c:yn /n /m "Would you like to have indexing disable itself when on battery or gaming? [Y/N] "
 if %errorlevel%==1 %regCmd% "1" /f
 if %errorlevel%==2 %regCmd% "0" /f
 
 echo.
-echo Full æœç´¢ç´¢å¼• has been enabled.
+echo Full ËÑË÷Ë÷Òý has been enabled.
 echo Press any key to exit...
 pause > nul
 exit /b

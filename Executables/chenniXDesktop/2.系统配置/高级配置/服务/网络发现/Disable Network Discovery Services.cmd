@@ -1,6 +1,6 @@
 @echo off
-:: Change to match the setting name (e.g., ç¡çœ , Indexing, etc.)
-set "settingName=ç½‘ç»œDiscovery"
+:: Change to match the setting name (e.g., Ë¯Ãß, Indexing, etc.)
+set "settingName=NetworkDiscovery"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -17,13 +17,13 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
-:: Unpin 'ç½‘ç»œ' from Explorer sidebar
-call "%windir%\chenniXDesktop\3.é…ç½®\æ–‡ä»¶å…±äº«\ç½‘ç»œ Navigation Pane\Disable ç½‘ç»œ Navigation Pane (default).cmd" > nul
+:: Unpin 'ÍøÂç' from Explorer sidebar
+call "%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\ÅäÖÃ\ÎÄ¼þ¹²Ïí\ÍøÂçµ¼º½´°¸ñ\Disable Network Navigation Pane (default).cmd" > nul
 
 call "%windir%\chenniXModules\Scripts\setSvc.cmd" fdPHost 4
 call "%windir%\chenniXModules\Scripts\setSvc.cmd" FDResPub 4

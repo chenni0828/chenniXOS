@@ -1,4 +1,4 @@
-锘緻echo off
+@echo off
 set "settingName=UpdateNotifications"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "SetAutoRestartNotificationDisable" /t REG_DWORD /d 1 /f > nul
 reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "RestartNotificationsAllowed2" /t REG_DWORD /d 0 /f > nul
@@ -23,7 +23,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "SetUpdateNo
 if "%~1"=="/silent" exit /b
 
 echo.
-echo 鏇存柊閫氱煡 have been disabled.
+echo 更新通知 have been disabled.
 echo Press any key to exit...
 pause > nul
 exit /b

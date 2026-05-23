@@ -1,6 +1,6 @@
-ï»¿@echo off
-:: Change to match the setting name (e.g., ç¡çœ , Indexing, etc.)
-set "settingName=ç¼“è§£æŽªæ–½"
+@echo off
+:: Change to match the setting name (e.g., Ë¯Ãß, Indexing, etc.)
+set "settingName=Mitigations"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -17,8 +17,8 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 :: End of state and path update
 
@@ -44,12 +44,12 @@ for /f "tokens=3 skip=2" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Contr
     set "mitigation_mask=%%a"
 )
 
-:: Set all bits to 2 (Disable all process ç¼“è§£æŽªæ–½)
+:: Set all bits to 2 (Disable all process »º½â´ëÊ©)
 for /l %%a in (0,1,9) do (
     set "mitigation_mask=!mitigation_mask:%%a=2!"
 )
 
-:: Fix Valorant with ç¼“è§£æŽªæ–½ disabled - enable CFG
+:: Fix Valorant with »º½â´ëÊ© disabled - enable CFG
 set "enableCFGApps=valorant valorant-win64-shipping vgtray vgc"
 PowerShell -NoP -C "foreach ($a in $($env:enableCFGApps -split ' ')) {Set-ProcessMitigation -Name $a`.exe -Enable CFG}" > nul
 
@@ -62,7 +62,7 @@ bcdedit /set nx OptIn > nul
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationAuditOptions" /t REG_BINARY /d "%mitigation_mask%" /f > nul
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationOptions" /t REG_BINARY /d "%mitigation_mask%" /f > nul
 
-:: Disable file system ç¼“è§£æŽªæ–½
+:: Disable file system »º½â´ëÊ©
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v "ProtectionMode" /t REG_DWORD /d "0" /f > nul
 
 if "%~1" == "/silent" exit /b

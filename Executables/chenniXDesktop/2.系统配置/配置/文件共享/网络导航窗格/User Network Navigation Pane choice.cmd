@@ -1,5 +1,5 @@
-﻿@echo off
-set "settingName=网络NavigationPane"
+@echo off
+set "settingName=NetworkNavigationPane"
 set "stateValue=1"
 set "scriptPath=%~f0"
 
@@ -14,13 +14,13 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 
 reg delete "HKCU\SOFTWARE\Classes\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" /v "System.IsPinnedToNameSpaceTree" /f > nul 2>&1
 if "%~1"=="/silent" exit /b
 
-echo Finished, 网络 Navigation Pane is now enabled.
+echo Finished, ���� Navigation Pane is now enabled.
 pause > nul
 exit /b

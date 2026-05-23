@@ -1,5 +1,5 @@
-﻿@echo off
-set "settingName=工作区"
+@echo off
+set "settingName=Workplace"
 set "stateValue=0"
 set "scriptPath=%~f0"
 
@@ -14,16 +14,16 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
-call "%windir%\chenniXModules\Scripts\settingsPages.cmd" /hide 工作区 /silent
+call "%windir%\chenniXModules\Scripts\settingsPages.cmd" /hide workplace /silent
 
 if "%~1"=="/silent" exit /b
 
 echo.
-echo 工作区 settings page has been hidden.
+echo Workplace settings page has been hidden.
 pause
 exit /b

@@ -1,5 +1,5 @@
-ï»¿@echo off
-set "settingName=ç¡çœ "
+@echo off
+set "settingName=Sleep"
 set "stateValue=0"
 set "scriptPath=%~f0"
 
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 powercfg /setacvalueindex scheme_current 238c9fa8-0aad-41ed-83f4-97be242c8f20 25dfa149-5dd1-4736-b5ab-e8a37b5b8187 0
 powercfg /setacvalueindex scheme_current 238c9fa8-0aad-41ed-83f4-97be242c8f20 abfc2519-3608-4c2a-94ea-171b0ed546ab 0
@@ -28,15 +28,15 @@ powercfg /setactive scheme_current
 
 if "%~1" == "/silent" exit /b
 
-choice /n /c:yn /m "Would you like to disable ä¼‘çœ ? [Y/N]"
+choice /n /c:yn /m "Would you like to disable ÐÝÃß? [Y/N]"
 if %errorlevel%==1 (
-	call "%windir%\chenniXDesktop\3.é…ç½®\ä¼‘çœ \Disable ä¼‘çœ  (default).cmd" /silent
+	call "%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\ÅäÖÃ\ÐÝÃß\Disable Hibernation (default).cmd" /silent
 ) else (
-	call "%windir%\chenniXDesktop\3.é…ç½®\ä¼‘çœ \Enable ä¼‘çœ .cmd" /silent
+	call "%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\ÅäÖÃ\ÐÝÃß\Enable Hibernation.cmd" /silent
 )
 
 echo.
-echo ç¡çœ  has been disabled.
+echo Ë¯Ãß has been disabled.
 echo Press any key to exit...
 pause > nul
 exit /b

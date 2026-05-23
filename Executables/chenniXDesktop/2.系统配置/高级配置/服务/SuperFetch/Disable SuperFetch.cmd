@@ -1,5 +1,5 @@
-﻿@echo off
-:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
+@echo off
+:: Change to match the setting name (e.g., ˯��, Indexing, etc.)
 set "settingName=SuperFetch"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=0"
@@ -17,8 +17,8 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
@@ -34,13 +34,13 @@ set val=!val:rdyboost=!
 reg add "!key!" /v "LowerFilters" /t REG_MULTI_SZ /d "!val!" /f > nul
 
 :: Disable ReadyBoost
-reg add "HKLM\SYSTEM\CurrentControlSet\服务\rdyboost" /v "Start" /t REG_DWORD /d "4" /f > nul
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\rdyboost" /v "Start" /t REG_DWORD /d "4" /f > nul
 
 :: Remove ReadyBoost tab
 reg delete "HKCR\Drive\shellex\PropertySheetHandlers\{55B3A0BD-4D28-42fe-8CFB-FA3EDFF969B8}" /f > nul 2>&1
 
 :: Disable SysMain (Prefetch, Memory Management features)
-reg add "HKLM\SYSTEM\CurrentControlSet\服务\SysMain" /v "Start" /t REG_DWORD /d "4" /f > nul 
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "4" /f > nul 
 if "%~1"=="/silent" exit /b
 
 echo Finished, please reboot your device for changes to apply.

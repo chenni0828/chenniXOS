@@ -1,6 +1,6 @@
 @echo off
-:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
-set "settingName=打印"
+:: Change to match the setting name (e.g., ˯��, Indexing, etc.)
+set "settingName=Printing"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -17,8 +17,8 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if /i not "%~1"=="/silent" if /i not "%~1"=="/justcontext" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
@@ -26,7 +26,7 @@ setlocal EnableDelayedExpansion
 
 if "%~1"=="/silent" goto main
 
-echo Enabling 打印...
+echo Enabling ��ӡ...
 echo]
 choice /c:yn /n /m "Would you like to add 'Print' to the context menu? [Y/N] "
 if "%errorlevel%" neq "1" goto :main
@@ -67,7 +67,7 @@ for /f "tokens=6 delims=[.] " %%a in ('ver') do (
 )
 
 :main
-echo Enabling 服务...
+echo Enabling ����...
 call "%windir%\chenniXModules\Scripts\setSvc.cmd" Spooler 2
 call "%windir%\chenniXModules\Scripts\setSvc.cmd" PrintWorkFlowUserSvc 3
 
@@ -75,10 +75,10 @@ call "%windir%\chenniXModules\Scripts\settingsPages.cmd" /unhide printers
 
 echo Enabling features...
 for %%a in (
-    "打印-Foundation-Features"
-    "打印-Foundation-Internet打印-Client"
-    "打印-XPS服务-Features"
-    "打印-PrintToPDF服务-Features"
+    "Printing-Foundation-Features"
+    "Printing-Foundation-InternetPrinting-Client"
+    "Printing-XPSServices-Features"
+    "Printing-PrintToPDFServices-Features"
 ) do (
     dism /Online /Enable-Feature /FeatureName:"%%a" /NoRestart > nul
 )

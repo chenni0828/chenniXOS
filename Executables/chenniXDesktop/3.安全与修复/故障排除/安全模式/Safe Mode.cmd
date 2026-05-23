@@ -1,8 +1,8 @@
-﻿@echo off
-:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
+@echo off
+:: Change to match the setting name (e.g., ˯��, Indexing, etc.)
 set "settingName=SafeMode"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
-set "stateValue==3"
+set "stateValue=3"
 set "scriptPath=%~f0"
 
 set "___args="%~f0" %*"
@@ -17,8 +17,8 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 :: End of state and path update
 

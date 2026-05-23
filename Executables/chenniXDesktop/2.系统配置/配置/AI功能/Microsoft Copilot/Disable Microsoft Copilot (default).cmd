@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 set "settingName=Copilot"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 
 echo Disabling and uninstalling Copilot...
@@ -23,7 +23,7 @@ echo Disabling and uninstalling Copilot...
 powershell -NoP -NonI "Get-AppxPackage -AllUsers Microsoft.Copilot* | Remove-AppxPackage -AllUsers"
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCopilotButton" /t REG_DWORD /d "0" /f > nul
 reg add "HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t REG_DWORD /d "1" /f > nul
-if /I not "%~2"=="/noAction" powershell -command "stop-process -name explorer –force"
+if /I not "%~2"=="/noAction" powershell -command "stop-process -name explorer �Cforce"
 
 if "%~1"=="/silent" exit /b
 

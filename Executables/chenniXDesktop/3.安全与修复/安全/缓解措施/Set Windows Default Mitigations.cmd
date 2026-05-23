@@ -1,7 +1,7 @@
-ï»¿@echo off
+@echo off
 
-:: Change to match the setting name (e.g., ç¡çœ , Indexing, etc.)
-set "settingName=ç¼“è§£æŽªæ–½"
+:: Change to match the setting name (e.g., Ë¯Ãß, Indexing, etc.)
+set "settingName=Mitigations"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -18,8 +18,8 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 :: End of state and path update
 
@@ -30,7 +30,7 @@ reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Managem
 :: Enable Structured Exception Handling Overwrite Protection (SEHOP)
 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /f > nul 2>&1
 
-:: Set default ç¼“è§£æŽªæ–½
+:: Set default »º½â´ëÊ©
 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationAuditOptions" /f > nul 2>&1
 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationOptions" /f > nul 2>&1
 
@@ -39,11 +39,11 @@ reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "Mi
 :: https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/bcdedit--set#verification-settings
 bcdedit /set nx OptIn > nul
 
-:: Enable file system ç¼“è§£æŽªæ–½
+:: Enable file system »º½â´ëÊ©
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v "ProtectionMode" /t REG_DWORD /d "1" /f > nul
 
 :: Default Hyper-V Settings
-reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v "MinVmVersionForCpuBasedç¼“è§£æŽªæ–½" /f > nul 2>&1
+reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v "MinVmVersionForCpuBased»º½â´ëÊ©" /f > nul 2>&1
 
 echo Finished, please reboot your device for changes to apply.
 pause

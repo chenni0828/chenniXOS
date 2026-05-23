@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 set "settingName=Widgets"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 echo]
 echo Disabling News and Interests (called Widgets in Windows 11)...
@@ -23,7 +23,7 @@ echo Disabling News and Interests (called Widgets in Windows 11)...
 (
     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v "EnableFeeds" /t REG_DWORD /d "0" /f
     reg add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v "AllowNewsAndInterests" /t REG_DWORD /d "0" /f
-    if /I not "%~2"=="/noAction" powershell -command "stop-process -name explorer –force"
+    if /I not "%~2"=="/noAction" powershell -command "stop-process -name explorer �Cforce"
 ) > nul 2>&1
 if "%~1"=="/silent" exit /b
 

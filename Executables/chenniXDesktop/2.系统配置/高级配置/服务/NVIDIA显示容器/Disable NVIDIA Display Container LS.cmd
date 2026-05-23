@@ -1,5 +1,5 @@
 @echo off
-:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
+:: Change to match the setting name (e.g., ˯��, Indexing, etc.)
 set "settingName=NVidiaDisplayContainer"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=0"
@@ -17,21 +17,21 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
 :: check if the service exists
-reg query "HKLM\SYSTEM\CurrentControlSet\服务\NVDisplay.ContainerLocalSystem" > nul 2>&1 || (
-    echo The NVIDIA显示容器 LS service does not exist, you cannot continue.
+reg query "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" > nul 2>&1 || (
+    echo The NVIDIA Display Container LS service does not exist, you cannot continue.
 	echo You may not have NVIDIA drivers installed.
     echo]
     pause
     exit /b 1
 )
 
-echo Disabling the 'NVIDIA显示容器 LS' service will stop the NVIDIA Control Panel from working.
+echo Disabling the 'NVIDIA Display Container LS' service will stop the NVIDIA Control Panel from working.
 echo It will most likely break other NVIDIA driver features as well.
 echo These scripts are aimed at users that have a stripped driver, and people that barely touch the NVIDIA Control Panel.
 echo]

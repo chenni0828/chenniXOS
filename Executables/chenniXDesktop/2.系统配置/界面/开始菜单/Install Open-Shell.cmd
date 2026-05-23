@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 
 set "___args="%~f0" %*"
 fltmc > nul 2>&1 || (

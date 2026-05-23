@@ -1,37 +1,37 @@
-锘緻echo off
+@echo off
 set "title=call :title"
-set "鏈嶅姟Path=%windir%\chenniXDesktop\2.绯荤粺閰嶇疆\楂樼骇閰嶇疆\鏈嶅姟"
-if not exist "%鏈嶅姟Path%" (
-	echo 鏈嶅姟 in Atlas folder not found, can't continue.
+set "servicesPath=%windir%\chenniXDesktop\2.系统配置\高级配置\服务"
+if not exist "%servicesPath%" (
+	echo 服务 in chenniX folder not found, can't continue.
 	if "%*"=="" pause
 	exit /b 1
 )
 if "%~1"=="/silent" goto main
 
-:: TI required for full 鏈嶅姟 restore
+:: TI required for full 服务 restore
 whoami /user | find /i "S-1-5-18" > nul 2>&1 || (
 	call RunAsTI.cmd "%~f0" %*
 	exit /b
 )
 
-echo This will reset the configuration of 鏈嶅姟 in the Atlas folder.
-echo Disabling 鏈嶅姟 often breaks features, and if you're experiencing an issue, this might help.
+echo This will reset the configuration of 服务 in the chenniX folder.
+echo Disabling 服务 often breaks features, and if you're experiencing an issue, this might help.
 echo]
 choice /c:yn /n /m "Continue? [Y/N] "
 if %errorlevel% neq 1 exit /b
 
 :main
-%title% "Enabling 鏈嶅姟 in the Atlas folder... This might take a while."
-for /f "usebackq tokens=*" %%a in (`dir /b /s "%windir%\chenniXDesktop\2.绯荤粺閰嶇疆\楂樼骇閰嶇疆\鏈嶅姟" ^| find "(default)"`) do (
+%title% "Enabling 服务 in the chenniX folder... This might take a while."
+for /f "usebackq tokens=*" %%a in (`dir /b /s "%windir%\chenniXDesktop\2.系统配置\高级配置\服务" ^| find "(default)"`) do (
 	call :run "%%a"
 	start /min /high /wait cmd /c "%%a" /silent
 )
 
 set "atlasOther=%windir%\chenniXModules\Other"
-set "win鏈嶅姟=%atlasOther%\win鏈嶅姟.reg"
-set "atlas鏈嶅姟=%atlasOther%\atlas鏈嶅姟.reg"
-if exist "%win鏈嶅姟%" (
-	if exist "%atlas鏈嶅姟%" call :fullRestore
+set "winServices=%atlasOther%\winServices.reg"
+set "atlasServices=%atlasOther%\atlasServices.reg"
+if exist "%winServices%" (
+	if exist "%atlasServices%" call :fullRestore
 )
 
 %title% "Finished."
@@ -42,16 +42,16 @@ if "%errorlevel%"=="1" shutdown /r /t 0
 exit /b
 
 :fullRestore
-%title% "Full 鏈嶅姟 restoration"
+%title% "Full 服务 restoration"
 echo What would you like to do?
 echo]
-echo 1) Restore a full 鏈嶅姟 backup of the default Windows 鏈嶅姟
-echo 2) Restore a full 鏈嶅姟 backup of the default Atlas 鏈嶅姟
+echo 1) Restore a full 服务 backup of the default Windows 服务
+echo 2) Restore a full 服务 backup of the default chenniX services
 echo 3) Nothing
 echo]
 choice /c:123 /n /m "Choose a number: [1/2/3] "
-if "%errorlevel%"=="1" reg import "%win鏈嶅姟%" > nul
-if "%errorlevel%"=="2" reg import "%atlas鏈嶅姟%" > nul
+if "%errorlevel%"=="1" reg import "%winServices%" > nul
+if "%errorlevel%"=="2" reg import "%atlasServices%" > nul
 exit /b
 
 

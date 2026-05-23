@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 set "settingName=Copilot"
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 
 :: Check for Edge support
@@ -33,7 +33,7 @@ reg query HKCU\Software\Microsoft\Windows\Shell\Copilot /v IsCopilotAvailable 2>
 if %errorlevel%==0 (call :app) else (reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCopilotButton" /t REG_DWORD /d "1" /f > nul)
 
 reg delete "HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /f > nul 2>&1
-if /I not "%~2"=="/noAction" powershell -command "stop-process -name explorer –force"
+if /I not "%~2"=="/noAction" powershell -command "stop-process -name explorer �Cforce"
 if "%~1"=="/silent" exit /b
 
 :finish
@@ -45,7 +45,7 @@ exit /b
 
 :app
 echo NOTE: Copilot on the taskbar isn't available, the app will be installed instead.
-set "appText=You can find the Copilot app in your 开始菜单."
+set "appText=You can find the Copilot app in your ��ʼ�˵�."
 call "%windir%\chenniXModules\Scripts\wingetCheck.cmd" /nodashes
 if %errorlevel% neq 0 exit /b 1
 echo Installing Copilot...

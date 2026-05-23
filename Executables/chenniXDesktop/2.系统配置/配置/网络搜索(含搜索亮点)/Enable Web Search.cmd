@@ -1,4 +1,4 @@
-ï»¿@echo off
+@echo off
 set "settingName=WebSearch"
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 call "%windir%\chenniXModules\Scripts\wingetCheck.cmd"
 if %errorlevel% neq 0 exit /b 1
@@ -23,12 +23,12 @@ if %errorlevel% neq 0 exit /b 1
 echo Enabling Web Search ^& Search Highlights...
 
 echo]
-set key="HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowSearchToUseä½ç½®
-choice /c:yn /n /m "Would you like web search to use your ä½ç½® for results? [Y/N] "
+set key="HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowSearchToUseLocation
+choice /c:yn /n /m "Would you like web search to use your Î»ÖÃ for results? [Y/N] "
 if %errorlevel%==1 reg delete %key% /f > nul 2>&1
 if %errorlevel%==2 reg add %key% /t REG_DWORD /d 0 /f > nul
 
-:: Enable æœç´¢ç´¢å¼• to prevent a visual bug
+:: Enable ËÑË÷Ë÷Òı to prevent a visual bug
 for /f "tokens=6 delims=[.] " %%a in ('ver') do (if %%a GEQ 22000 sc query wsearch | find "STOPPED" > nul && call :searchIndexBug)
 
 :: Install the Bing search provider
@@ -67,7 +67,7 @@ exit /b
 
 :searchIndexBug
 echo]
-echo On Windows 11, having æœç´¢ç´¢å¼• disabled causes a graphical bug in web search.
-choice /c:yn /n /m "Would you like to enable æœç´¢ç´¢å¼• to fix it? [Y/N] "
-if %errorlevel%==1 call "%windir%\chenniXDesktop\3.é…ç½®\æœç´¢ç´¢å¼•\Enable æœç´¢ç´¢å¼•.cmd" /silent & set ____restart=true
+echo On Windows 11, having ËÑË÷Ë÷Òı disabled causes a graphical bug in web search.
+choice /c:yn /n /m "Would you like to enable ËÑË÷Ë÷Òı to fix it? [Y/N] "
+if %errorlevel%==1 call "%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\ÅäÖÃ\ËÑË÷Ë÷Òı\Enable Search Indexing.cmd" /silent & set ____restart=true
 exit /b

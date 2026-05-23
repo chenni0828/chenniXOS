@@ -52,9 +52,9 @@ actions:
     exeDir: true
 
   - !cmd:
-    command: 'label C: chenniX'
+    command: 'label C: chenniXOS'
     wait: true
     runas: currentUserElevated
   - !cmd:
-    command: 'bcdedit /set {current} description "chenniXOS v0.2.2"'
+    command: 'bcdedit /set {current} description "chenniXOS"'
     wait: true

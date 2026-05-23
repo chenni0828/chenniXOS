@@ -1,5 +1,5 @@
-﻿@echo off
-:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
+@echo off
+:: Change to match the setting name (e.g., ˯��, Indexing, etc.)
 set "settingName=AutomaticRepair"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "scriptPath=%~f0"
@@ -16,7 +16,7 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 :: End of state and path update
 :: https://winaero.com/how-to-disable-automatic-repair-at-windows-10-boot
@@ -36,12 +36,12 @@ if %ERRORLEVEL% == 1 (
 
 :disable
 bcdedit /set {current} bootstatuspolicy IgnoreAllFailures > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d "0" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d "0" /f > nul
 goto finish
 
 :enable
 bcdedit /set {current} bootstatuspolicy DisplayAllFailures > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d "1" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d "1" /f > nul
 goto finish
 
 :finish

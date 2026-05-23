@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 set "script=%windir%\chenniXModules\Scripts\ScriptWrappers\ConfigVBS.ps1"
 if not exist "%script%" (
 	echo Script not found.

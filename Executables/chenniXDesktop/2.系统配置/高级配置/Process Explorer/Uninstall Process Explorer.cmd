@@ -1,5 +1,5 @@
-锘緻echo off
-:: Change to match the setting name (e.g., 鐫＄湢, Indexing, etc.)
+@echo off
+:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=ProcessExplorer"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=0"
@@ -17,8 +17,8 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 :: End of state and path update
 
@@ -35,7 +35,7 @@ if %ERRORLEVEL% NEQ 0 echo info: Process Explorer uninstallation failed, reverti
 :otherChanges
 sc config pcw start=boot > nul
 reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe" /v "Debugger" /f > nul 2>&1
-del /f /q "%ProgramData%\Microsoft\Windows\寮�濮嬭彍鍗昞Programs\Process Explorer.lnk" > nul
+del /f /q "%ProgramData%\Microsoft\Windows\开始菜单\Programs\Process Explorer.lnk" > nul
 
 :: Check if Task Manager is still broken
 taskmgr.exe > nul 2>&1
@@ -43,7 +43,7 @@ if %ERRORLEVEL% NEQ 0 (
     echo Warning: Task Manager is still not working, applying fallback fix...
     
     reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe" /v "Debugger" /f > nul
-    del /f /q "%ProgramData%\Microsoft\Windows\寮�濮嬭彍鍗昞Programs\Process Explorer.lnk" > nul
+    del /f /q "%ProgramData%\Microsoft\Windows\开始菜单\Programs\Process Explorer.lnk" > nul
     winget uninstall -e --id Microsoft.Sysinternals.ProcessExplorer --force --purge --disable-interactivity --accept-source-agreements -h > nul 2>&1
     sc config pcw start=boot > nul
 

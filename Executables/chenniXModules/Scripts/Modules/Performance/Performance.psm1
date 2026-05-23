@@ -1,4 +1,5 @@
-﻿# Optimizes NTFS for performance
+$windir = [Environment]::GetFolderPath('Windows')
+# Optimizes NTFS for performance
 function Optimize-NTFS {
     fsutil behavior set disablelastaccess 1
     fsutil behavior set disable8dot3 1

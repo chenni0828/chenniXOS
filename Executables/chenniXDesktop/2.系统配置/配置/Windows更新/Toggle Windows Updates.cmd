@@ -1,4 +1,4 @@
-锘緻echo off
+@echo off
 setlocal EnableDelayedExpansion
 set "settingName=ToggleWindowsUpdates"
 set "scriptPath=%~f0"
@@ -14,7 +14,7 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 for /f "tokens=3" %%a in ('sc qc wuauserv ^| findstr /i START_TYPE') do (
     set "WUState=%%a"
@@ -31,8 +31,8 @@ if /i "!WUState!"=="DISABLED" (
 :menu
 cls
 echo Windows Update Toggle
-echo 1. Disable Windows鏇存柊 !disableState!
-echo 2. Enable Windows鏇存柊 !enableState!
+echo 1. Disable Windows更新 !disableState!
+echo 2. Enable Windows更新 !enableState!
 echo 3. Exit
 echo.
 set /p choice=Select an option [1-3]: 
@@ -50,9 +50,9 @@ sc config wuauserv start= disabled >nul 2>&1
 schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\sih" /Disable >nul 2>&1
 schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\sihboot" /Disable >nul 2>&1
 
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d 0 /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d 0 /f > nul
 
-echo Windows鏇存柊 have been disabled.
+echo Windows更新 have been disabled.
 call :askReboot
 goto :eof
 
@@ -64,9 +64,9 @@ sc start wuauserv >nul 2>&1
 schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\sih" /Enable >nul 2>&1
 schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\sihboot" /Enable >nul 2>&1
 
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d 1 /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d 1 /f > nul
 
-echo Windows鏇存柊 have been enabled.
+echo Windows更新 have been enabled.
 call :askReboot
 goto :eof
 

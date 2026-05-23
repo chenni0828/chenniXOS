@@ -1,5 +1,5 @@
-锘緻echo off
-:: Change to match the setting name (e.g., 鐫＄湢, Indexing, etc.)
+@echo off
+:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
 set "settingName=HighestMode"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "scriptPath=%~f0"
@@ -16,13 +16,13 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 :: End of state and path update
 :: https://winaero.com/how-to-disable-windows-8-boot-logo-spining-icon-and-some-other-hidden-settings
 
 echo Enables boot applications to use the highest graphical mode exposed by the firmware.
-echo Makes 瀹夊叏妯″紡 and booting use the highest resolution.
+echo Makes 安全模式 and booting use the highest resolution.
 echo]
 echo What would you like to do?
 echo [1] Disable (default)
@@ -37,12 +37,12 @@ if %ERRORLEVEL% == 1 (
 
 :disable
 bcdedit /deletevalue {globalsettings} highestmode > nul 2>&1
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d "0" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d "0" /f > nul
 goto finish
 
 :enable
 bcdedit /set {globalsettings} highestmode true > nul
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d "1" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d "1" /f > nul
 goto finish
 
 :finish

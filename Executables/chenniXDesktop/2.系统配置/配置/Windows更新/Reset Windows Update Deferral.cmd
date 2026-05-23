@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 setlocal
 
 set "settingNameFeature=FeatureUpdateDeferrals"
@@ -18,13 +18,13 @@ fltmc > nul 2>&1 || (
 )
 
 :main
-reg add "HKLM\SOFTWARE\chenniXOS\服务%settingNameFeature%" /v state /t REG_DWORD /d %stateValue% /f >nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务%settingNameFeature%" /v path /t REG_SZ /d "%scriptPath%" /f >nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务%settingNameFeature%" /v days /t REG_DWORD /d 0 /f >nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingNameFeature%" /v state /t REG_DWORD /d %stateValue% /f >nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingNameFeature%" /v path /t REG_SZ /d "%scriptPath%" /f >nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingNameFeature%" /v days /t REG_DWORD /d 0 /f >nul
 
-reg add "HKLM\SOFTWARE\chenniXOS\服务%settingNameQuality%" /v state /t REG_DWORD /d %stateValue% /f >nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务%settingNameQuality%" /v path /t REG_SZ /d "%scriptPath%" /f >nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务%settingNameQuality%" /v days /t REG_DWORD /d 0 /f >nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingNameQuality%" /v state /t REG_DWORD /d %stateValue% /f >nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingNameQuality%" /v path /t REG_SZ /d "%scriptPath%" /f >nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingNameQuality%" /v days /t REG_DWORD /d 0 /f >nul
 
 echo Resetting Windows Update deferral policies...
 

@@ -1,3 +1,4 @@
+$windir = [Environment]::GetFolderPath('Windows')
 # PowerShell Module: SystemOptimizationModule.psm1
 
 # Function to add and set the chenniX themes by default
@@ -282,11 +283,6 @@ function Disable-TaskViewOnTaskbar {
     reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowTaskViewButton" /t REG_DWORD /d 0 /f
 }
 
-# Function to set taskbar alignment to left
-function Set-TaskbarAlignLeft {
-    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarAl" /t REG_DWORD /d 0 /f
-}
-
 # Function to add network sharing shortcut
 function Add-NetworkSharingShortcut {
     & "$windir\chenniXModules\initPowerShell.ps1"
@@ -325,14 +321,14 @@ function Set-StartMenu {
             Write-Error "Couldn't find AppData value for $sid!"
         } else {
             Write-Output "Copying default layout XML"
-            Copy-Item -Path "$windir\chenniXModules\Other\Layout.xml" -Destination "$appdata\Microsoft\Windows\Shell\LayoutModification.xml" -Force
+            Copy-Item -Path "$windir\chenniXModules\Other\Layout.xml" -Destination "$appData\Microsoft\Windows\Shell\LayoutModification.xml" -Force
             
             if (!$default) {
                 Write-Output "Clearing Start Menu pinned items"
     
-                $packages = Get-ChildItem -Path "$appdata\Packages" -Directory | Where-Object { $_.Name -match "Microsoft.Windows.StartMenuExperienceHost" }
+                $packages = Get-ChildItem -Path "$appData\Packages" -Directory | Where-Object { $_.Name -match "Microsoft.Windows.StartMenuExperienceHost" }
                 foreach ($package in $packages) {
-                    $bins = Get-ChildItem -Path "$appdata\Packages\$($package.Name)\LocalState" -File | Where-Object { $_.Name -like "start*.bin" }
+                    $bins = Get-ChildItem -Path "$appData\Packages\$($package.Name)\LocalState" -File | Where-Object { $_.Name -like "start*.bin" }
                     foreach ($bin in $bins.FullName) {
                         Remove-Item -Path $bin -Force
                     }
@@ -496,7 +492,6 @@ function Invoke-AllQolOptimizations {
     Disable-WindowsChat
     Add-EndTaskToTaskbar
     Disable-TaskViewOnTaskbar
-    Set-TaskbarAlignLeft
     Add-NetworkSharingShortcut
     Set-BootConfiguration
     Disable-WallpaperCompression

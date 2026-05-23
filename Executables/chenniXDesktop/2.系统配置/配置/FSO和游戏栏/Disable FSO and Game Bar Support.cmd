@@ -1,4 +1,4 @@
-锘緻echo off
+@echo off
 set "settingName=FSOGameBar"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -10,16 +10,16 @@ whoami /user | find /i "S-1-5-18" > nul 2>&1 || (
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 (
-    reg add "HKCU\System\GameConfigStore" /v "GameDVR_DSE琛屼负" /t REG_DWORD /d "2" /f
+    reg add "HKCU\System\GameConfigStore" /v "GameDVR_DSEBehavior" /t REG_DWORD /d "2" /f
     reg add "HKCU\System\GameConfigStore" /v "GameDVR_DXGIHonorFSEWindowsCompatible" /t REG_DWORD /d "1" /f
     reg add "HKCU\System\GameConfigStore" /v "GameDVR_EFSEFeatureFlags" /t REG_DWORD /d "0" /f
-    reg add "HKCU\System\GameConfigStore" /v "GameDVR_FSE琛屼负" /t REG_DWORD /d "2" /f
-    reg add "HKCU\System\GameConfigStore" /v "GameDVR_FSE琛屼负Mode" /t REG_DWORD /d "2" /f
-    reg add "HKCU\System\GameConfigStore" /v "GameDVR_HonorUserFSE琛屼负Mode" /t REG_DWORD /d "1" /f
+    reg add "HKCU\System\GameConfigStore" /v "GameDVR_FSEBehavior" /t REG_DWORD /d "2" /f
+    reg add "HKCU\System\GameConfigStore" /v "GameDVR_FSEBehaviorMode" /t REG_DWORD /d "2" /f
+    reg add "HKCU\System\GameConfigStore" /v "GameDVR_HonorUserFSEBehaviorMode" /t REG_DWORD /d "1" /f
 
     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v "__COMPAT_LAYER" /t REG_SZ /d "~ DISABLEDXMAXIMIZEDWINDOWEDMODE" /f
 
@@ -41,7 +41,7 @@ Get-AppxPackage *xboxgamingoverlay* | Remove-AppxPackage -Confirm:$false
 if "%~1"=="/silent" exit /b
 
 echo.
-echo FSO鍜屾父鎴忔爮 have been disabled.
+echo FSO和游戏栏 have been disabled.
 echo Press any key to exit...
 pause > nul
 exit /b

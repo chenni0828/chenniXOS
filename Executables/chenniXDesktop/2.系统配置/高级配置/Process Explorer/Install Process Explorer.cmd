@@ -1,5 +1,5 @@
-﻿@echo off
-:: Change to match the setting name (e.g., 睡眠, Indexing, etc.)
+@echo off
+:: Change to match the setting name (e.g., ˯��, Indexing, etc.)
 set "settingName=ProcessExplorer"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=1"
@@ -17,8 +17,8 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 :: End of state and path update
 
@@ -34,10 +34,10 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-echo Creating the 开始菜单 shortcut...
+echo Creating the ��ʼ�˵� shortcut...
 PowerShell -NoP -C "$WshShell = New-Object -comObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut("""$([Environment]::GetFolderPath('CommonStartMenu'))\Programs\Process Explorer.lnk"""); $Shortcut.TargetPath = """$([Environment]::GetFolderPath('Windows'))\chenniXModules\Apps\ProcessExplorer\procexp.exe"""; $Shortcut.Save()" > nul
 if %ERRORLEVEL% NEQ 0 (
-	echo Process Explorer shortcut could not be created in the 开始菜单!
+	echo Process Explorer shortcut could not be created in the ��ʼ�˵�!
 )
 
 echo Configuring Process Explorer...

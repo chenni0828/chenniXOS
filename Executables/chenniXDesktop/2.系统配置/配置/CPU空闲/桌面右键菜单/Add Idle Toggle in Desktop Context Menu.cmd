@@ -1,4 +1,4 @@
-ï»¿@echo off
+@echo off
 set "settingName=AutomaticUpdates"
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -14,22 +14,22 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 
 reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle" /v "Icon" /d "powercpl.dll" /f
 reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle" /v "SubCommands" /d "" /f
 reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle" /v "Position" /d "Bottom" /f
-reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle" /v "MUIVerb" /d "CPUç©ºé—²" /f
+reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle" /v "MUIVerb" /d "CPU¿ÕÏÐ" /f
 
 reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle" /v "MUIVerb" /d "Disable Idle" /f
 reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle" /v "Icon" /d "powercpl.dll" /f
-reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle\Command" /d "cmd /c \"\"%%windir%%\\chenniXDesktop\\3. General Configuration\\CPUç©ºé—²\\Disable Idle.cmd\"\" /silent" /f
+reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle\Command" /d "cmd /c \"\"%%windir%%\\chenniXDesktop\\2.ÏµÍ³ÅäÖÃ\ÅäÖÃ\\CPU¿ÕÏÐ\\Disable Idle.cmd\"\" /silent" /f
 
 reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle\Command" /v "Icon" /d "powercpl.dll" /f
 reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle" /v "MUIVerb" /d "Enable Idle" /f
-reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle\Command" /d "cmd /c \"\"%%windir%%\\chenniXDesktop\\3. General Configuration\\CPUç©ºé—²\\Enable Idle (default).cmd\"\" /silent" /f
+reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle\Command" /d "cmd /c \"\"%%windir%%\\chenniXDesktop\\2.ÏµÍ³ÅäÖÃ\ÅäÖÃ\\CPU¿ÕÏÐ\\Enable Idle (default).cmd\"\" /silent" /f
 
 
 :: Breaks 'Receive updates for other Microsoft products'
@@ -37,7 +37,7 @@ reg add "HKEY_CLASSES_ROOT\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle\Com
 if "%~1"=="/silent" exit /b
 
 echo.
-echo è‡ªåŠ¨æ›´æ–° have been enabled.
+echo ×Ô¶¯¸üÐÂ have been enabled.
 echo Press any key to exit...
 pause > nul
 exit /b

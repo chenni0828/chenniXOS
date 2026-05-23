@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 set "settingName=MicrosoftStore"
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -16,8 +16,8 @@ fltmc > nul 2>&1 || (
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\服务\%settingName%" /v path  /t REG_SZ    /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path  /t REG_SZ    /d "%scriptPath%" /f > nul
 
 powershell -NoP -NonI -Command "Get-AppxPackage -AllUsers Microsoft.WindowsStore | Remove-AppxPackage" > nul
 

@@ -1,4 +1,4 @@
-锘緻echo off
+@echo off
 set "settingName=FileSharing"
 set "stateValue=1"
 set "scriptPath=%~f0"
@@ -22,14 +22,14 @@ fltmc > nul 2>&1 || (
     exit /b
 )
 
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\鏈嶅姟\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 powershell -EP Bypass -NoP -File "%script%"
 if "%~1"=="/silent" exit /b
 
 choice /c:yn /n /m "Finished, would you like to restart now to apply the changes? [Y/N] "
 if %ERRORLEVEL% == 1 shutdown /r /t 0
-echo Finished, 鏂囦欢鍏变韩 is now enabled.
+echo Finished, 文件共享 is now enabled.
 pause > nul
 exit /b

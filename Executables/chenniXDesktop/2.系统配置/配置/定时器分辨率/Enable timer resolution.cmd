@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 
 set "___args="%~f0" %*"
 fltmc > nul 2>&1 || (
@@ -14,8 +14,8 @@ fltmc > nul 2>&1 || (
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "GlobalTimerResolutionRequests" /t REG_DWORD /d "1" /f > nul
-schtasks /create /tn "Force 定时器分辨率" /xml "%windir%\chenniXModules\Other\Force 定时器分辨率.xml" /f > nul
-schtasks /run /tn "Force 定时器分辨率" > nul
+schtasks /create /tn "Force Timer Resolution" /xml "%windir%\chenniXModules\Other\Force Timer Resolution.xml" /f > nul
+schtasks /run /tn "Force Timer Resolution" > nul
 if "%~1"=="/silent" exit /b
 
 echo Finished, please reboot your device for changes to apply.

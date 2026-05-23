@@ -1,6 +1,6 @@
-ï»¿@echo off
-:: Change to match the setting name (e.g., ç¡çœ , Indexing, etc.)
-set "settingName=è“ç‰™"
+@echo off
+:: Change to match the setting name (e.g., Ë¯Ãß, Indexing, etc.)
+set "settingName=Bluetooth"
 :: Change to 0 (Disabled) or 1 (Enabled/Minimal) etc
 set "stateValue=0"
 set "scriptPath=%~f0"
@@ -17,17 +17,17 @@ fltmc > nul 2>&1 || (
 )
 
 :: Update Registry (State and Path)
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
-reg add "HKLM\SOFTWARE\chenniXOS\æœåŠ¡\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v state /t REG_DWORD /d %stateValue% /f > nul
+reg add "HKLM\SOFTWARE\chenniXOS\Services\%settingName%" /v path /t REG_SZ /d "%scriptPath%" /f > nul
 
 if not "%~1"=="/silent" call "%windir%\chenniXModules\Scripts\serviceWarning.cmd" %*
 
-echo Disabling è“ç‰™... This might take a minute.
+echo Disabling À¶ÑÀ... This might take a minute.
 
 :main
-:: Disable è“ç‰™ drivers and æœåŠ¡
+:: Disable À¶ÑÀ drivers and ·þÎñ
 for %%a in (
-	"è“ç‰™UserService"
+	"BluetoothUserService"
 	"BTAGService"
 	"BthA2dp"
 	"BthAvctpSvc"
@@ -40,7 +40,7 @@ for %%a in (
 	"bthserv"
 	"BTHUSB"
 	"HidBth"
-	"Microsoft_è“ç‰™_AvrcpTransport"
+	"Microsoft_Bluetooth_AvrcpTransport"
 	"RFCOMM"
 ) do (
 	call "%windir%\chenniXModules\Scripts\setSvc.cmd" %%~a 4
@@ -49,14 +49,14 @@ for %%a in (
 :: Seems to not exist sometimes
 call "%windir%\chenniXModules\Scripts\setSvc.cmd" BthPan 4 > nul 2>&1
 
-:: Disable è“ç‰™ devices
-call "%windir%\chenniXModules\Scripts\toggleDev.cmd" -Silent '*è“ç‰™*'
+:: Disable À¶ÑÀ devices
+call "%windir%\chenniXModules\Scripts\toggleDev.cmd" -Silent '*Bluetooth*'
 
-:: Disable in å‘é€åˆ° context menu
-call "%windir%\chenniXDesktop\4.ç•Œé¢\å³é”®èœå•\å‘é€åˆ°\Debloat å‘é€åˆ° Context Menu.cmd" -Disable @('è“ç‰™')
+:: Disable in ·¢ËÍµ½ context menu
+call "%windir%\chenniXDesktop\2.ÏµÍ³ÅäÖÃ\½çÃæ\ÓÒ¼ü²Ëµ¥\·¢ËÍµ½\Debloat Send To Context Menu.cmd" -Disable @('Bluetooth')
 
 :: https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-connectivity
-reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Connectivity\Allowè“ç‰™" /v "value" /t REG_DWORD /d "0" /f > nul
+reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Connectivity\AllowBluetooth" /v "value" /t REG_DWORD /d "0" /f > nul
 
 if "%~1" == "/silent" exit
 

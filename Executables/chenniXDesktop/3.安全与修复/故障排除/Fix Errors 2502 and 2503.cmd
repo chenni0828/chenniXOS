@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 
 :: Permissions taken from stock and functional Windows 11 for reference
 
