@@ -1,0 +1,18 @@
+---
+title: ntfs优化
+description: 
+onUpgrade: false
+actions:
+  # 禁用 NTFS 最后访问时间更新，减少文件系统写入开销
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem'
+    value: 'NtfsDisableLastAccessUpdate'
+    data: '80000001'
+    type: REG_DWORD
+  # 禁用 8.3 短文件名创建，减少文件系统元数据开销
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem'
+    value: 'NtfsDisable8dot3NameCreation'
+    data: '1'
+    type: REG_DWORD
+  

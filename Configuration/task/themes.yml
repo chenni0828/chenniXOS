@@ -1,0 +1,44 @@
+---
+title: 主题
+description: 应用 chenniXOS 深色主题、壁纸与锁屏背景
+actions:
+  - !writeStatus: { status: "正在应用主题" }
+
+  # 主题文件与壁纸资源已在 initialization.yml 阶段部署到系统目录
+  # 此处仅负责应用主题、设置锁屏背景等后续操作
+
+  # 通过 COM 主题管理器应用 chenniXOS-dark 主题并写入最近使用列表
+  - !powerShell:
+    command: '.\SetTheme.ps1 -Action Apply'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  # 禁用锁屏覆盖层（趣闻、提示、技巧等，仅企业版/教育版生效）
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization'
+    value: 'LockScreenOverlaysDisabled'
+    data: '1'
+    type: REG_DWORD
+  # 禁用锁屏壁纸轮播（Windows 聚焦）
+  - !registryValue:
+    path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager'
+    value: 'RotatingLockScreenEnabled'
+    data: '0'
+    type: REG_DWORD
+  - !powerShell:
+    command: >-
+      foreach ($userKey in (Get-ChildItem "HKLM:SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\Creative" -EA 0).PsPath) {
+          Set-ItemProperty -Path $userKey -Name 'RotatingLockScreenEnabled' -Type DWORD -Value 0 -Force
+      }
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  # 应用 chenniXOS 锁屏背景
+  - !powerShell:
+    command: '.\SetTheme.ps1 -Action Lockscreen'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+

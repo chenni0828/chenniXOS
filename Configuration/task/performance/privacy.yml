@@ -1,0 +1,95 @@
+---
+title: 隐私
+description: 关闭不必要的隐私收集和遥测服务
+onUpgrade: false
+actions:
+  # 禁用PowerShell Core遥测（移动至initialization.yml），防止失效，在注册表重新写入
+  # - !cmd: {command: 'setx POWERSHELL_TELEMETRY_OPTOUT 1'}
+  - !registryValue:
+    path: 'HKCU\Environment'
+    value: 'POWERSHELL_TELEMETRY_OPTOUT'
+    data: '1'
+    type: REG_SZ
+  # 关闭.NET远程监控
+  - !registryValue: {path: 'HKCU\Environment', value: 'DOTNET_CLI_TELEMETRY_OPTOUT', data: '1', type: REG_SZ}
+  # 禁用遥测服务
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack', value: 'Start', data: '4', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\diagsvc', value: 'Start', data: '4', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice', value: 'Start', data: '4', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service', value: 'Start', data: '4', type: REG_DWORD}
+  # 禁用 CEIP 数据更新器
+  - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\ProgramDataUpdater', operation: disable}
+  # 禁用应用程序影响遥测代理任务
+  - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\AitAgent', operation: disable}
+  # 禁用提高性能的应用程序提醒
+  - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\StartupAppTask', operation: disable}
+  # 禁用 CEIP 任务
+  - !scheduledTask: {path: '\Microsoft\Windows\Autochk\Proxy', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Customer Experience Improvement Program\BthSQM', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Customer Experience Improvement Program\Consolidator', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip', operation: disable}
+  # 完全停止 SQM/CEIP 报告
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\SQMClient\Windows', value: 'CEIPEnable', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\AppV\CEIP', value: 'CEIPEnable', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Internet Explorer\SQM', value: 'DisableCustomerImprovementProgram', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Messenger\Client', value: 'CEIP', data: '2', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\UnattendSettings\SQMClient', value: 'CEIPEnabled', data: '0', type: REG_DWORD}
+  # 应用程序影响遥测
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\AppCompat', value: 'AITEnable', data: '0', type: REG_DWORD}
+  # 数据收集政策遥测
+  - !registryValue: {path: 'HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'AllowTelemetry', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'AllowTelemetry', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'AllowTelemetry', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'LimitEnhancedDiagnosticDataWindowsAnalytics', data: '0', type: REG_DWORD}
+  # 禁用 Windows 错误报告 (WER)
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform', value: 'Disabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'Disabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'AutoApproveOSDumps', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting', value: 'AutoApproveOSDumps', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent', value: 'DefaultConsent', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent', value: 'DefaultOverrideBehavior', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting\Consent', value: '', data: '0', type: REG_SZ}
+  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows\Windows Error Reporting', value: 'DontSendAdditionalData', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows\Windows Error Reporting', value: 'LoggingDisabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting', value: 'LoggingDisabled', data: '1', type: REG_DWORD}
+  # 禁用 WER 计划任务
+  - !scheduledTask: {path: '\Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Windows Error Reporting\QueueReporting', operation: disable}
+  # 禁用 WER 服务
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\wersvc', value: 'Start', data: '4', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\wercplsupport', value: 'Start', data: '4', type: REG_DWORD}
+  # 禁用 Windows 搜索数据收集
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'AllowIndexingEncryptedStoresOrItems', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'AlwaysUseAutoLangDetection', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'AllowSearchToUseLocation', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'DisableWebSearch', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'ConnectedSearchUseWeb', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'BingSearchEnabled', data: '0', type: REG_DWORD}
+  # 退出 Windows 隐私同意
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Personalization\Settings', value: 'AcceptedPrivacyPolicy', data: '0', type: REG_DWORD}
+  # 禁用 Windows 反馈和诊断
+  - !scheduledTask: {path: '\Microsoft\Windows\Feedback\Siuf\DmClient', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload', operation: disable}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Siuf\Rules', value: 'NumberOfSIUFInPeriod', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Siuf\Rules', value: 'PeriodInNanoSeconds', operation: delete}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'DoNotShowFeedbackNotifications', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection', value: 'DoNotShowFeedbackNotifications', data: '1', type: REG_DWORD}
+ 
+  # 禁用文本和手写输入收集
+  - !registryValue: {path: 'HKCU\Software\Policies\Microsoft\InputPersonalization', value: 'RestrictImplicitInkCollection', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\InputPersonalization', value: 'RestrictImplicitInkCollection', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Policies\Microsoft\InputPersonalization', value: 'RestrictImplicitTextCollection', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\InputPersonalization', value: 'RestrictImplicitTextCollection', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Policies\Microsoft\Windows\HandwritingErrorReports', value: 'PreventHandwritingErrorReports', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\HandwritingErrorReports', value: 'PreventHandwritingErrorReports', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Policies\Microsoft\Windows\TabletPC', value: 'PreventHandwritingDataSharing', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\TabletPC', value: 'PreventHandwritingDataSharing', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\InputPersonalization', value: 'AllowInputPersonalization', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore', value: 'HarvestContacts', data: '0', type: REG_DWORD}
+  # 取消window自动更新地图
+  - !registryValue: {path: 'HKLM\SYSTEM\Maps', value: 'AutoUpdateEnabled', data: '0', type: REG_DWORD}
+  # 商店程序自动更新
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\WindowsStore', value: 'AutoDownload', data: '2', type: REG_DWORD}
+
+ 

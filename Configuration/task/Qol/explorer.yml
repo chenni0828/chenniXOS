@@ -1,0 +1,89 @@
+---
+title: 资源管理器
+description: 优化资源管理器体验和性能
+actions:
+  # 显示文件扩展名  
+  - !registryValue:
+    path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+    value: 'HideFileExt'
+    data: '0'
+    type: REG_DWORD
+    
+  # 减少上下文菜单出现的延迟
+  - !registryValue:
+    path: 'HKCU\Control Panel\Desktop'
+    value: 'MenuShowDelay'
+    data: '20'
+    type: REG_SZ
+  - !registryValue:
+    path: 'HKCU\Control Panel\Desktop'
+    value: 'MenuShowDelay'
+    data: '0'
+    type: REG_SZ
+    option: 'super-low-latency'
+
+  # 禁用背景图像压缩
+  - !registryValue:
+    path: 'HKCU\Control Panel\Desktop'
+    value: 'JPEGImportQuality'
+    data: '100'
+    type: REG_DWORD
+
+  # 聚光灯
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableWindowsSpotlightFeatures', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableWindowsSpotlightWindowsWelcomeExperience', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableWindowsSpotlightOnActionCenter', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableWindowsSpotlightOnSettings', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableThirdPartySuggestions', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel', value: '{2cc5ca98-6485-489a-920e-b3e88a6ccce3}', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+  
+  # 锁屏
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\Personalization', value: 'NoLockScreen', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+
+  # 移除新建快捷方式时的"快捷方式"后缀
+  - !registryValue:
+    path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates'
+    value: 'ShortcutNameTemplate'
+    data: '"%s.lnk"'
+    type: REG_SZ
+  
+  # 从资源管理器中移除"以前的版本"
+  - !registryKey: {path: 'HKCR\AllFilesystemObjects\shellex\PropertySheetHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryKey: {path: 'HKCR\CLSID\{450D8FBA-AD25-11D0-98A8-0800361B1103}\shellex\PropertySheetHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryKey: {path: 'HKCR\Directory\shellex\PropertySheetHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryKey: {path: 'HKCR\Drive\shellex\PropertySheetHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryKey: {path: 'HKCR\AllFilesystemObjects\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryKey: {path: 'HKCR\CLSID\{450D8FBA-AD25-11D0-98A8-0800361B1103}\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryKey: {path: 'HKCR\Directory\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryKey: {path: 'HKCR\Drive\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'NoPreviousVersionsPage', operation: delete}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Policies\Microsoft\PreviousVersions', value: 'DisableLocalPage', operation: delete}
+
+  # 启用长路径
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem'
+    value: 'LongPathsEnabled'
+    data: '1'
+    type: REG_DWORD
+
+  # 将图标缓存扩展到 4MB，提升资源管理器响应速度
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer'
+    value: 'Max Cached Icons'
+    data: '4096'
+    type: REG_SZ
+
+  # 始终显示完整上下文菜单
+  - !registryValue:
+    path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer'
+    value: 'MultipleInvokePromptMinimum'
+    data: '100'
+    type: REG_DWORD
+    
+
+  # 减少鼠标悬停在文件或文件夹上时显示信息的时间从 400 毫秒降至 20 毫秒（主要在文件资源管理器中），可立即查看信息
+  - !registryValue:
+    path: 'HKCU\Control Panel\Desktop'
+    value: 'MouseHoverTime'
+    data: '20'
+    type: REG_SZ

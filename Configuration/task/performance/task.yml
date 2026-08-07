@@ -1,0 +1,25 @@
+---
+title: 任务
+description: 禁用不必要的计划任务
+onUpgrade: false
+actions:
+  # Windows Insider / Flighting 遥测
+  - !scheduledTask: {path: '\Microsoft\Windows\Flighting\OneSettings\RefreshCache', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\BootstrapUsageDataReporting', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\UsageDataFlushing', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\ReconcileFeatures', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReporting', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReceiver', operation: disable}
+  # 政策更新
+  - !scheduledTask: {path: '\Microsoft\Windows\Active Directory Rights Management Services Client\AD RMS Rights Policy Template Management (Automated)', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Active Directory Rights Management Services Client\AD RMS Rights Policy Template Management (Manual)', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\User Profile Service\HiveUploadTask', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Work Folders\Work Folders Logon Synchronization', operation: disable}
+  # 远程控制
+  - !scheduledTask: {path: '\Microsoft\Windows\RemoteAssistance\RemoteAssistanceTask', operation: disable}
+  # 关闭HDD相关的任务
+  - !scheduledTask: {path: '\Microsoft\Windows\Data Integrity Scan\Data Integrity Scan', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Data Integrity Scan\Data Integrity Scan for Crash Recovery', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Data Integrity Scan\Data Integrity Check And Scan', operation: disable}
+  - !scheduledTask: {path: '\Microsoft\Windows\Defrag\ScheduledDefrag', operation: disable}
+  

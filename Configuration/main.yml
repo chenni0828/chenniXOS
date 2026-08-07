@@ -1,0 +1,52 @@
+---
+title: main
+description: 总脚本
+actions:
+  - !task: { path: 'task\start.yml' }
+
+  # === 安全 ===
+  - !task: { path: 'task\defender.yml', option: 'disable-defender' }
+
+  # === 清理 ===
+  - !task: { path: 'task\appx.yml' }
+
+  # === 性能优化 ===
+  - !task: { path: 'task\performance\kernel.yml' }
+  - !task: { path: 'task\performance\privacy.yml' }
+  - !task: { path: 'task\performance\task.yml' }
+  - !task: { path: 'task\performance\input.yml' }
+  - !task: { path: 'task\performance\power.yml' }
+  - !task: { path: 'task\performance\ntfs.yml' }
+  - !task: { path: 'task\performance\networking.yml' }
+  - !task: { path: 'task\performance\devices.yml' }
+
+  # === 体验优化 ===
+  - !task: { path: 'task\Qol\taskbar.yml' }
+  - !task: { path: 'task\Qol\explorer.yml' }
+  - !task: { path: 'task\themes.yml' }
+
+  # === 搜索优化 ===
+  - !task: { path: 'task\Qol\search.yml' }
+
+    # https://www.pool.ntp.org/en/use.html
+  - !service: {name: 'w32time', operation: start, ignoreErrors: true}
+  - !run: {exe: 'w32tm', args: '/config /syncfromflags:manual /manualpeerlist:"cn.pool.ntp.org,0x9 ntp.aliyun.com,0x9 ntp.tencent.com,0x9"'}
+  - !run: {exe: 'w32tm', args: '/config /update'}
+  - !run: {exe: 'w32tm', args: '/resync'}
+
+  - !writeStatus: {status: '正在清理残留文件'}
+  - !powerShell:
+      wait: true
+      command: >-
+        Get-ChildItem -Path $env:TEMP | Where-Object { $_.Name -ne 'AME' } | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue;
+        $winTemp = [Environment]::GetFolderPath('Windows') + '\Temp\*'; Remove-Item -Path $winTemp -Force -Recurse -ErrorAction SilentlyContinue;
+        wevtutil el | ForEach-Object { $n = $_; wevtutil cl $n } 2>&1 | Out-Null;
+        
+  - !writeStatus: { status: "恢复PowerShell执行策略" }
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell'
+    value: 'ExecutionPolicy'
+    data: 'RemoteSigned'
+    type: REG_SZ
+
+# MinSudo.exe (NanaRun) by M2Team - Licensed under MIT License (https://github.com/M2Team/NanaRun)

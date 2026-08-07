@@ -1,0 +1,177 @@
+---
+title: kernel
+description: 内核优化
+onUpgrade: false
+actions:
+  # 加快Windows启动速度
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize', value: 'StartupDelayInMSec', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize', value: 'WaitforIdleState', type: REG_DWORD, data: '0'}
+
+  - !writeStatus: {status: '正在关闭动态光照', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Lighting', value: 'AmbientLightingEnabled', type: REG_DWORD, data: '0', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Lighting', value: 'ControlledByForegroundApp', type: REG_DWORD, data: '0', option: 'super-low-latency'}
+  # 禁用 UWP 后台应用                                                                        ##
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications', value: 'GlobalUserDisabled', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Search', value: 'BackgroundAppGlobalToggle', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\embeddedmode', value: 'Start', data: '4', type: REG_DWORD}
+
+
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile',             value: 'NoLazyMode',                  type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile',             value: 'NetworkThrottlingIndex',       type: REG_DWORD, data: '10'}
+
+  # 将系统响应度设置为 10%,低延迟为0%
+  # 为浏览器等请求资源的程序分配更少的 CPU 资源，从而减少对其他应用程序的影响
+  # https://learn.microsoft.com/en-us/windows/win32/procthread/multimedia-class-scheduler-service#registry-settings
+  # 多媒体系统前台响应性
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', type: REG_DWORD, data: '10'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', type: REG_DWORD, data: '0', option: 'super-low-latency'}
+
+  # 可能导致手感异常，暂时注释
+  # - !writeStatus: {status: '正在启用 MSI 模式', option: 'super-low-latency'}
+  # - !powerShell:
+  #     wait: true
+  #     weight: 8
+  #     option: 'super-low-latency'
+  #     command: >-
+  #       function Set-MSIForClass { param([string]$WmiClass, [int]$MsiValue); try { Get-WmiObject -Class $WmiClass -ErrorAction SilentlyContinue | Where-Object { $_.PNPDeviceID -like 'PCI\VEN_*' } | ForEach-Object { try { $regPath = 'HKLM:\SYSTEM\CurrentControlSet\Enum\' + $_.PNPDeviceID + '\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties'; if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }; Set-ItemProperty -Path $regPath -Name 'MSISupported' -Value $MsiValue -Type DWord -Force -ErrorAction SilentlyContinue } catch {} } } catch {} };
+  #       Set-MSIForClass 'Win32_IDEController' 1;
+  #       Set-MSIForClass 'Win32_VideoController' 1;
+  #       Set-MSIForClass 'Win32_NetworkAdapter' 1;
+  #       try {
+  #         Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Enum\PCI' -ErrorAction SilentlyContinue | ForEach-Object {
+  #           Get-ChildItem $_.PSPath -ErrorAction SilentlyContinue | ForEach-Object {
+  #             $ap = $_.PSPath + '\Device Parameters\Interrupt Management\Affinity Policy';
+  #             if (Test-Path $ap) { Remove-ItemProperty -Path $ap -Name 'DevicePriority' -ErrorAction SilentlyContinue }
+  #           }
+  #         }
+  #       } catch {}
+
+  - !writeStatus: {status: '正在优化显卡驱动'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers',                                   value: 'TdrDelay',                    type: REG_DWORD, data: '12'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers',                                   value: 'WarpSupportsResourceResidency',type: REG_DWORD, data: '1'}
+
+  # 关闭 BitLocker 自动设备加密
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\BitLocker', value: 'PreventDeviceEncryption', data: '1', type: REG_DWORD}
+  # 关闭 UAC
+  - !writeStatus: {status: '关闭 UAC'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'EnableLUA',                      type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'PromptOnSecureDesktop',           type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'ConsentPromptBehaviorAdmin',       type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'ValidateAdminCodeSignatures',      type: REG_DWORD, data: '0'}
+
+  - !writeStatus: {status: '正在配置索引', option: 'super-low-latency'}
+  - !cmd:
+    command: '"Disable Search Indexing.cmd" /silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    option: 'super-low-latency'
+
+  - !writeStatus: {status: '正在关闭 SysMain', option: 'super-low-latency'}
+  - !cmd:
+    command: '"Disable SysMain.cmd" /silent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    option: 'super-low-latency'
+    
+  # UCPD关闭
+  - !service: {name: 'UCPD', operation: change, startup: 4}
+  - !powerShell: {command: "Disable-ScheduledTask -TaskPath '\\Microsoft\\Windows\\AppxDeploymentClient' -TaskName 'UCPD velocity' -ErrorAction SilentlyContinue", errorAction: Ignore}
+
+  # 代码完整性移除检查
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy'
+    value: 'VerifiedAndReputablePolicyState'
+    data: '0'
+    type: REG_DWORD
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\CI\Config'
+    value: 'VulnerableDriverBlocklistEnable'
+    data: '0'
+    type: REG_DWORD
+
+  - !writeStatus: {status: '正在禁用 DMA 重映射'}
+  - !powerShell:
+      wait: true
+      weight: 3
+      command: >-
+        $policyPath = 'HKLM:\SOFTWARE\Microsoft\PolicyManager\default\DmaGuard\DeviceEnumerationPolicy';
+        try { if (-not (Test-Path $policyPath)) { New-Item -Path $policyPath -Force | Out-Null }; Set-ItemProperty -Path $policyPath -Name 'value' -Value 2 -Type DWord -Force -ErrorAction SilentlyContinue } catch {};
+        try {
+          Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Services' -ErrorAction SilentlyContinue | ForEach-Object {
+            $paramsPath = $_.PSPath + '\Parameters';
+            if (Test-Path $paramsPath) {
+              try {
+                $val = (Get-ItemProperty -Path $paramsPath -Name 'DmaRemappingCompatible' -ErrorAction SilentlyContinue).DmaRemappingCompatible;
+                if ($null -ne $val) { Set-ItemProperty -Path $paramsPath -Name 'DmaRemappingCompatible' -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue }
+              } catch {}
+            }
+          }
+        } catch {}
+
+  - !writeStatus: {status: '正在优化 BCDEdit'}
+  - !run: {exe: 'bcdedit.exe', args: '/deletevalue useplatformclock', wait: true, ignoreErrors: true, showOutput: false, showError: false,option: 'super-low-latency'}
+  - !run: {exe: 'bcdedit.exe', args: '/deletevalue useplatformtick',  wait: true, ignoreErrors: true, showOutput: false, showError: false,option: 'super-low-latency'}
+  - !run: {exe: 'bcdedit.exe', args: '/set bootmenupolicy legacy',    wait: true, showOutput: false, showError: false,option: 'super-low-latency'}
+  - !run: {exe: 'bcdedit.exe', args: '/timeout 10',                   wait: true, showOutput: false, showError: false}
+
+  # 关闭烦人的安全通知
+  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance', value: 'Enabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance', value: 'Enabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Notifications', value: 'DisableNotifications', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications', value: 'DisableNotifications', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3', value: '1806', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Security', value: 'DisableSecuritySettingsCheck', data: '1', type: REG_DWORD}
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations', value: 'LowRiskFileTypes', data: '.exe;.reg.;.bat.;.vbs;.cmd;.ps1;.zip;.rar;.msi;.msu;.lnk;.7z;.tar.gz;.doc;.docx;.pdf;', type: REG_SZ}
+
+
+# 不要将系统基础设施服务拆分成独立的 svchost.exe 进程
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\BFE',                        value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\DcomLaunch',                  value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\mpssvc',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\PlugPlay',                    value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Power',                       value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\SamSs',                       value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\EventSystem',                 value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\CryptSvc',                    value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Dhcp',                        value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Dnscache',                    value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\DisplayEnhancementService',   value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\PcaSvc',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\WdiSystemHost',               value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\AudioEndpointBuilder',        value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Appinfo',                     value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\BITS',                        value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\gpsvc',                       value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\IKEEXT',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\iphlpsvc',                    value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer',                value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\lmhosts',                     value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\NcbService',                  value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\RasAuto',                     value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\RasMan',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\SENS',                        value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\ShellHWDetection',            value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\SstpSvc',                     value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\TrkWks',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Winmgmt',                     value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\EventLog',                    value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\FontCache',                   value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation',           value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\nsi',                         value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\ProfSvc',                     value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Schedule',                    value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\SessionEnv',                  value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Themes',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\W32Time',                     value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Wcmsvc',                      value: 'SvcHostSplitDisable', type: REG_DWORD, data: '1'}
+  
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager',                                   value: 'BackgroundLoadKnownDlls',     type: REG_DWORD, data: '1', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager',                                   value: 'TaskhostTimeout',             type: REG_DWORD, data: '2000', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Quota System',                     value: 'EnableCpuQuota',              type: REG_DWORD, data: '0', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\SCMConfig',                                         value: 'EnableSvchostMitigationPolicy',type: REG_DWORD, data: '0', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',                         value: 'DelayedDesktopSwitchTimeout', type: REG_DWORD, data: '0', option: 'super-low-latency'}
+
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\Appx',                                         value: 'AllowAutomaticAppArchiving', type: REG_DWORD, data: '0'}

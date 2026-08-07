@@ -1,0 +1,60 @@
+---
+title: input
+description: 设置前台/后台优先级分配
+onUpgrade: false
+actions:
+  # 设置win32
+  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-2'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '2', option: 'priority-separation-2'}
+
+  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-26'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '26', option: 'priority-separation-26'}
+
+  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-38'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '38', option: 'priority-separation-38'}
+
+  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-42'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '42', option: 'priority-separation-42'}
+
+  - !writeStatus: {status: '正在关闭粘滞键'}
+  - !registryValue: {path: 'HKCU\Control Panel\Accessibility\StickyKeys', value: 'Flags', type: REG_SZ, data: '506'}
+  - !registryValue: {path: 'HKCU\Control Panel\Accessibility\Keyboard Response', value: 'Flags', type: REG_SZ, data: '122'}
+  - !registryValue: {path: 'HKCU\Control Panel\Accessibility\ToggleKeys', value: 'Flags', type: REG_SZ, data: '58'}
+
+    # 关闭鼠标加速
+  - !registryValue: {path: 'HKCU\Control Panel\Mouse', value: 'MouseSpeed', type: REG_SZ, data: '0'}
+  - !registryValue: {path: 'HKCU\Control Panel\Mouse', value: 'MouseThreshold1', type: REG_SZ, data: '0'}
+  - !registryValue: {path: 'HKCU\Control Panel\Mouse', value: 'MouseThreshold2', type: REG_SZ, data: '0'}
+  
+
+  - !writeStatus: {status: '正在应用输入优化'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input',                                                           value: 'IsInputAppPreloadEnabled',    type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings',                                                  value: 'BluebirdDTWMultiplier',       type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings',                                                  value: 'DisableExpressiveInputShellHotkey', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings',                                                  value: 'DisablePersonalizationGTKM',  type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings',                                                  value: 'DynamicAutocorrectionAllowed',type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings',                                                  value: 'INLINEPREDICTIONMINPREDICTIONLENGTH', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings',                                                  value: 'INLINEPREDICTIONMINPREFIXLENGTH',     type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\ControllerProcessor\CursorMagnetism',             value: 'ClosestInteractiveBoundsUpdateIntervalInMilliseconds', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\ControllerProcessor\CursorMagnetism',             value: 'SearchHeightInDIPS',          type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\ControllerProcessor\CursorMagnetism',             value: 'SearchWidthInDIPS',           type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1',                                          value: 'BluebirdDTWMultiplier',       type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1',                                          value: 'DynamicAutocorrectionAllowed',type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'AUTOCORRECTIONTRIGGERS',      type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'AUTOCORRECTSUPPRESSPREVCHARS',type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'BluebirdDTWMultiplier',       type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'DisableExpressiveInputShellHotkey', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'DynamicAutocorrectionAllowed',type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'PERIODSHORTCUTCHARS',         type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'PERIODSHORTCUTDELAY',         type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409',                                 value: 'PERIODSHORTCUTDELAYCANDSELECTION', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'AUTOCORRECTIONTRIGGERS',      type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'AUTOCORRECTSUPPRESSPREVCHARS',type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'BluebirdDTWMultiplier',       type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'COMMONEMOJIPRETERMINATORS',   type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'COMMONEMOJITERMINATORS',      type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'DisableExpressiveInputShellHotkey', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'DynamicAutocorrectionAllowed',type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'PERIODSHORTCUTCHARS',         type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'PERIODSHORTCUTDELAY',         type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Input\Settings\proc_1\loc_0409\im_1',                            value: 'PERIODSHORTCUTDELAYCANDSELECTION', type: REG_DWORD, data: '0'}

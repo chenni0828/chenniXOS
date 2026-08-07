@@ -1,0 +1,55 @@
+---
+title: 电源节能优化
+description: 关闭所有电源节能特性，禁用休眠/睡眠/快速启动/平板模式/移动中心等台式机不需要的功能
+onUpgrade: false
+actions:
+  # .pow 电源计划文件关联（双击即可导入电源方案）
+  - !registryValue:
+    path: 'HKCR\powerscheme\DefaultIcon'
+    value: ''
+    data: '%windir%\System32\powercpl.dll,1'
+    type: REG_SZ
+  - !registryValue:
+    path: 'HKCR\powerscheme\Shell\open\command'
+    value: ''
+    data: 'powercfg /import "%1"'
+    type: REG_SZ
+  - !registryValue:
+    path: 'HKCR\.pow'
+    value: ''
+    data: 'powerscheme'
+    type: REG_SZ
+  - !registryValue:
+    path: 'HKCR\.pow'
+    value: 'FriendlyTypeName'
+    data: 'Power Scheme'
+    type: REG_SZ
+
+  # 关闭快速启动
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power'
+    value: 'HiberbootEnabled'
+    data: '0'
+    type: REG_DWORD
+
+  # 关闭休眠
+  # Disabling makes NTFS accessible outside of Windows
+  - !cmd:
+    command: '"Disable Hibernation.cmd" /silent'
+    exeDir: true
+    wait: true
+    weight: 5
+    runas: currentUserElevated
+    option: 'desktop-optimization'
+
+  # 解除电源限制
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling'
+    value: 'PowerThrottlingOff'
+    data: '1'
+    type: REG_DWORD
+    option: 'desktop-optimization'
+
+  
+  # 禁用 Windows 移动中心（面向移动设备，台式机不需要）
+  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\MobCenter', value: 'MobilityCenter', data: '0', type: REG_DWORD, option: 'desktop-optimization'}
