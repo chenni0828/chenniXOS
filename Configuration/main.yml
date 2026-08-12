@@ -23,16 +23,17 @@ actions:
   # === 体验优化 ===
   - !task: { path: 'task\Qol\taskbar.yml' }
   - !task: { path: 'task\Qol\explorer.yml' }
+  - !task: { path: 'task\Qol\search.yml' }
+  - !task: { path: 'task\Qol\update.yml' }
+
   - !task: { path: 'task\themes.yml' }
 
-  # === 搜索优化 ===
-  - !task: { path: 'task\Qol\search.yml' }
-
-    # https://www.pool.ntp.org/en/use.html
+  # https://www.pool.ntp.org/en/use.html
   - !service: {name: 'w32time', operation: start, ignoreErrors: true}
-  - !run: {exe: 'w32tm', args: '/config /syncfromflags:manual /manualpeerlist:"cn.pool.ntp.org,0x9 ntp.aliyun.com,0x9 ntp.tencent.com,0x9"'}
+  - !run: {exe: 'w32tm', args: '/config /syncfromflags:manual /manualpeerlist:"0.cn.pool.ntp.org 1.cn.pool.ntp.org 2.cn.pool.ntp.org 3.cn.pool.ntp.org"'}
   - !run: {exe: 'w32tm', args: '/config /update'}
-  - !run: {exe: 'w32tm', args: '/resync'}
+  - !run: {exe: 'w32tm', args: '/resync', ignoreErrors: true}
+
 
   - !writeStatus: {status: '正在清理残留文件'}
   - !powerShell:

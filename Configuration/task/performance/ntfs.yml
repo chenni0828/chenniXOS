@@ -4,10 +4,11 @@ description:
 onUpgrade: false
 actions:
   # 禁用 NTFS 最后访问时间更新，减少文件系统写入开销
+  # data 为十进制 2147483649（= 0x80000001，User Managed + Last Access 禁用），AME 按十进制解析
   - !registryValue:
     path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem'
     value: 'NtfsDisableLastAccessUpdate'
-    data: '80000001'
+    data: '2147483649'
     type: REG_DWORD
   # 禁用 8.3 短文件名创建，减少文件系统元数据开销
   - !registryValue:

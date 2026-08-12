@@ -3,18 +3,9 @@ title: input
 description: 设置前台/后台优先级分配
 onUpgrade: false
 actions:
-  # 设置win32
-  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-2'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '2', option: 'priority-separation-2'}
-
-  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-26'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '26', option: 'priority-separation-26'}
-
-  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-38'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '38', option: 'priority-separation-38'}
-
-  - !writeStatus: {status: '正在设置 Win32PrioritySeparation', option: 'priority-separation-42'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '42', option: 'priority-separation-42'}
+  # 设置win32(改为exe软件，用户自行选择设置)
+  #- !writeStatus: {status: '正在设置 Win32'}
+  #- !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '2'}
 
   - !writeStatus: {status: '正在关闭粘滞键'}
   - !registryValue: {path: 'HKCU\Control Panel\Accessibility\StickyKeys', value: 'Flags', type: REG_SZ, data: '506'}

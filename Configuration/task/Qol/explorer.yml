@@ -8,6 +8,25 @@ actions:
     value: 'HideFileExt'
     data: '0'
     type: REG_DWORD
+
+  # 隐藏资源管理器显示最近和常用项目
+  - !registryValue:
+    path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer'
+    value: 'ShowRecent'
+    data: '0'
+    type: REG_DWORD
+  - !registryValue:
+    path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer'
+    value: 'ShowFrequent'
+    data: '0'
+    type: REG_DWORD
+
+  # 禁用"开始"菜单的最近文档记录
+  - !registryValue:
+    path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+    value: 'Start_TrackDocs'
+    data: '0'
+    type: REG_DWORD
     
   # 减少上下文菜单出现的延迟
   - !registryValue:
