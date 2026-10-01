@@ -6,6 +6,6 @@ actions:
 
   - !run:
     exeDir: true
-    exe: "appx-remover\FILEASSOC.cmd"
+    exe: 'appx-remover\FILEASSOC.cmd'
     option: "remove-appx-photos"
     weight: 150
