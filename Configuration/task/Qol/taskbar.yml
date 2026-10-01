@@ -113,16 +113,20 @@ actions:
     value: 'CopilotPWAPin'
     data: '0'
     type: REG_DWORD
+  
+  - !writeStatus: {status: '正在配置任务栏固定项'}
   - !powerShell:
     command: '.\TASKBARPINS.ps1'
     exeDir: true
     oobe: false
     wait: true
-    option: '!uninstall-edge'
+    runas: currentUserElevated
+    option: '!remove-edge'
   - !powerShell:
     command: '.\TASKBARPINS.ps1 -NoEdge'
     exeDir: true
     oobe: false
     wait: true
-    option: 'uninstall-edge'
+    runas: currentUserElevated
+    option: 'remove-edge'
     

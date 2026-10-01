@@ -1,0 +1,49 @@
+Windows Registry Editor Version 5.00
+
+; Remove Defender and Windows Security Services
+
+; Also handled by the working chenniXOS v0.1.0 playbook.
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MDCoreSvc]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Sense]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MsSecCore]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wscsvc]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WdNisDrv]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WdNisSvc]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WdFilter]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WdBoot]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SgrmAgent]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SgrmBroker]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection]
+"DisallowExploitProtectionOverride"=dword:00000001
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MsSecFlt]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MsSecWfp]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\whesvc]
+
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsRuntime\Server\WebThreatDefSvc]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\webthreatdefsvc]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\webthreatdefusersvc]
+
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Svchost\WebThreatDefense]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PlutonHsp2]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PlutonHeci]
+
+[-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Hsp]

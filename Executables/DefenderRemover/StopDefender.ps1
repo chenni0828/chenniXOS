@@ -1,4 +1,4 @@
-<# Contains code from LeanAndMean, code modified to match with XOS Playbook needs.
+﻿<# Contains code from LeanAndMean, code modified to match with XOS Playbook needs.
 Copyright (c) 2021 AveYo
 Licensed under MIT License
 #>

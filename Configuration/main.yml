@@ -3,14 +3,16 @@ title: main
 description: 总脚本
 actions:
   - !task: { path: 'task\start.yml' }
+  - !task: { path: 'task\defender.yml' }
 
-  # === 安全 ===
-  - !task: { path: 'task\defender.yml', option: 'disable-defender' }
-
-  # === 清理 ===
+  - !task: { path: 'task\app-win32.yml' }
+  - !task: { path: 'task\appx\win-sxs-appx.yml' }
   - !task: { path: 'task\appx.yml' }
+  - !task: { path: 'task\appx\deprovisioned-apps.yml' }
+  - !task: { path: 'task\appx\classic-photo-viewer.yml' }
+  - !task: { path: 'task\appx\photo-associations.yml' }
 
-  # === 性能优化 ===
+    # === 性能优化 ===
   - !task: { path: 'task\performance\kernel.yml' }
   - !task: { path: 'task\performance\privacy.yml' }
   - !task: { path: 'task\performance\task.yml' }
@@ -18,7 +20,6 @@ actions:
   - !task: { path: 'task\performance\power.yml' }
   - !task: { path: 'task\performance\ntfs.yml' }
   - !task: { path: 'task\performance\networking.yml' }
-  - !task: { path: 'task\performance\devices.yml' }
 
   # === 体验优化 ===
   - !task: { path: 'task\Qol\taskbar.yml' }
@@ -49,5 +50,3 @@ actions:
     value: 'ExecutionPolicy'
     data: 'RemoteSigned'
     type: REG_SZ
-
-# MinSudo.exe (NanaRun) by M2Team - Licensed under MIT License (https://github.com/M2Team/NanaRun)

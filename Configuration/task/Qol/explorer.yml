@@ -57,7 +57,7 @@ actions:
   - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel', value: '{2cc5ca98-6485-489a-920e-b3e88a6ccce3}', data: '1', type: REG_DWORD, option: 'super-low-latency'}
   
   # 锁屏
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\Personalization', value: 'NoLockScreen', data: '1', type: REG_DWORD, option: 'super-low-latency'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\Personalization', value: 'NoLockScreen', data: '1', type: REG_DWORD, option: 'lock-screen-optimization'}
 
   # 移除新建快捷方式时的"快捷方式"后缀
   - !registryValue:

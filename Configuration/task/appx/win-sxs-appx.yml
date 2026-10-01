@@ -1,0 +1,16 @@
+---
+title: 配置 AI 功能
+description: 参考 Atlas 禁用 Recall 回顾，Copilot Appx 在 app-win32.yml 中移除
+privilege: TrustedInstaller
+actions:
+  - !writeStatus: {status: "正在禁用 Recall 回顾", option: 'remove-winsxs-ai'}
+  - !run:
+    exeDir: true
+    exe: 'appx-remover\Disable Recall Support.cmd'
+    args: '/silent'
+    wait: true
+    runas: currentUserElevated
+    weight: 100
+    option: 'remove-winsxs-ai'
+    handleExitCodes: {'!0': halt}
+    errorAction: Halt

@@ -2,19 +2,16 @@
   chenniXOS SetTheme.ps1 - 应用系统主题
   改写自 AtlasPlaybook Themes.psm1 (Atlas-OS, MIT)。
   原版依赖 AtlasModules\initPowerShell.ps1 的 dot-source 加载 Themes 模块；
-  此处已将 Set-Theme / Set-ThemeMRU / Set-LockscreenImage 三个函数内联为独立脚本，
+  此处已将 Set-Theme / Set-ThemeMRU 两个函数内联为独立脚本，
   通过 -Action 参数控制执行哪一步，供 themes.yml 分步调用。
 #>
 
 param (
-    [ValidateSet('Apply', 'MRU', 'Lockscreen', 'All')]
+    [ValidateSet('Apply', 'MRU', 'All')]
     [string]$Action = 'All',
 
     [ValidateNotNullOrEmpty()]
-    [string]$ThemePath = "$([Environment]::GetFolderPath('Windows'))\Resources\Themes\chenniXOS-dark.theme",
-
-    [ValidateNotNullOrEmpty()]
-    [string]$LockscreenPath = "$([Environment]::GetFolderPath('Windows'))\chenniXOS\Wallpapers\lockscreen_dark.png"
+    [string]$ThemePath = "$([Environment]::GetFolderPath('Windows'))\Resources\Themes\chenniXOS-dark.theme"
 )
 
 $ErrorActionPreference = 'Stop'
@@ -111,52 +108,6 @@ function Set-ThemeMRU {
     }
 }
 
-# 通过 WinRT 设置锁屏壁纸，默认使用 chenniXOS 锁屏图
-# 详见 https://superuser.com/a/1343640
-function Set-LockscreenImage {
-    param (
-        [ValidateNotNullOrEmpty()]
-        [string]$Path = "$([Environment]::GetFolderPath('Windows'))\chenniXOS\Wallpapers\lockscreen_dark.png"
-    )
-
-    if (!(Test-Path $Path)) {
-        throw "Path ('$Path') for lockscreen not found."
-    }
-    $newImagePath = [System.IO.Path]::GetTempPath() + (New-Guid).Guid + [System.IO.Path]::GetExtension($Path)
-    Copy-Item $Path $newImagePath
-
-    # 加载 WinRT 命名空间
-    Add-Type -AssemblyName System.Runtime.WindowsRuntime
-    [Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
-
-    # 异步辅助方法
-    $asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | ? {
-            $_.Name -eq 'AsTask' -and
-            $_.GetParameters().Count -eq 1 -and
-            $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1'
-        })[0]
-    Function Await($WinRtTask, $ResultType) {
-        $asTask = $asTaskGeneric.MakeGenericMethod($ResultType)
-        $netTask = $asTask.Invoke($null, @($WinRtTask))
-        $netTask.Wait(-1) | Out-Null
-        $netTask.Result
-    }
-    Function AwaitAction($WinRtAction) {
-        $asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | ? { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and !$_.IsGenericMethod })[0]
-        $netTask = $asTask.Invoke($null, @($WinRtAction))
-        $netTask.Wait(-1) | Out-Null
-    }
-
-    # 构造图片对象并应用
-    [Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
-    $image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($newImagePath)) ([Windows.Storage.StorageFile])
-
-    AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync($image))
-
-    # 清理临时文件
-    Remove-Item $newImagePath
-}
-
 # 按 -Action 分派执行
 switch ($Action) {
     'Apply' {
@@ -164,10 +115,8 @@ switch ($Action) {
         Set-ThemeMRU
     }
     'MRU' { Set-ThemeMRU }
-    'Lockscreen' { Set-LockscreenImage -Path $LockscreenPath }
     'All' {
         Set-Theme -Path $ThemePath
         Set-ThemeMRU
-        Set-LockscreenImage -Path $LockscreenPath
     }
 }

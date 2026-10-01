@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+; RegistryRemoval.ps1 merges windowsdefender into the existing hide: policy,
+; or removes it from showonly:, preserving every other configured page.
+; The original upstream Defender settings-page hiding function is retained.

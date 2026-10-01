@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+; Defender task removal is implemented by Invoke-DefenderRemoval.ps1.
+; It discovers task paths and the actual TaskCache IDs on this installation.
+; This keeps the upstream task-removal function without using another PC's IDs.

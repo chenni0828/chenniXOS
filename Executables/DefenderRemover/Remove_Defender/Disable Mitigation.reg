@@ -1,0 +1,25 @@
+Windows Registry Editor Version 5.00
+
+; General kernel/service mitigation settings are controlled by the separate mitigations option.
+; Keep this resource name for the Defender cleanup resource manifest.
+
+; Remove Defender's Tamper Protection
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Features]
+"MpPlatformKillbitsFromEngine"=hex:00,00,00,00,00,00,00,00
+"TamperProtectionSource"=dword:00000000
+"MpCapability"=hex:00,00,00,00,00,00,00,00
+"TamperProtection"=dword:00000000
+
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System]
+"RunAsPPL"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa]
+"LsaConfigFlags"=dword:00000000
+"RunAsPPL"=dword:00000000
+"RunAsPPLBoot"=dword:00000000
+"LmCompatibilityLevel"=-
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config]
+"VulnerableDriverBlocklistEnable"=dword:00000000

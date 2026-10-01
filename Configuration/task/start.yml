@@ -25,7 +25,7 @@ actions:
   # 首先运行磁盘清理，以便它可以在后台运行
   - !writeStatus: { status: "正在磁盘清理" }
   - !powerShell:
-    command: '.\\CLEANUP.ps1'
+    command: '.\CLEANUP.ps1'
     exeDir: true
     wait: true
     runas: currentUserElevated
@@ -38,28 +38,41 @@ actions:
   
   - !writeStatus: {status: '正在配置 Windows 功能'}
   - !powerShell: {command: '.\OptionalFeatures.ps1', exeDir: true, wait: true}
+  - !writeStatus: {status: '正在关闭打印功能', option: 'disable-printing'}
   - !powerShell:
+      option: 'disable-printing'
       wait: true
       command: >-
         @('Printing-Foundation-Features','Printing-Foundation-InternetPrinting-Client','Printing-PrintToPDFServices-Features','Printing-XPSServices-Features') |
         ForEach-Object { Disable-WindowsOptionalFeature -Online -FeatureName $_ -NoRestart -ErrorAction SilentlyContinue | Out-Null }
 
-  - !writeStatus: { status: "正在部署主题与品牌资源" }
+
 
   # 将 Themes\chenniXOS-dark.theme 复制到系统主题目录，可在个性化主题中选用
-  # 将暗色主题配套壁纸与锁屏背景复制到 %windir%\chenniXOS\Wallpapers
-  # 若当前目录存在 chenniXOS 主程序包，则递归复制到 %windir%\chenniXOS\
-  # 结果路径：%windir%\chenniXOS\chenniXOS\（与 Wallpapers 同级）
-  # 并在当前用户桌面创建指向该主程序入口的快捷方式
+  # 将暗色主题配套桌面壁纸复制到 %windir%\chenniXOS\Wallpapers
+  - !writeStatus: { status: "正在复制主题资源", option: 'copy-theme' }
   - !powerShell:
+      option: 'copy-theme'
       command: >-
         $windir = [Environment]::GetFolderPath('Windows');
         New-Item -ItemType Directory -Force -Path "$windir\Resources\Themes" | Out-Null;
         New-Item -ItemType Directory -Force -Path "$windir\chenniXOS\Wallpapers" | Out-Null;
         Copy-Item -Path '.\Themes\chenniXOS-dark.theme' -Destination "$windir\Resources\Themes" -Force;
         Copy-Item -Path '.\Themes\Wallpapers\chenniXOS-dark.png' -Destination "$windir\chenniXOS\Wallpapers" -Force;
-        Copy-Item -Path '.\Themes\Wallpapers\lockscreen_dark.png' -Destination "$windir\chenniXOS\Wallpapers" -Force;
+      exeDir: true
+      wait: true
+      runas: currentUserElevated
+
+  - !writeStatus: { status: "正在复制 chenniXOS 文件夹" }
+
+  # 若当前目录存在 chenniXOS 主程序包，则递归复制到 %windir%\chenniXOS\
+  # 结果路径：%windir%\chenniXOS\chenniXOS\（与 Wallpapers 同级）
+  # 并在当前用户桌面创建指向该主程序入口的快捷方式
+  - !powerShell:
+      command: >-
+        $windir = [Environment]::GetFolderPath('Windows');
         if (Test-Path '.\chenniXOS') {
+            New-Item -ItemType Directory -Force -Path "$windir\chenniXOS" | Out-Null;
             Copy-Item -Path '.\chenniXOS' -Destination "$windir\chenniXOS" -Recurse -Force;
             $desktop = [Environment]::GetFolderPath('Desktop');
             $shell = New-Object -ComObject WScript.Shell;

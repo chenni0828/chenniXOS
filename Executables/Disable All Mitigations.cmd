@@ -35,13 +35,21 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "Disab
 :: Initialize bit mask in registry by disabling a random mitigation
 PowerShell -NoP -C "Set-ProcessMitigation -System -Disable CFG" > nul
 
-:: Get current bit mask
-for /f "tokens=3 skip=2" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationAuditOptions"') do (
+:: Read the system mitigation mask initialized by Set-ProcessMitigation
+set "mitigation_mask="
+for /f "tokens=3 skip=2" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationOptions"') do (
     set "mitigation_mask=%%a"
 )
 
-:: Set all bits to 2 (Disable all process mitigations)
-for /l %%a in (0,1,9) do (
+:: Refuse to write an empty or malformed mask
+PowerShell -NoP -C "if ($env:mitigation_mask -notmatch '^(?:[0-9A-Fa-f]{2})+$') {exit 1}"
+if errorlevel 1 (
+    echo Failed to read a valid system mitigation mask.
+    exit /b 1
+)
+
+:: Set every hexadecimal digit to 2 (Disable all process mitigations)
+for %%a in (0 1 2 3 4 5 6 7 8 9 A B C D E F a b c d e f) do (
     set "mitigation_mask=!mitigation_mask:%%a=2!"
 )
 
@@ -56,7 +64,17 @@ bcdedit /set nx OptIn > nul
 
 :: Apply mask to kernel
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationAuditOptions" /t REG_BINARY /d "%mitigation_mask%" /f > nul
+if errorlevel 1 exit /b 1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "MitigationOptions" /t REG_BINARY /d "%mitigation_mask%" /f > nul
+if errorlevel 1 exit /b 1
+
+:: General mitigation settings formerly bundled with Defender removal
+reg add "HKLM\SOFTWARE\Microsoft\WindowsMitigation" /v "UserPreference" /t REG_DWORD /d "2" /f > nul
+if errorlevel 1 exit /b 1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "KernelSEHOPEnabled" /t REG_DWORD /d "0" /f > nul
+if errorlevel 1 exit /b 1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\SCMConfig" /v "EnableSvchostMitigationPolicy" /t REG_DWORD /d "0" /f > nul
+if errorlevel 1 exit /b 1
 
 :: Disable file system mitigations
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v "ProtectionMode" /t REG_DWORD /d "0" /f > nul

@@ -1,11 +1,12 @@
 ---
 title: 主题
-description: 应用 chenniXOS 深色主题、壁纸与锁屏背景
+description: 应用 chenniXOS 深色主题、壁纸
+option: 'copy-theme'
 actions:
   - !writeStatus: { status: "正在应用主题" }
 
-  # 主题文件与壁纸资源已在 initialization.yml 阶段部署到系统目录
-  # 此处仅负责应用主题、设置锁屏背景等后续操作
+  # 主题文件与桌面壁纸资源已在 start.yml 阶段部署到系统目录
+  # 此处负责应用主题并配置锁屏提示与聚焦策略，不设置锁屏图片
 
   # 通过 COM 主题管理器应用 chenniXOS-dark 主题并写入最近使用列表
   - !powerShell:
@@ -35,10 +36,4 @@ actions:
     wait: true
     runas: currentUserElevated
 
-  # 应用 chenniXOS 锁屏背景
-  - !powerShell:
-    command: '.\SetTheme.ps1 -Action Lockscreen'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
 

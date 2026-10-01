@@ -19,12 +19,11 @@ actions:
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile',             value: 'NoLazyMode',                  type: REG_DWORD, data: '1'}
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile',             value: 'NetworkThrottlingIndex',       type: REG_DWORD, data: '10'}
 
-  # 将系统响应度设置为 10%,低延迟为0%
+  # 将系统响应度设置为 10%
   # 为浏览器等请求资源的程序分配更少的 CPU 资源，从而减少对其他应用程序的影响
   # https://learn.microsoft.com/en-us/windows/win32/procthread/multimedia-class-scheduler-service#registry-settings
   # 多媒体系统前台响应性
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', type: REG_DWORD, data: '10'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', type: REG_DWORD, data: '0', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', type: REG_DWORD, data: '10', option: 'super-low-latency'}
 
   # 可能导致手感异常，暂时注释
   # - !writeStatus: {status: '正在启用 MSI 模式', option: 'super-low-latency'}

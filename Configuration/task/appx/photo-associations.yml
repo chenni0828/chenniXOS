@@ -1,0 +1,11 @@
+---
+title: 配置照片文件关联
+description: 沿用 rev 的经典照片查看器文件关联步骤
+privilege: TrustedInstaller
+actions:
+
+  - !run:
+    exeDir: true
+    exe: "appx-remover\FILEASSOC.cmd"
+    option: "remove-appx-photos"
+    weight: 150
