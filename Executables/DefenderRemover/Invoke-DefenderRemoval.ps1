@@ -109,15 +109,15 @@ function Save-RemovalPhase {
 
 function Invoke-RemovalCommand {
     param([string]$Executable, [string[]]$Arguments, [int[]]$SuccessCodes = @(0), [switch]$AllowFailure)
-    # Resolve before lowering error preference so a launch failure cannot use a stale LASTEXITCODE.
+    # 先解析再调用。$LASTEXITCODE 是全局变量，切勿预先赋值：赋值只会在当前作用域创建同名
+    # 局部变量，把原生命令写入的真实退出码遮蔽掉，导致每次调用都误判为“无法启动命令”。
     try { $command = Get-Command -Name $Executable -CommandType Application -ErrorAction Stop }
     catch { $_.Exception.Data['RemovalCommandLaunch'] = $true; throw }
     $previousPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
-    $LASTEXITCODE = $null
     try {
         $commandOutput = & $command.Source @Arguments 2>&1
-        $commandExitCode = $LASTEXITCODE
+        $commandExitCode = $global:LASTEXITCODE
     } finally { $ErrorActionPreference = $previousPreference }
     foreach ($line in $commandOutput) { Write-RemovalLog -Message ([string]$line) -Quiet }
     if ($null -eq $commandExitCode) {
