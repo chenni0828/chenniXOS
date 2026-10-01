@@ -1,4 +1,4 @@
-# Adapted from ionuttbara/windows-defender-remover, release13-rev1 (commit 6126092a5376753153295a20806ebd2f5f3e1c0e).
+﻿# Adapted from ionuttbara/windows-defender-remover, release13-rev1 (commit 6126092a5376753153295a20806ebd2f5f3e1c0e).
 # Upstream removal data is licensed under CC BY-NC 4.0; see LICENSE.
 # StopDefender.ps1 preserves the working v0.1.0 implementation and its MIT attribution.
 [CmdletBinding()]

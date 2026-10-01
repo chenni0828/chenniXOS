@@ -1,4 +1,4 @@
-<#
+﻿<#
   chenniXOS DefenderRemover - 停止并禁用 Defender 防护
   本文件来源：LeanAndMean (https://github.com/AveYo/LeanAndMean)
   Copyright (c) 2021 AveYo
