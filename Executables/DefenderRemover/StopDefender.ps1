@@ -1,6 +1,22 @@
-﻿<# Contains code from LeanAndMean, code modified to match with XOS Playbook needs.
-Copyright (c) 2021 AveYo
-Licensed under MIT License
+<#
+  chenniXOS DefenderRemover - 停止并禁用 Defender 防护
+  本文件来源：LeanAndMean (https://github.com/AveYo/LeanAndMean)
+  Copyright (c) 2021 AveYo
+  许可：MIT License（仅适用于本文件）
+
+  注意：本文件适用 MIT 许可，但同目录下的其他文件并非 MIT。
+  以下文件源自 ionuttbara/windows-defender-remover
+  (https://github.com/ionuttbara/windows-defender-remover)，
+  适用 CC BY-NC 4.0，含「非商业性使用」限制：
+      Invoke-DefenderRemoval.ps1
+      RegistryRemoval.ps1
+      RemoveSecHealthApp.ps1
+      Remove_Defender\*.reg
+      Remove_SecurityComp\*.reg
+  完整归属信息与许可证文本见本目录 LICENSE 文件。
+
+  本项目所做的修改：补充日志输出，便于在部署流程中定位失败原因；
+  停止逻辑保持 v0.1.0 中已验证有效的实现不变。
 #>
 
 $logDir = 'C:\ProgramData\AME\Logs'

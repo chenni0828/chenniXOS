@@ -1,4 +1,4 @@
-﻿# Adapted from ionuttbara/windows-defender-remover, release13-rev1 (commit 6126092a5376753153295a20806ebd2f5f3e1c0e).
+# Adapted from ionuttbara/windows-defender-remover, release13-rev1 (commit 6126092a5376753153295a20806ebd2f5f3e1c0e).
 # Upstream removal data is licensed under CC BY-NC 4.0; see LICENSE.
 # StopDefender.ps1 preserves the working v0.1.0 implementation and its MIT attribution.
 [CmdletBinding()]
@@ -553,7 +553,8 @@ try {
     . (Join-Path $PSScriptRoot 'TrustedInstallerLauncher.ps1')
     if ($AfterRestart -and $Stage -notin @('Stop', 'Finalize')) { throw 'AfterRestart 仅用于重启后的停止或汇总阶段。' }
     Write-RemovalLog ('开始阶段：' + $Stage)
-    foreach ($name in @('Invoke-DefenderRemoval.ps1', 'StopDefender.ps1', 'RemoveSecHealthApp.ps1', 'RegistryRemoval.ps1', 'TrustedInstallerLauncher.ps1', 'Remove_Defender', 'Remove_SecurityComp', 'LICENSE')) {
+    # LICENSE 是本目录的署名与许可证说明，不属于运行时资源，缺失不应中止部署。
+    foreach ($name in @('Invoke-DefenderRemoval.ps1', 'StopDefender.ps1', 'RemoveSecHealthApp.ps1', 'RegistryRemoval.ps1', 'TrustedInstallerLauncher.ps1', 'Remove_Defender', 'Remove_SecurityComp')) {
         if (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot $name))) { throw ('移除资源缺失：' + $name) }
     }
     foreach ($name in $requiredRegistryNames) {
