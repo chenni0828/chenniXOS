@@ -1,0 +1,202 @@
+---
+title: defender
+description: 卸载defender
+actions:
+  - !writeStatus: {status: 'Defender：正在停止', option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v TamperProtection /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !powerShell: {command: '.\DefenderOFF.ps1', exeDir: true, wait: true, option: 'disable-defender'}
+
+  - !writeStatus: {status: 'Defender：第1阶段 - 正在禁用PPL服务', option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MDCoreSvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiVirus /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender" /v DisableAntiVirus /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+
+  - !powerShell:
+      wait: true
+      option: 'disable-defender'
+      command: |
+        $logDir = 'C:\ProgramData\AME\Logs'; if (!(Test-Path $logDir)) { New-Item -Path $logDir -ItemType Directory -Force | Out-Null }
+        $log = Join-Path $logDir 'DefenderServices.log'; $ts = Get-Date -Format 'HH:mm:ss'
+        ($ts + ' === Service Start values after Pass 1 ===') | Out-File $log -Append -Encoding utf8
+        @('WinDefend','WdNisSvc','WdFilter','WdBoot','WdNisDrv','MDCoreSvc','Sense','wscsvc','SecurityHealthService','MsSecCore','MsSecWfp','MsSecFlt') | ForEach-Object { $v = (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\$_" -Name Start -ErrorAction SilentlyContinue).Start; ($ts + ' ' + $_ + ': Start=' + $v) | Out-File $log -Append -Encoding utf8 }
+        $procs = @('MsMpEng','NisSrv','SecurityHealthService','SecurityHealthHost','smartscreen') | ForEach-Object { $r = [bool](Get-Process -Name $_ -ErrorAction SilentlyContinue); ($ts + ' Process ' + $_ + ': running=' + $r) | Out-File $log -Append -Encoding utf8 }
+
+  - !writeStatus: {status: 'Defender：正在等待MsMpEng退出', option: 'disable-defender'}
+  - !powerShell:
+      wait: true
+      option: 'disable-defender'
+      command: >-
+        $t = 30; while ((Get-Process -Name 'MsMpEng' -ErrorAction SilentlyContinue) -and $t -gt 0) { Start-Sleep -Seconds 1; $t-- }
+
+  - !writeStatus: {status: 'Defender：正在禁用服务注册', option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MsSecCore" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\wscsvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MsSecWfp" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MsSecFlt" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SgrmBroker" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\wtd" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\webthreatdefusersvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\webthreatdefsvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+
+  - !writeStatus: {status: 'Defender：正在应用策略覆盖', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components', value: 'ServiceEnabled',     type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components', value: 'CaptureThreatWindow', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components', value: 'NotifyMalicious',     type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components', value: 'NotifyPasswordReuse', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components', value: 'NotifyUnsafeApp',     type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WTDS\Components', value: 'ServiceEnabled',     type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WTDS\Components', value: 'CaptureThreatWindow', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WTDS\Components', value: 'NotifyMalicious',     type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WTDS\Components', value: 'NotifyPasswordReuse', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WTDS\Components', value: 'NotifyUnsafeApp',     type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags', value: 'BlockUxDisabled',       type: REG_DWORD, data: '1', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags', value: 'TelemetryCallsEnabled', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer',            value: 'SmartScreenEnabled', type: REG_SZ,    data: 'Off', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer', value: 'SmartScreenEnabled', type: REG_SZ,    data: 'Off', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'EnableSmartScreen',    type: REG_DWORD, data: '0',      option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'ShellSmartScreenLevel', type: REG_SZ,    data: 'Warn',  option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost',              value: 'Enabled',                    type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost',              value: 'PreventOverride',             type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\AppHost',     value: 'EnableWebContentEvaluation', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'AicEnabled', type: REG_SZ, data: 'Anywhere', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\smartscreen.exe', value: 'Debugger', type: REG_SZ, data: '%SYSTEMROOT%\System32\taskkill.exe', option: 'disable-defender'}
+  - !taskKill: {name: 'smartscreen', option: 'disable-defender', errorAction: Ignore}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v VerifiedAndReputablePolicyState /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !powerShell:
+      wait: true
+      option: 'disable-defender'
+      command: >-
+        Get-Item 'Registry::HKEY_Users\S-1-5-21*\Software\Microsoft' -ErrorAction SilentlyContinue | ForEach-Object {
+          $base = $_.PSPath;
+          New-Item -Path "$base\Windows\CurrentVersion\AppHost" -Force -ErrorAction SilentlyContinue | Out-Null;
+          Set-ItemProperty -Path "$base\Windows\CurrentVersion\AppHost" -Name 'EnableWebContentEvaluation' -Value 0 -Type Dword -Force -ErrorAction SilentlyContinue;
+          Set-ItemProperty -Path "$base\Windows\CurrentVersion\AppHost" -Name 'PreventOverride' -Value 0 -Type Dword -Force -ErrorAction SilentlyContinue;
+          New-Item -Path "$base\Edge\SmartScreenEnabled" -Force -ErrorAction SilentlyContinue | Out-Null;
+          Set-ItemProperty -Path "$base\Edge\SmartScreenEnabled" -Name '(Default)' -Value 0 -Force -ErrorAction SilentlyContinue
+        };
+        Stop-Process -Name smartscreen -Force -ErrorAction SilentlyContinue; exit 0
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet', value: 'SubmitSamplesConsent', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet" /v SpyNetReporting /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet" /v DisableBlockAtFirstSeen /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Real-Time Protection" /v DisableBehaviorMonitoring /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Real-Time Protection" /v DisableIOAVProtection /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Real-Time Protection" /v DisableOnAccessProtection /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Real-Time Protection" /v DisableScanOnRealtimeEnable /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity', value: 'Enabled', type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard',                          value: 'ConfigureSystemGuardLaunch', type: REG_DWORD, data: '2', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SystemGuard',       value: 'Enabled',                   type: REG_DWORD, data: '0', option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', value: 'SecurityHealth', operation: delete, option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', value: 'WindowsDefender', operation: delete, option: 'disable-defender'}
+  - !powerShell:
+      wait: true
+      option: 'disable-defender'
+      command: >-
+        $p = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run'; if (!(Test-Path $p)) { New-Item -Path $p -Force -ErrorAction SilentlyContinue | Out-Null }; Set-ItemProperty -Path $p -Name 'SecurityHealth' -Value ([byte[]](3,0,0,0,0,0,0,0,0,0,0,0)) -Type Binary -Force -ErrorAction SilentlyContinue
+
+  - !writeStatus: {status: 'Defender：第2阶段 - 最终服务禁用', option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo sc.exe stop MDCoreSvc', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo sc.exe stop WinDefend', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo sc.exe stop WdNisSvc', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo sc.exe stop Sense', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo sc.exe stop SecurityHealthService', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo sc.exe stop wscsvc', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MDCoreSvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\wscsvc" /v Start /t REG_DWORD /d 4 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+
+  - !writeStatus: {status: 'Defender：正在创建启动安全任务', option: 'disable-defender'}
+  - !powerShell:
+      wait: true
+      option: 'disable-defender'
+      command: >-
+        $s = 'sc.exe stop MDCoreSvc; sc.exe stop WinDefend; sc.exe stop WdNisSvc; Start-Sleep -Seconds 5;' +
+             'reg add HKLM\SYSTEM\CurrentControlSet\Services\WinDefend /v Start /t REG_DWORD /d 4 /f;' +
+             'reg add HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc /v Start /t REG_DWORD /d 4 /f;' +
+             'reg add HKLM\SYSTEM\CurrentControlSet\Services\MDCoreSvc /v Start /t REG_DWORD /d 4 /f;' +
+             'reg add HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv /v Start /t REG_DWORD /d 4 /f;' +
+             'reg add HKLM\SYSTEM\CurrentControlSet\Services\WdBoot /v Start /t REG_DWORD /d 4 /f;' +
+             'reg add HKLM\SYSTEM\CurrentControlSet\Services\WdFilter /v Start /t REG_DWORD /d 4 /f;' +
+             'schtasks /delete /tn XOS-DefenderDisable /f;' +
+             'Remove-Item -Path $MyInvocation.MyCommand.Path -Force -ErrorAction SilentlyContinue';
+        [System.IO.File]::WriteAllText('C:\Windows\XOS-DD.ps1', $s)
+  - !cmd:
+      option: 'disable-defender'
+      command: 'schtasks /create /ru SYSTEM /rl HIGHEST /sc ONSTART /tn XOS-DefenderDisable /tr "powershell.exe -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File C:\Windows\XOS-DD.ps1" /f'
+      wait: true
+      runas: trustedInstaller
+
+  # 注意：以下所有计划任务和注册表操作均在第二阶段之后执行
+  - !writeStatus: {status: 'Defender：正在禁用计划任务', option: 'disable-defender'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance', operation: disable, option: 'disable-defender'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Windows Defender\Windows Defender Cleanup', operation: disable, option: 'disable-defender'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan', operation: disable, option: 'disable-defender'}
+  - !scheduledTask: {path: '\Microsoft\Windows\Windows Defender\Windows Defender Verification', operation: disable, option: 'disable-defender'}
+  - !scheduledTask: {path: '\Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh', operation: disable, option: 'disable-defender'}
+
+  # ETW日志记录器必须在第二阶段之后运行，否则会受WdFilter干扰
+  - !writeStatus: {status: 'Defender：正在禁用ETW日志记录器', option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v Start /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v Start /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'disable-defender'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer', value: 'SettingsPageVisibility', type: REG_SZ, data: 'hide:windowsdefender', option: 'disable-defender'}
+
+
+  - !writeStatus: {status: '正在配置Windows Defender', option: 'enable-defender'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows Defender\Reporting', value: 'DisableGenericRePorts', type: REG_DWORD, data: '1', option: 'enable-defender'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates', value: 'DisableScheduledSignatureUpdateOnBattery', type: REG_DWORD, data: '1', option: 'enable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet" /v SubmitSamplesConsent /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'enable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet" /v SpyNetReporting /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'enable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v Start /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'enable-defender'}
+  - !run: {exeDir: true, exe: 'MinSudo.exe', args: '--TrustedInstaller --NoLogo reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v Start /t REG_DWORD /d 0 /f', wait: true, ignoreErrors: true, option: 'enable-defender'}
+  - !powerShell:
+      wait: true
+      option: 'enable-defender'
+      command: >-
+        $p = 'C:\ProgramData\Microsoft\Windows Defender\Platform';
+        if (Test-Path $p) {
+          Get-ChildItem $p -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1 | ForEach-Object {
+            $off = Join-Path $_.FullName 'OFFmeansOFF.exe';
+            $on = Join-Path $_.FullName 'MpCmdRun.exe';
+            if ((Test-Path $off) -and !(Test-Path $on)) { Rename-Item -Path $off -NewName 'MpCmdRun.exe' -Force -ErrorAction SilentlyContinue }
+          }
+        };
+        foreach ($k in @('HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender','HKLM:\SOFTWARE\Microsoft\Windows Defender')) {
+          foreach ($v in @('PassiveMode','IsServiceRunning','ServiceKeepAlive','PreviousRunningMode','DisableAntiSpyware','DisableAntiVirus')) {
+            Remove-ItemProperty -Path $k -Name $v -Force -ErrorAction SilentlyContinue
+          }
+        }
+
+  # 无论Defender选项如何，以下设置均会应用
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Edge', value: 'SmartScreenEnabled', type: REG_SZ, data: '0'}
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost', value: 'EnableWebContentEvaluation', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows Defender\SmartScreen', value: 'ConfigureAppInstallControlEnabled', type: REG_DWORD, data: '1'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows Defender\SmartScreen', value: 'ConfigureAppInstallControl', type: REG_SZ, data: 'Anywhere'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Systray', value: 'HideSystray', type: REG_DWORD, data: '1'}
+
+  - !writeStatus: {status: '正在禁用所有缓解措施', option: 'mitigations-disable'}
+  - !cmd:
+    command: '"Disable All Mitigations.cmd" /silent'
+    option: 'mitigations-disable'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  - !writeStatus: {status: '正在禁用容错堆', option: 'super-low-latency'}
+  - !run: {exe: 'rundll32.exe', args: 'fthsvc.dll,FthSysprepSpecialize', cpuArch: 'X64', option: 'super-low-latency'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\FTH', value: 'Enabled', data: '0', type: REG_DWORD, cpuArch: 'X64', option: 'super-low-latency'}

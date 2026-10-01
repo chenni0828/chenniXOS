@@ -1,0 +1,4 @@
+本项目参考https://www.bilibili.com/video/BV1QLH8zgEBu
+官方文档：https://developer.valvesoftware.com/wiki/Cpu_level
+
+作用是降低画质达到降低画面延迟，但是严重影响手感，谨慎使用

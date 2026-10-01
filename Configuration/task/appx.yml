@@ -1,0 +1,211 @@
+---
+title: AppX
+description: 移除AppX包并防止它们重新安装
+onUpgrade: false
+actions:
+  - !writeStatus: {status: '正在移除 OneDrive', option: 'remove-onedrive'}
+  - !run: {exeDir: true, exe: 'onedrive.bat', option: 'remove-onedrive'}
+  - !powerShell:
+      wait: true
+      runas: currentUserElevated
+      option: 'remove-onedrive'
+      command: >-
+        Get-AppxPackage -Name '*OneDrive*' -AllUsers -ErrorAction SilentlyContinue | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;
+        Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -like '*OneDrive*' } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue;
+        Get-ChildItem 'C:\Users\*\AppData\Local\Microsoft\OneDrive' -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
+  - !registryValue: {path: 'HKLM\SOFTWARE\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}', value: 'System.IsPinnedToNameSpaceTree', type: REG_DWORD, data: '0', option: 'remove-onedrive'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Classes\WOW6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}', value: 'System.IsPinnedToNameSpaceTree', type: REG_DWORD, data: '0', option: 'remove-onedrive'}
+  - !registryKey: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{018D5C66-4533-4307-9B53-224DE2ED1FE6}', operation: delete, option: 'remove-onedrive'}
+  - !registryKey: {path: 'HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{018D5C66-4533-4307-9B53-224DE2ED1FE6}', operation: delete, option: 'remove-onedrive'}
+  - !powerShell:
+      wait: true
+      runas: currentUserElevated
+      option: 'remove-onedrive'
+      command: >-
+        $bases = @('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace');
+        Get-ChildItem 'Registry::HKEY_USERS' -ErrorAction SilentlyContinue | Where-Object { $_.PSChildName -match '^S-1-5-21-' } | ForEach-Object { $bases += ('Registry::' + $_.Name + '\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace') };
+        foreach ($b in $bases) { if (Test-Path $b) { Get-ChildItem $b -ErrorAction SilentlyContinue | ForEach-Object { $d = (Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue).'(default)'; if ($d -like '*OneDrive*') { Remove-Item $_.PSPath -Recurse -Force -ErrorAction SilentlyContinue } } } }
+  - !powerShell:
+      wait: true
+      errorAction: Ignore
+      option: 'remove-onedrive'
+      command: >-
+        $store='HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore';
+        $all=Get-AppxPackage -AllUsers|Select-Object PackageFullName,PackageFamilyName,PackageUserInformation,NonRemovable;
+        foreach($n in @('onedrive')){foreach($pkg in ($all|Where-Object{$_.PackageFullName -like ('*'+$n+'*')})){$pfn=$pkg.PackageFullName;$pfam=$pkg.PackageFamilyName;$d=$store+'\Deprovisioned\'+$pfam;if(-not(Test-Path $d)){New-Item $d -Force|Out-Null};$ib=$store+'\InboxApplications\'+$pfn;if(Test-Path $ib){Remove-Item $ib -Force};if($pkg.NonRemovable -eq 1){Set-NonRemovableAppsPolicy -Online -PackageFamilyName $pfam -NonRemovable 0};foreach($u in $pkg.PackageUserInformation){$sid=$u.UserSecurityID.SID;New-Item($store+'\EndOfLife\'+$sid+'\'+$pfn)-Force|Out-Null;Remove-AppxPackage -Package $pfn -User $sid -ErrorAction SilentlyContinue};Remove-AppxPackage -Package $pfn -AllUsers -ErrorAction SilentlyContinue}}
+
+
+  - !writeStatus: {status: '正在移除AppX包'}
+  
+  # 移除这些应用的原因是它们可能会发送用户数据，
+  # 显示不需要的内容并使用硬件资源。它们也可能只是
+  # 从未使用过的烦人应用。但是，大多数这些应用可以在
+  # 用户需要时通过Microsoft Store重新安装。
+
+  # https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
+
+  #####################################################################################################
+
+  # 获取当前AppX包以在之后取消预配已移除的包
+  - !powerShell:
+    command: |
+      (Get-AppxPackage).PackageFamilyName |
+        Out-File """$env:TEMP\chenniXPackagesOld.txt"""
+    runas: currentUserElevated
+    wait: true
+
+  # AppX Microsoft Teams（微软团队）
+  # 似乎是旧版 - 不在23H2中
+  - !taskKill: {name: 'msteams*', ignoreErrors: true}
+  - !appx: {name: 'MicrosoftTeams*', type: family}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Communications', value: 'ConfigureChatAutoInstall', data: '0', type: REG_DWORD}
+
+  # 24H2中的新AppX Teams
+  - !taskKill: {name: 'ms-teams*', ignoreErrors: true}
+  - !appx: {name: 'MSTeams*', type: family}
+  # 24H2 Copilot应用
+  - !appx: {name: 'Microsoft.Copilot*', type: family}
+
+  # 其他应用
+  - !appx: {name: 'Clipchamp.Clipchamp*', type: family}
+  - !appx: {name: 'Disney.37853FC22B2CE*', type: family}
+  - !appx: {name: 'SpotifyAB.SpotifyMusic*', type: family}
+  - !appx: {name: 'Microsoft.549981C3F5F10*', type: family} # Cortana
+  - !appx: {name: 'Microsoft.XboxApp*', type: family} # Xbox控制台伴侣（已弃用）
+  - !appx: {name: 'microsoft.windowscommunicationsapps*', type: family} # 邮件和日历
+  - !appx: {name: 'Microsoft.MSPaint*', type: family} # 画图3D
+  - !appx: {name: 'Microsoft.Getstarted*', type: family} # 提示（已弃用）
+  - !appx: {name: 'Microsoft.ZuneVideo*', type: family} # 电影和电视
+  - !appx: {name: 'MicrosoftCorporationII.MicrosoftFamily*', type: family}
+  - !appx: {name: 'Microsoft.MixedReality.Portal*', type: family}
+  - !appx: {name: 'Microsoft.Windows.DevHome*', type: family}
+  - !appx: {name: 'Microsoft.BingWeather*', type: family}
+  - !appx: {name: 'Microsoft.BingNews*', type: family}
+  - !appx: {name: 'Microsoft.BingSearch*', type: family}
+  - !appx: {name: 'Microsoft.OutlookForWindows*', type: family}
+  - !appx: {name: 'Microsoft.GetHelp*', type: family}
+  - !appx: {name: 'Microsoft.Microsoft3DViewer*', type: family}
+  - !appx: {name: 'Microsoft.MicrosoftOfficeHub*', type: family}
+  - !appx: {name: 'Microsoft.MicrosoftSolitaireCollection*', type: family}
+  - !appx: {name: 'Microsoft.MicrosoftStickyNotes*', type: family}
+  - !appx: {name: 'Microsoft.Office.OneNote*', type: family}
+  - !appx: {name: 'Microsoft.People*', type: family}
+  - !appx: {name: 'Microsoft.PowerAutomateDesktop*', type: family}
+  - !appx: {name: 'Microsoft.ScreenSketch*', type: family, option: 'remove-snipping-tool'}
+  - !appx: {name: 'Microsoft.SkypeApp*', type: family}
+  - !appx: {name: 'Microsoft.Todos*', type: family}
+  - !appx: {name: 'Microsoft.WindowsAlarms*', type: family}
+  - !appx: {name: 'Microsoft.WindowsCamera*', type: family}
+  - !appx: {name: 'Microsoft.WindowsFeedbackHub*', type: family}
+  - !appx: {name: 'Microsoft.WindowsMaps*', type: family}
+  - !appx: {name: 'Microsoft.WindowsSoundRecorder*', type: family}
+  - !appx: {name: 'Ink.Handwriting.Main.Store.en-US1.0', type: family}
+  # 使用AME Wizard移除会导致跨设备体验主机安装出现问题
+  # - !appx: {name: 'Microsoft.YourPhone*', type: family}
+  - !powerShell:
+    command: |
+      Get-AppxPackage Microsoft.YourPhone* | Remove-AppxPackage
+      Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -eq 'Microsoft.YourPhone' } | Remove-AppxProvisionedPackage -Online
+    runas: currentUserElevated
+    wait: true
+
+  # Microsoft Edge
+  - !writeStatus: {status: '正在移除Microsoft Edge', option: 'uninstall-edge'}
+  - !powerShell:
+    command: |
+      $ErrorActionPreference = 'SilentlyContinue'
+      foreach ($service in (Get-Service -Name '*edge*' | Where-Object { $_.DisplayName -like '*Microsoft Edge*' }).Name) {
+        Stop-Service -Name $service -Force
+      }
+      foreach ($process in (Get-Process | Where-Object { ($_.Path -like "$([Environment]::GetFolderPath('ProgramFilesX86'))\Microsoft\*") -or ($_.Name -like '*msedge*') }).Id) {
+        Stop-Process -Id $process -Force
+      }
+      $ErrorActionPreference = 'Continue'
+    runas: currentUserElevated
+    option: 'uninstall-edge'
+    wait: true
+  - !powerShell:
+    command: 'Start-Process -FilePath ".\Software\RemoveEdge.exe" -WindowStyle Hidden -Wait'
+    runas: currentUserElevated
+    option: 'uninstall-edge'
+    wait: true
+    exeDir: true
+    # 脚本中的AppX卸载似乎失败，因此不使用它，而是使用AME Wizard
+    # 注意，AppX Edge已从最新版本的Windows中移除，但人们可能运行的是未更新的版本
+  - !powerShell:
+    command: |
+      $edgeData = "$([Environment]::GetFolderPath('LocalApplicationData'))\Microsoft\Edge"
+      if (Test-Path $edgeData) {
+        Remove-Item -Path $edgeData -Force -Recurse -ErrorAction SilentlyContinue
+        Write-Output "Removed Edge user data."
+      }
+    runas: currentUserElevated
+    option: 'uninstall-edge'
+    wait: true
+  - !appx: {name: 'Microsoft.MicrosoftEdge_8wekyb3d8bbwe', type: family, option: 'uninstall-edge'}
+  - !registryKey: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe', operation: add, option: 'uninstall-edge'}
+  - !registryKey: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.MicrosoftEdge_8wekyb3d8bbwe', operation: add, option: 'uninstall-edge'}
+
+  # 禁用 Edge 启动加速和后台模式
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'StartupBoostEnabled', data: '0', type: REG_DWORD}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'BackgroundModeEnabled', data: '0', type: REG_DWORD}
+  
+  # 移除wsl
+  - !powerShell:
+      wait: true
+      option: 'remove-wsl'
+      command: >-
+        @('Microsoft-Windows-Subsystem-Linux','VirtualMachinePlatform','HypervisorPlatform') |
+        ForEach-Object { Disable-WindowsOptionalFeature -Online -FeatureName $_ -NoRestart -ErrorAction SilentlyContinue | Out-Null }
+  - !service: {name: 'WslService', operation: change, startup: 4, errorAction: Ignore, option: 'remove-wsl'}
+  - !cmd: {command: 'net stop WslService >nul 2>&1 & taskkill /f /im wslservice.exe >nul 2>&1 & taskkill /f /im wsl.exe >nul 2>&1', wait: true, runas: trustedInstaller, ignoreErrors: true, option: 'remove-wsl'}
+  - !powerShell:
+      wait: true
+      errorAction: Ignore
+      option: 'remove-wsl'
+      command: >-
+        $store='HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore';
+        $all=Get-AppxPackage -AllUsers|Select-Object PackageFullName,PackageFamilyName,PackageUserInformation,NonRemovable;
+        foreach($n in @('microsoftcorporationii.windowssubsystemforlinux')){foreach($pkg in ($all|Where-Object{$_.PackageFullName -like ('*'+$n+'*')})){$pfn=$pkg.PackageFullName;$pfam=$pkg.PackageFamilyName;$d=$store+'\Deprovisioned\'+$pfam;if(-not(Test-Path $d)){New-Item $d -Force|Out-Null};$ib=$store+'\InboxApplications\'+$pfn;if(Test-Path $ib){Remove-Item $ib -Force};if($pkg.NonRemovable -eq 1){Set-NonRemovableAppsPolicy -Online -PackageFamilyName $pfam -NonRemovable 0};foreach($u in $pkg.PackageUserInformation){$sid=$u.UserSecurityID.SID;New-Item($store+'\EndOfLife\'+$sid+'\'+$pfn)-Force|Out-Null;Remove-AppxPackage -Package $pfn -User $sid -ErrorAction SilentlyContinue};Remove-AppxPackage -Package $pfn -AllUsers -ErrorAction SilentlyContinue}}
+  - !file: {path: '%systemroot%\System32\wsl.exe', option: 'remove-wsl'}
+  - !file: {path: '%systemroot%\System32\wslconfig.exe', option: 'remove-wsl'}
+  - !file: {path: '%systemroot%\System32\wslg.exe', option: 'remove-wsl'}
+  - !file: {path: '%systemroot%\System32\wslhost.exe', option: 'remove-wsl'}
+  - !file: {path: '%systemroot%\System32\lxss\LxssManager.dll', option: 'remove-wsl'}
+  - !powerShell:
+      option: 'remove-wsl'
+      command: >-
+        $k = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{B2B4A4D1-2754-4140-A2EB-9A76D9D7CDC6}'; if ((Get-ItemProperty -Path $k -ErrorAction SilentlyContinue).'(Default)' -eq 'Linux') { Remove-Item -Path $k -Force -ErrorAction SilentlyContinue }
+  - !powerShell:
+      wait: true
+      option: 'remove-wsl'
+      command: >-
+        Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)WindowsSubsystemForLinux' } | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue;
+        Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Config' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)WindowsSubsystemForLinux' } | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue;
+        Remove-Item ($env:ProgramData + '\Microsoft\Windows\Start Menu\Programs\WSL') -Recurse -Force -ErrorAction SilentlyContinue;
+        Get-ChildItem ($env:ProgramData + '\Microsoft\Windows\Start Menu\Programs') -Filter '*Linux*' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue;
+        Get-ChildItem ($env:ProgramData + '\Microsoft\Windows\Start Menu\Programs') -Filter '*WSL*' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue;
+        Get-ChildItem 'C:\Users\*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs' -Filter '*Linux*' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue;
+        Get-ChildItem 'C:\Users\*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs' -Filter '*WSL*' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue;
+        @('wsl.exe','wslconfig.exe','wslg.exe','wslhost.exe') | ForEach-Object { $p = Join-Path $env:windir ('System32\' + $_); Remove-Item $p -Force -ErrorAction SilentlyContinue };
+        Get-Item 'Registry::HKEY_Users\S-1-5-21*\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\*WindowsSubsystemForLinux*' -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue;
+        Get-ChildItem 'HKLM:\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)WindowsSubsystemForLinux' } | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue;
+        Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Staged' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)WindowsSubsystemForLinux' } | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+
+  # 防止预配的应用程序被重新安装
+  # https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update
+  - !powerShell:
+    command: |
+      $a = """$env:TEMP\chenniXPackagesOld.txt"""
+      (diff (gc $a) ((Get-AppxPackage).PackageFamilyName)).InputObject | 
+        Foreach-Object { New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned" -Name $_ -Force };
+      Remove-Item $a -Force
+    runas: currentUserElevated
+    wait: true
+
+  # 清除Client.CBS等的缓存
+  # 开始菜单缓存在后面清除
+  - !writeStatus: {status: '正在清除AppX缓存'}
+  - !appx: {operation: clearCache, name: '*MicrosoftWindows.Client.CBS*'}
+  - !appx: {operation: clearCache, name: '*Microsoft.Windows.Search*'}
+  - !appx: {operation: clearCache, name: '*Microsoft.Windows.SecHealthUI*'}

@@ -1,0 +1,45 @@
+---
+title: networking
+description: 网络优化
+onUpgrade: false
+actions:
+  - !writeStatus: {status: '正在优化网络设置'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters',                             value: 'EnableNetbios',               type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\WinHttp',               value: 'DisableWpad',                 type: REG_DWORD, data: '1'}
+##  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\WinHttp',               value: 'EnableDefaultHttp2',          type: REG_DWORD, data: '1'} --- 会导致 OneDrive 登录失败
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient',                                  value: 'MaxNegativeCacheTtl',         type: REG_DWORD, data: '5'}
+##  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\BFE\Parameters\Policy\Options',                   value: 'CollectConnections',          type: REG_DWORD, data: '0'} --- 会导致 OneDrive 登录失败
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\BFE\Parameters\Policy\Options',                   value: 'CollectNetEvents',            type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Dhcp',                                            value: 'PdcActivationDisabled',       type: REG_DWORD, data: '1'}
+ 
+  # 禁用 SMB 带宽限制以提升性能
+  # https://learn.microsoft.com/en-us/windows-server/administration/performance-tuning/role/file-server
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters'
+    value: 'DisableBandwidthThrottling'
+    data: '1'
+    type: REG_DWORD
+
+  # 限制匿名用户对命名管道和共享资源的访问，防止未授权系统访问
+  # https://www.stigviewer.com/stig/microsoft_windows_10/2022-04-08/finding/V-220932
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters'
+    value: 'RestrictNullSessAccess'
+    data: '1'
+    type: REG_DWORD
+  
+  # 限制匿名枚举共享资源
+  # https://www.stigviewer.com/stig/microsoft_windows_10/2022-04-08/finding/V-220930
+  - !registryValue:
+    path: 'HKLM\SYSTEM\CurrentControlSet\Control\Lsa'
+    value: 'RestrictAnonymous'
+    data: '1'
+    type: REG_DWORD
+    
+  # 禁用链路本地多播名称解析（LLMNR）协议，该协议存在安全漏洞且已被 DNS 取代
+  # https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.DNSClient::Turn_Off_Multicast
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient'
+    value: 'EnableMulticast'
+    data: '0'
+    type: REG_DWORD

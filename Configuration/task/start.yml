@@ -1,0 +1,75 @@
+---
+title: start
+description: 初始化
+actions:
+  - !writeStatus: { status: "正在初始化..." }
+  # 禁用PowerShell Core遥测
+  - !cmd: {command: 'setx POWERSHELL_TELEMETRY_OPTOUT 1'}
+  # 在安装期间临时将PowerShell执行策略设置为不受限制
+  # 这允许所有 chenniXOS 安装脚本无需签名验证即可运行
+  # 在安装结束时，此设置将改回 RemoteSigned 以提高安全性
+  # RemoteSigned 允许本地 chenniXOS 文件夹脚本运行，同时要求下载的脚本具有签名
+  - !registryValue:
+    path: 'HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell'
+    value: 'ExecutionPolicy'
+    data: 'Unrestricted'
+    type: REG_SZ
+
+  # NGEN 预编译 .NET 程序集，加快后续 PowerShell 脚本执行
+  - !writeStatus: { status: "正在优化 PowerShell" }
+  - !powerShell:
+    command: '.\NGEN.ps1'
+    exeDir: true
+    wait: true
+
+  # 首先运行磁盘清理，以便它可以在后台运行
+  - !writeStatus: { status: "正在磁盘清理" }
+  - !powerShell:
+    command: '.\\CLEANUP.ps1'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+
+  - !writeStatus: {status: '正在清理组件存储'}
+  - !run: {exe: 'DISM.exe', args: '/Online /Cleanup-Image /StartComponentCleanup', weight: 15}
+    
+  - !writeStatus: {status: '正在安装工具'}
+  - !powerShell: {command: '.\SOFTWARE.ps1', exeDir: true, wait: true, weight: 40, runas: currentUserElevated}
+  
+  - !writeStatus: {status: '正在配置 Windows 功能'}
+  - !powerShell: {command: '.\OptionalFeatures.ps1', exeDir: true, wait: true}
+  - !powerShell:
+      wait: true
+      command: >-
+        @('Printing-Foundation-Features','Printing-Foundation-InternetPrinting-Client','Printing-PrintToPDFServices-Features','Printing-XPSServices-Features') |
+        ForEach-Object { Disable-WindowsOptionalFeature -Online -FeatureName $_ -NoRestart -ErrorAction SilentlyContinue | Out-Null }
+
+  - !writeStatus: { status: "正在部署主题与品牌资源" }
+
+  # 将 Themes\chenniXOS-dark.theme 复制到系统主题目录，可在个性化主题中选用
+  # 将暗色主题配套壁纸与锁屏背景复制到 %windir%\chenniXOS\Wallpapers
+  # 若当前目录存在 chenniXOS 主程序包，则递归复制到 %windir%\chenniXOS\
+  # 结果路径：%windir%\chenniXOS\chenniXOS\（与 Wallpapers 同级）
+  # 并在当前用户桌面创建指向该主程序入口的快捷方式
+  - !powerShell:
+      command: >-
+        $windir = [Environment]::GetFolderPath('Windows');
+        New-Item -ItemType Directory -Force -Path "$windir\Resources\Themes" | Out-Null;
+        New-Item -ItemType Directory -Force -Path "$windir\chenniXOS\Wallpapers" | Out-Null;
+        Copy-Item -Path '.\Themes\chenniXOS-dark.theme' -Destination "$windir\Resources\Themes" -Force;
+        Copy-Item -Path '.\Themes\Wallpapers\chenniXOS-dark.png' -Destination "$windir\chenniXOS\Wallpapers" -Force;
+        Copy-Item -Path '.\Themes\Wallpapers\lockscreen_dark.png' -Destination "$windir\chenniXOS\Wallpapers" -Force;
+        if (Test-Path '.\chenniXOS') {
+            Copy-Item -Path '.\chenniXOS' -Destination "$windir\chenniXOS" -Recurse -Force;
+            $desktop = [Environment]::GetFolderPath('Desktop');
+            $shell = New-Object -ComObject WScript.Shell;
+            $shortcutPath = Join-Path $desktop 'chenniXOS.lnk';
+            $shortcut = $shell.CreateShortcut($shortcutPath);
+            $shortcut.TargetPath = Join-Path $windir 'chenniXOS\chenniXOS';
+            $shortcut.Save()
+        }
+      exeDir: true
+      wait: true
+      runas: currentUserElevated
+
+
